@@ -1,4 +1,4 @@
-﻿# Level Control with 4diac, FORTE, OPC UA, and a B&R PLC
+# Level Control with 4diac, FORTE, OPC UA, and a B&R PLC
 
 ## Overview
 
@@ -283,6 +283,274 @@ The real plant must only be operated after validating:
 
 The software must not be connected to the physical plant without a previously defined and approved test procedure.
 
+## Repository Validation
+
+The repository baseline was validated by cloning it into a separate directory and rebuilding the Python and 4diac development environments.
+
+The validated baseline is identified by the following Git tag:
+
+```text
+baseline-gateway-v1
+```
+
+### Clone the Repository
+
+Choose a directory outside the original development repository:
+
+```powershell
+New-Item `
+    -ItemType Directory `
+    -Force `
+    -Path "C:\Projetos\repository-validation" |
+    Out-Null
+
+Set-Location "C:\Projetos\repository-validation"
+```
+
+Clone the repository:
+
+```powershell
+git clone `
+    "https://github.com/GuilhermeDMLopes/master-thesis-level-control.git"
+```
+
+Enter the cloned repository:
+
+```powershell
+Set-Location `
+    "C:\Projetos\repository-validation\master-thesis-level-control"
+```
+
+### Validate the Git Repository
+
+Confirm that the working tree is clean:
+
+```powershell
+git status
+```
+
+Confirm the current commit:
+
+```powershell
+git log --oneline -1
+```
+
+Confirm the available baseline tag:
+
+```powershell
+git tag
+```
+
+Confirm the remote repository:
+
+```powershell
+git remote -v
+```
+
+Count the tracked files:
+
+```powershell
+$trackedFileCount = (
+    git ls-files |
+    Measure-Object
+).Count
+
+Write-Host "Tracked files: $trackedFileCount"
+```
+
+The initial validated baseline contains:
+
+```text
+529 tracked files
+```
+
+### Create the Python Validation Environment
+
+Confirm the Python version:
+
+```powershell
+python --version
+```
+
+The initial baseline was validated with:
+
+```text
+Python 3.10.11
+```
+
+Create a virtual environment:
+
+```powershell
+python -m venv ".venv"
+```
+
+Confirm that the virtual environment was created:
+
+```powershell
+Test-Path ".venv\Scripts\python.exe"
+```
+
+Install the project dependencies:
+
+```powershell
+.\.venv\Scripts\python.exe `
+    -m pip install `
+    -r requirements.txt
+```
+
+Confirm the installed `asyncua` version:
+
+```powershell
+.\.venv\Scripts\python.exe -c `
+    "import importlib.metadata as metadata; print(metadata.version('asyncua'))"
+```
+
+Expected version:
+
+```text
+1.1.8
+```
+
+Confirm that the main OPC UA classes can be imported:
+
+```powershell
+.\.venv\Scripts\python.exe -c `
+    "from asyncua import Client, Server, ua; print('asyncua import: OK')"
+```
+
+Check the installed dependencies:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip check
+```
+
+Expected result:
+
+```text
+No broken requirements found.
+```
+
+### Validate the Gateway Source Code
+
+Validate the Python syntax without connecting to the real PLC:
+
+```powershell
+.\.venv\Scripts\python.exe `
+    -m py_compile `
+    "gateway\src\gateway_opcua.py"
+```
+
+A successful syntax validation produces no output.
+
+Do not execute the gateway outside the laboratory unless a simulation mode or a test OPC UA server is being used.
+
+The current gateway attempts to connect to the real B&R endpoint:
+
+```text
+opc.tcp://10.0.0.3:4840
+```
+
+### Import the Project into Eclipse 4diac
+
+Use a temporary workspace to avoid modifying the original development workspace.
+
+In Eclipse 4diac IDE:
+
+1. Select `File -> Switch Workspace -> Other`.
+2. Choose a temporary workspace, for example:
+
+```text
+C:\Projetos\4diac-workspace-validation
+```
+
+3. After 4diac restarts, select `File -> Import`.
+4. Select `General -> Existing Projects into Workspace`.
+5. Select the following repository directory as the root directory:
+
+```text
+<repository-root>\4diac\application
+```
+
+6. Confirm that the project `OPAS_Tank_System` is detected.
+7. Enable `Copy projects into workspace`.
+8. Select `Finish`.
+
+### Validate the Imported 4diac Project
+
+Open:
+
+```text
+OPAS_Tank_System.sys
+```
+
+Confirm that the system diagram, devices, resources, applications, event connections, and data connections are loaded.
+
+Open the main custom function blocks:
+
+```text
+DAC_RATE_LIMITER.fbt
+PV_FILTER.fbt
+MPC_LEVEL.fbt
+Type Library/net_custom/PID_LEVEL.fbt
+Type Library/net_custom/CLIENT_1_0.fbt
+```
+
+For each function block, verify:
+
+- The interface opens correctly.
+- Event inputs and outputs are visible.
+- Data inputs and outputs are visible.
+- The Execution Control Chart can be opened when applicable.
+- Algorithms can be opened.
+- No required function block type is missing.
+
+Open the 4diac `Problems` view:
+
+```text
+Window -> Show View -> Problems
+```
+
+The validation is successful when no error prevents the project or its function blocks from opening.
+
+Warnings should be reviewed, but they do not necessarily indicate that the import failed.
+
+### Confirm That the Clone Remains Clean
+
+After the validation, return to the cloned repository and execute:
+
+```powershell
+git status
+```
+
+Expected result:
+
+```text
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+```
+
+The `.venv` directory and Python cache files must remain ignored by Git.
+
+### Validated Baseline Result
+
+The initial repository baseline was successfully validated with the following results:
+
+- Repository cloned successfully.
+- Commit `1f38b83` recovered.
+- Tag `baseline-gateway-v1` recovered.
+- 529 tracked files recovered.
+- Python 3.10.11 environment created.
+- `asyncua==1.1.8` installed.
+- No broken Python requirements found.
+- Gateway syntax validation completed.
+- `OPAS_Tank_System` imported into a temporary 4diac workspace.
+- System and custom function blocks opened correctly.
+- No errors were reported in the 4diac `Problems` view.
+- The cloned repository remained clean after validation.
+
+
 ## Development Roadmap
 
 ### Stage 1 â€” Project Organization and Version Control
@@ -367,4 +635,3 @@ test: add offline gateway conversion tests
 **Under development.**
 
 The communication architecture has been implemented, but the complete closed-loop control system still requires experimental validation.
-
