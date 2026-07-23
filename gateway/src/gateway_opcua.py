@@ -11,90 +11,35 @@ from typing import Any
 from asyncua import Client, Server, ua
 
 
-# ============================================================
-# PROJECT PATHS
-# ============================================================
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CSV_OUTPUT_DIRECTORY = PROJECT_ROOT / "data" / "raw"
-
-
-# ============================================================
-# OPC UA CONFIGURATION
-# ============================================================
-
-# OPC UA server provided by the real B&R PLC.
-BR_ENDPOINT = "opc.tcp://10.0.0.3:4840"
-
-# OPC UA server exposed by this gateway to 4diac FORTE.
-GATEWAY_ENDPOINT = "opc.tcp://0.0.0.0:4841"
-
-# Original B&R NodeIds.
-BR_LEVEL_NODE_ID = "ns=6;s=::Program:Nivel"
-BR_ENABLE_NODE_ID = "ns=6;s=::Program:Enable"
-BR_DAC_NODE_ID = "ns=6;s=::Program:DAC"
-
-# Namespace exposed by this gateway.
-GATEWAY_NAMESPACE_URI = "urn:br-4diac-gateway"
-
-# Internal gateway cycle time.
-GATEWAY_CYCLE_TIME_S = 0.1
-
-
-# ============================================================
-# CURRENT EXPERIMENT PARAMETERS
-# ============================================================
-
-# Level scaling currently used by 4diac:
-#
-#     Level_cm = Raw_Level / LEVEL_SCALE
-#
-# Example:
-#     Raw_Level = 14000
-#     Level_cm = 14.0
-#
-# This value is provisional and must be physically validated in the laboratory.
-LEVEL_SCALE = 1000.0
-
-# Parameters documented for the current PI/PID block in 4diac.
-# KD is zero, so the controller currently behaves as a PI controller.
-PI_SETPOINT_CM = 14.0
-PI_KP = 4.0
-PI_KI = 0.5
-PI_KD = 0.0
-PI_SAMPLING_TIME_S = 0.1
-PI_MANUAL_MODE = False
-PI_MANUAL_OUTPUT = 0.0
-PI_RESET = False
-
-# Process variable filter parameters used in 4diac.
-#
-#     filtered_pv(k) =
-#         alpha * filtered_pv(k - 1)
-#         + (1 - alpha) * current_pv(k)
-PV_FILTER_ALPHA = 0.95
-PV_FILTER_RESET = False
-
-# DAC rate limiter parameters used in 4diac.
-DAC_LIMITER_MAX_DELTA = 150.0
-DAC_LIMITER_MIN = 0.0
-DAC_LIMITER_MAX = 32000.0
-DAC_LIMITER_RESET = False
-
-# Raw setpoint equivalent, recorded only as experiment metadata.
-PI_SETPOINT_RAW_EQUIVALENT = PI_SETPOINT_CM * LEVEL_SCALE
-
-# Computational range of the DAC command.
-DAC_MIN = 0
-DAC_MAX = 32000
-
-# CSV logging period.
-LOG_PERIOD_S = 0.1
-
-# CSV output file.
-CSV_FILENAME = "real_pi_test_cm_alpha095_dac_delta150.csv"
-CSV_PATH = CSV_OUTPUT_DIRECTORY / CSV_FILENAME
-
+from gateway_config import (
+    BR_DAC_NODE_ID,
+    BR_ENABLE_NODE_ID,
+    BR_ENDPOINT,
+    BR_LEVEL_NODE_ID,
+    CSV_PATH,
+    DAC_LIMITER_MAX,
+    DAC_LIMITER_MAX_DELTA,
+    DAC_LIMITER_MIN,
+    DAC_LIMITER_RESET,
+    DAC_MAX,
+    DAC_MIN,
+    GATEWAY_CYCLE_TIME_S,
+    GATEWAY_ENDPOINT,
+    GATEWAY_NAMESPACE_URI,
+    LEVEL_SCALE,
+    LOG_PERIOD_S,
+    PI_KD,
+    PI_KI,
+    PI_KP,
+    PI_MANUAL_MODE,
+    PI_MANUAL_OUTPUT,
+    PI_RESET,
+    PI_SAMPLING_TIME_S,
+    PI_SETPOINT_CM,
+    PI_SETPOINT_RAW_EQUIVALENT,
+    PV_FILTER_ALPHA,
+    PV_FILTER_RESET,
+)
 
 # ============================================================
 # AUXILIARY FUNCTIONS
