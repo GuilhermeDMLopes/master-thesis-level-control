@@ -37,6 +37,10 @@ BR_DAC_NODE_ID = "ns=6;s=::Program:DAC"
 # Namespace exposed by the Python gateway.
 GATEWAY_NAMESPACE_URI = "urn:br-4diac-gateway"
 
+# Read-only feedback NodeIds exposed by the gateway.
+GATEWAY_ENABLE_FEEDBACK_NODE_ID = "EnableFeedback"
+GATEWAY_DAC_FEEDBACK_NODE_ID = "DACFeedback"
+
 # Internal gateway execution period.
 GATEWAY_CYCLE_TIME_S = 0.1
 

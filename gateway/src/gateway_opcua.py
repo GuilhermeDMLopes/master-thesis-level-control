@@ -24,6 +24,8 @@ from gateway_config import (
     GATEWAY_CYCLE_TIME_S,
     GATEWAY_ENDPOINT,
     GATEWAY_NAMESPACE_URI,
+    GATEWAY_ENABLE_FEEDBACK_NODE_ID,
+    GATEWAY_DAC_FEEDBACK_NODE_ID,
     LEVEL_SCALE,
     LOG_PERIOD_S,
     PI_KD,
@@ -177,6 +179,32 @@ async def main() -> None:
             ua.Variant(int(initial_dac), ua.VariantType.Int16),
         )
 
+        enable_feedback_variable = await gateway_object.add_variable(
+            ua.NodeId(
+                GATEWAY_ENABLE_FEEDBACK_NODE_ID,
+                namespace_index,
+            ),
+            GATEWAY_ENABLE_FEEDBACK_NODE_ID,
+            ua.Variant(
+                bool(initial_enable),
+                ua.VariantType.Boolean,
+            ),
+        )
+
+        dac_feedback_variable = await gateway_object.add_variable(
+            ua.NodeId(
+                GATEWAY_DAC_FEEDBACK_NODE_ID,
+                namespace_index,
+            ),
+            GATEWAY_DAC_FEEDBACK_NODE_ID,
+            ua.Variant(
+                int(initial_dac),
+                ua.VariantType.Int16,
+            ),
+        )
+
+        # Only the command variables are writable by OPC UA clients.
+        # Feedback variables remain read only for 4diac FORTE.
         await enable_variable.set_writable()
         await dac_variable.set_writable()
 
@@ -197,8 +225,18 @@ async def main() -> None:
                 "  ns=%s;s=Nivel  [Double/LREAL, raw level]",
                 namespace_index,
             )
-            logging.info("  ns=%s;s=Enable [Boolean]", namespace_index)
-            logging.info("  ns=%s;s=DAC    [Int16]", namespace_index)
+            logging.info("  ns=%s;s=Enable [Boolean, command]", namespace_index)
+            logging.info("  ns=%s;s=DAC    [Int16, command]", namespace_index)
+            logging.info(
+                "  ns=%s;s=%s [Boolean, feedback, read only]",
+                namespace_index,
+                GATEWAY_ENABLE_FEEDBACK_NODE_ID,
+            )
+            logging.info(
+                "  ns=%s;s=%s [Int16, feedback, read only]",
+                namespace_index,
+                GATEWAY_DAC_FEEDBACK_NODE_ID,
+            )
 
             while True:
                 try:
@@ -249,6 +287,22 @@ async def main() -> None:
                             await br_enable_node.read_value()
                         )
                         confirmed_dac = int(await br_dac_node.read_value())
+
+                        # Publish only values read directly from the B&R PLC.
+                        # These nodes are read only for OPC UA clients.
+                        await enable_feedback_variable.write_value(
+                            ua.Variant(
+                                confirmed_enable,
+                                ua.VariantType.Boolean,
+                            )
+                        )
+
+                        await dac_feedback_variable.write_value(
+                            ua.Variant(
+                                confirmed_dac,
+                                ua.VariantType.Int16,
+                            )
+                        )
 
                         level_raw = float(confirmed_raw_level)
                         level_cm = raw_level_to_cm(level_raw)
