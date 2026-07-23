@@ -283,6 +283,33 @@ The real plant must only be operated after validating:
 
 The software must not be connected to the physical plant without a previously defined and approved test procedure.
 
+## Testing
+
+The project includes automated offline tests for the gateway processing functions.
+
+Install the development dependencies:
+
+```powershell
+python -m venv ".venv"
+
+.\.venv\Scripts\python.exe `
+    -m pip install `
+    -r requirements-dev.txt
+```
+
+Run the complete test suite:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+The tests do not require access to the B&R PLC, 4diac FORTE, or the laboratory network.
+
+Detailed instructions are available in:
+
+```text
+docs/testing/testing-guide.md
+```
 ## Repository Validation
 
 The repository baseline was validated by cloning it into a separate directory and rebuilding the Python and 4diac development environments.
