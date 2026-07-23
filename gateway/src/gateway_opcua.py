@@ -21,8 +21,6 @@ from gateway_config import (
     DAC_LIMITER_MAX_DELTA,
     DAC_LIMITER_MIN,
     DAC_LIMITER_RESET,
-    DAC_MAX,
-    DAC_MIN,
     GATEWAY_CYCLE_TIME_S,
     GATEWAY_ENDPOINT,
     GATEWAY_NAMESPACE_URI,
@@ -40,6 +38,13 @@ from gateway_config import (
     PV_FILTER_ALPHA,
     PV_FILTER_RESET,
 )
+
+from gateway_processing import (
+    dac_to_percent,
+    raw_level_to_cm,
+    update_filtered_value,
+)
+
 
 # ============================================================
 # AUXILIARY FUNCTIONS
@@ -59,75 +64,6 @@ async def write_value_only(
     variant = ua.Variant(value, variant_type)
     data_value = ua.DataValue(variant)
     await node.write_attribute(ua.AttributeIds.Value, data_value)
-
-
-def dac_to_percent(dac_value: Any) -> float:
-    """
-    Convert a DAC command to actuator percentage.
-
-    DAC = 0     -> 0 %
-    DAC = 32000 -> 100 %
-    """
-    try:
-        numeric_value = float(dac_value)
-    except (TypeError, ValueError):
-        numeric_value = 0.0
-
-    numeric_value = max(DAC_MIN, min(DAC_MAX, numeric_value))
-    return (numeric_value / DAC_MAX) * 100.0
-
-
-def raw_level_to_cm(raw_level: Any) -> float:
-    """
-    Convert the raw B&R level value to centimeters.
-
-    This conversion must match the 4diac configuration:
-
-        NivelScale = F_DIV
-        NivelScale.IN2 = LREAL#1000.0
-    """
-    try:
-        return float(raw_level) / LEVEL_SCALE
-    except (TypeError, ValueError):
-        return 0.0
-
-
-def clamp_alpha(alpha: Any) -> float:
-    """
-    Limit the filter alpha value to the interval [0, 1].
-
-    alpha = 0.0 -> no memory; output follows the current input
-    alpha = 1.0 -> full memory; output remains nearly unchanged
-    """
-    try:
-        numeric_alpha = float(alpha)
-    except (TypeError, ValueError):
-        numeric_alpha = 0.0
-
-    return max(0.0, min(1.0, numeric_alpha))
-
-
-def update_filtered_value(
-    previous_filtered: float | None,
-    current_value: float,
-    alpha: float,
-    reset: bool = False,
-) -> float:
-    """
-    Calculate a filtered level value for CSV analysis.
-
-    This filter does not affect the control loop. The real control signal
-    continues to be calculated in 4diac FORTE.
-    """
-    limited_alpha = clamp_alpha(alpha)
-
-    if reset or previous_filtered is None:
-        return current_value
-
-    return (
-        limited_alpha * previous_filtered
-        + (1.0 - limited_alpha) * current_value
-    )
 
 
 def open_csv_logger(file_path: Path) -> tuple[Any, csv.writer]:
