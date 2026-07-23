@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="PID_LEVEL" Comment="Basic FB with empty ECC">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="guilh" Date="2026-03-26">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="When receives REQ calculates PID">
+				<With Var="PV"/>
+				<With Var="SP"/>
+				<With Var="KP"/>
+				<With Var="KI"/>
+				<With Var="KD"/>
+				<With Var="TS"/>
+				<With Var="MANUAL"/>
+				<With Var="MAN_OUT"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="When finish calculation it sends">
+				<With Var="MV"/>
+				<With Var="ERR"/>
+				<With Var="P_TERM"/>
+				<With Var="I_TERM"/>
+				<With Var="D_TERM"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PV" Type="LREAL" Comment="Process variable, measure level"/>
+			<VarDeclaration Name="SP" Type="LREAL" Comment="Setpoint"/>
+			<VarDeclaration Name="KP" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="KI" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="KD" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="TS" Type="LREAL" Comment="Period defined in seconds"/>
+			<VarDeclaration Name="MANUAL" Type="BOOL" Comment=""/>
+			<VarDeclaration Name="MAN_OUT" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment=""/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="MV" Type="LREAL" Comment="PID output from 0 to 100"/>
+			<VarDeclaration Name="ERR" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="P_TERM" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="I_TERM" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="D_TERM" Type="LREAL" Comment=""/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="e_prev" Type="LREAL" Comment="guarda o erro anterior para calcular a derivada" InitialValue="0.0"/>
+			<VarDeclaration Name="i_acc" Type="LREAL" Comment="guarda a integral acumulada" InitialValue="0.0"/>
+			<VarDeclaration Name="u_raw" Type="LREAL" Comment="guarda a saída antes da saturação" InitialValue="0.0"/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" Comment="Initial State" x="546.6666666666667" y="420.0">
+			</ECState>
+			<ECState Name="CALC" Comment="" x="933.3333333333334" y="933.3333333333334">
+				<ECAction Algorithm="ALG_PID"/>
+			</ECState>
+			<ECState Name="DONE" Comment="" x="1466.6666666666667" y="400.0">
+				<ECAction Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="CALC" Condition="REQ" Comment="" x="740.0" y="700.0"/>
+			<ECTransition Source="CALC" Destination="DONE" Condition="1" Comment="" x="1386.6666666666667" y="753.3333333333334"/>
+			<ECTransition Source="DONE" Destination="START" Condition="1" Comment="" x="1180.0" y="486.6666666666667"/>
+		</ECC>
+		<Algorithm Name="ALG_PID" Comment="">
+			<ST><![CDATA[IF RESET THEN
+    i_acc := 0.0;
+    e_prev := 0.0;
+END_IF;
+
+IF MANUAL THEN
+    MV := MAN_OUT;
+
+    IF MV > 100.0 THEN
+        MV := 100.0;
+    ELSIF MV < 0.0 THEN
+        MV := 0.0;
+    END_IF;
+
+    ERR := SP - PV;
+    P_TERM := 0.0;
+    I_TERM := 0.0;
+    D_TERM := 0.0;
+
+ELSE
+    ERR := SP - PV;
+
+    P_TERM := KP * ERR;
+
+    i_acc := i_acc + (ERR * TS);
+    I_TERM := KI * i_acc;
+
+    D_TERM := KD * ((ERR - e_prev) / TS);
+
+    u_raw := P_TERM + I_TERM + D_TERM;
+
+    IF u_raw > 100.0 THEN
+        MV := 100.0;
+    ELSIF u_raw < 0.0 THEN
+        MV := 0.0;
+    ELSE
+        MV := u_raw;
+    END_IF;
+
+    e_prev := ERR;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="PV_FILTER" Comment="Basic FB with empty ECC">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="guilh" Date="2026-04-29">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="">
+				<With Var="PV_IN"/>
+				<With Var="ALPHA"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="">
+				<With Var="PV_OUT"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PV_IN" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="ALPHA" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment=""/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="PV_OUT" Type="LREAL" Comment=""/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="initialized" Type="BOOL" Comment=""/>
+			<VarDeclaration Name="alpha_limited" Type="LREAL" Comment=""/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" Comment="Initial State" x="546.6666666666667" y="420.0">
+			</ECState>
+			<ECState Name="FILTER" Comment="" x="1026.6666666666667" y="880.0">
+				<ECAction Algorithm="ALG_FILTER"/>
+			</ECState>
+			<ECState Name="DONE" Comment="" x="1573.3333333333335" y="453.33333333333337">
+				<ECAction Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="FILTER" Condition="REQ" Comment="" x="973.3333333333334" y="760.0"/>
+			<ECTransition Source="FILTER" Destination="DONE" Condition="1" Comment="" x="1446.6666666666667" y="740.0"/>
+			<ECTransition Source="DONE" Destination="START" Condition="1" Comment="" x="1206.6666666666667" y="526.6666666666667"/>
+		</ECC>
+		<Algorithm Name="ALG_FILTER" Comment="">
+			<ST><![CDATA[IF RESET THEN
+    PV_OUT := PV_IN;
+    initialized := TRUE;
+ELSE
+    IF NOT initialized THEN
+        PV_OUT := PV_IN;
+        initialized := TRUE;
+    ELSE
+        alpha_limited := ALPHA;
+
+        IF alpha_limited < 0.0 THEN
+            alpha_limited := 0.0;
+        ELSIF alpha_limited > 1.0 THEN
+            alpha_limited := 1.0;
+        END_IF;
+
+        PV_OUT := (alpha_limited * PV_OUT) + ((1.0 - alpha_limited) * PV_IN);
+    END_IF;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="Tank_Controller" Comment="Basic FB with empty ECC">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="guilh" Date="2025-12-25">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="">
+				<With Var="Level"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="">
+				<With Var="ValveCmd"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Level" Type="REAL" Comment=""/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="ValveCmd" Type="REAL" Comment=""/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<ECC>
+			<ECState Name="START" Comment="Initial State" x="546.6666666666667" y="420.0">
+			</ECState>
+		</ECC>
+	</BasicFB>
+</FBType>

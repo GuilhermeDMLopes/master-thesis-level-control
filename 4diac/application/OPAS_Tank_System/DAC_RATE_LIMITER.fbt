@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="DAC_RATE_LIMITER" Comment="Basic FB with empty ECC">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="guilh" Date="2026-04-29">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="">
+				<With Var="DAC_IN"/>
+				<With Var="MAX_DELTA_DAC"/>
+				<With Var="DAC_MIN"/>
+				<With Var="DAC_MAX"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="">
+				<With Var="DAC_OUT"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="DAC_IN" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="MAX_DELTA_DAC" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="DAC_MIN" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="DAC_MAX" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment=""/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="DAC_OUT" Type="LREAL" Comment=""/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="last_dac" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="delta" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="initialized" Type="BOOL" Comment=""/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" Comment="Initial State" x="546.6666666666667" y="420.0">
+			</ECState>
+			<ECState Name="LIMIT" Comment="" x="1086.6666666666667" y="880.0">
+				<ECAction Algorithm="ALG_LIMIT"/>
+			</ECState>
+			<ECState Name="DONE" Comment="" x="1526.6666666666667" y="453.33333333333337">
+				<ECAction Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="LIMIT" Condition="REQ" Comment="" x="946.6666666666667" y="726.6666666666667"/>
+			<ECTransition Source="LIMIT" Destination="DONE" Condition="1" Comment="" x="1493.3333333333335" y="766.6666666666667"/>
+			<ECTransition Source="DONE" Destination="START" Condition="1" Comment="" x="1213.3333333333335" y="526.6666666666667"/>
+		</ECC>
+		<Algorithm Name="ALG_LIMIT" Comment="">
+			<ST><![CDATA[IF RESET THEN
+    last_dac := DAC_IN;
+    DAC_OUT := DAC_IN;
+    initialized := TRUE;
+ELSE
+    IF NOT initialized THEN
+        last_dac := DAC_IN;
+        DAC_OUT := DAC_IN;
+        initialized := TRUE;
+    ELSE
+        delta := DAC_IN - last_dac;
+
+        IF delta > MAX_DELTA_DAC THEN
+            DAC_OUT := last_dac + MAX_DELTA_DAC;
+        ELSIF delta < -MAX_DELTA_DAC THEN
+            DAC_OUT := last_dac - MAX_DELTA_DAC;
+        ELSE
+            DAC_OUT := DAC_IN;
+        END_IF;
+
+        IF DAC_OUT > DAC_MAX THEN
+            DAC_OUT := DAC_MAX;
+        ELSIF DAC_OUT < DAC_MIN THEN
+            DAC_OUT := DAC_MIN;
+        END_IF;
+
+        last_dac := DAC_OUT;
+    END_IF;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>

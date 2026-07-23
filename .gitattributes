@@ -1,0 +1,45 @@
+﻿# Automatically detect text files.
+* text=auto
+
+# Source code and documentation use LF.
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Eclipse 4diac project and type files use LF.
+.project text eol=lf
+*.sys text eol=lf
+*.fbt text eol=lf
+*.dev text eol=lf
+*.res text eol=lf
+*.adp text eol=lf
+*.seg text eol=lf
+*.typ text eol=lf
+*.app text eol=lf
+*.xml text eol=lf
+
+# C and C++ source files use LF.
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+
+# PowerShell scripts use Windows line endings.
+*.ps1 text eol=crlf
+
+# Binary files must not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.7z binary
+*.rar binary
+*.exe binary
+*.dll binary

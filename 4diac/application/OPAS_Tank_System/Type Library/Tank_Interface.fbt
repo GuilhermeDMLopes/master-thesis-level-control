@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="Tank_Interface" Comment="Composite FB wrapping other FBs">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="guilh" Date="2025-12-25">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="INIT" Type="Event" Comment="Initialization Request">
+				<With Var="QI"/>
+			</Event>
+			<Event Name="REQ" Type="Event" Comment="Normal Execution Request">
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="INITO" Type="Event" Comment="Initialization Confirm">
+				<With Var="QO"/>
+			</Event>
+			<Event Name="CNF" Type="Event" Comment="Execution Confirmation">
+				<With Var="Level"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier"/>
+			<VarDeclaration Name="ValveCmd" Type="REAL" Comment=""/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier"/>
+			<VarDeclaration Name="Level" Type="REAL" Comment=""/>
+		</OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="OPCUA_Tank_Level" Type="OPCUA_Tank_Level" Comment="" x="-2666.666666666667" y="2000.0">
+			<Parameter Name="PARAMS" Value="&quot;Endpoint=opc.tcp://localhost:4840/freeopcua/server/;NodeId=ns=2;s=Tank.Level;Type=REAL;&quot;"/>
+		</FB>
+		<FB Name="Tank_Controller" Type="Tank_Controller" Comment="" x="-666.6666666666667" y="933.3333333333334">
+		</FB>
+		<FB Name="OPCUA_Tank_Valve" Type="OPCUA_Tank_Valve" Comment="" x="1200.0" y="1866.6666666666667">
+		</FB>
+		<EventConnections>
+			<Connection Source="REQ" Destination="OPCUA_Tank_Level.REQ" Comment="" dx1="666.6666666666667"/>
+			<Connection Source="OPCUA_Tank_Level.CNF" Destination="Tank_Controller.REQ" Comment="" dx1="400.0"/>
+			<Connection Source="Tank_Controller.CNF" Destination="OPCUA_Tank_Valve.REQ" Comment="" dx1="493.33333333333337"/>
+			<Connection Source="OPCUA_Tank_Valve.CNF" Destination="CNF" Comment="" dx1="860.0"/>
+		</EventConnections>
+	</FBNetwork>
+</FBType>

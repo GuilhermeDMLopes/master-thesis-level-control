@@ -1,0 +1,95 @@
+# ============================================================
+# Python
+# ============================================================
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+.venv/
+venv/
+env/
+
+.pytest_cache/
+.mypy_cache/
+.pyright/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Local configuration and credentials
+.env
+.env.*
+*.local.py
+gateway/config/settings.local.py
+
+# Logs
+*.log
+
+# ============================================================
+# Experimental data
+# ============================================================
+
+*.csv
+
+# Allow small CSV samples used by documentation and tests
+!data/sample/*.csv
+
+data/raw/*
+!data/raw/.gitkeep
+
+results/*
+!results/.gitkeep
+
+# ============================================================
+# FORTE and C/C++
+# ============================================================
+
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+*.exe
+*.dll
+*.lib
+*.obj
+*.o
+*.pdb
+
+# ============================================================
+# Eclipse, 4diac, IDEs, and editors
+# ============================================================
+
+# Eclipse workspace metadata must not be committed.
+.metadata/
+
+# Keep each 4diac project's .project file.
+# It is required when importing the project into another workspace.
+
+.vscode/
+.idea/
+
+*.tmp
+*.bak
+*.swp
+
+# ============================================================
+# Windows
+# ============================================================
+
+Thumbs.db
+Desktop.ini
+
+# ============================================================
+# Compressed files
+# ============================================================
+
+*.zip
+*.rar
+*.7z

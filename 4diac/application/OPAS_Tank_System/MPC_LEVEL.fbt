@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="MPC_LEVEL" Comment="Basic FB with empty ECC">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="guilh" Date="2026-04-25">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="">
+				<With Var="PV"/>
+				<With Var="SP"/>
+				<With Var="A"/>
+				<With Var="B"/>
+				<With Var="C"/>
+				<With Var="HORIZON"/>
+				<With Var="DAC_MIN"/>
+				<With Var="DAC_MAX"/>
+				<With Var="DAC_STEP"/>
+				<With Var="LAMBDA_DU"/>
+				<With Var="ENABLE"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="">
+				<With Var="DAC_OUT"/>
+				<With Var="MV_PERCENT"/>
+				<With Var="ENABLE_CMD"/>
+				<With Var="ERR"/>
+				<With Var="PRED_FINAL"/>
+				<With Var="COST_MIN"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PV" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="SP" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="A" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="B" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="C" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="HORIZON" Type="UINT" Comment=""/>
+			<VarDeclaration Name="DAC_MIN" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="DAC_MAX" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="DAC_STEP" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="LAMBDA_DU" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="ENABLE" Type="BOOL" Comment=""/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment=""/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="DAC_OUT" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="MV_PERCENT" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="ENABLE_CMD" Type="BOOL" Comment=""/>
+			<VarDeclaration Name="ERR" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="PRED_FINAL" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="COST_MIN" Type="LREAL" Comment=""/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="last_dac" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="best_dac" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="best_cost" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="dac_candidate" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="y_pred" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="pred_error" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="delta_dac" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="cost" Type="LREAL" Comment=""/>
+			<VarDeclaration Name="i" Type="UINT" Comment=""/>
+			<VarDeclaration Name="h" Type="UINT" Comment=""/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" Comment="Initial State" x="546.6666666666667" y="420.0">
+			</ECState>
+			<ECState Name="CALC" Comment="" x="933.3333333333334" y="933.3333333333334">
+				<ECAction Algorithm="ALG_MPC"/>
+			</ECState>
+			<ECState Name="DONE" Comment="" x="1333.3333333333335" y="400.0">
+				<ECAction Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="CALC" Condition="REQ" Comment="" x="886.6666666666667" y="753.3333333333334"/>
+			<ECTransition Source="CALC" Destination="DONE" Condition="1" Comment="" x="1273.3333333333335" y="813.3333333333334"/>
+			<ECTransition Source="DONE" Destination="START" Condition="1" Comment="" x="1060.0" y="506.6666666666667"/>
+		</ECC>
+		<Algorithm Name="ALG_MPC" Comment="">
+			<ST><![CDATA[IF RESET THEN
+    last_dac := 0.0;
+END_IF;
+
+ERR := SP - PV;
+
+IF NOT ENABLE THEN
+    DAC_OUT := 0.0;
+    MV_PERCENT := 0.0;
+    ENABLE_CMD := FALSE;
+    PRED_FINAL := PV;
+    COST_MIN := 0.0;
+    last_dac := 0.0;
+
+ELSE
+    best_cost := 1.0E+30;
+    best_dac := last_dac;
+    PRED_FINAL := PV;
+
+    IF HORIZON = 0 THEN
+        h := 1;
+    ELSE
+        h := HORIZON;
+    END_IF;
+
+    dac_candidate := DAC_MIN;
+
+    WHILE dac_candidate <= DAC_MAX DO
+
+        y_pred := PV;
+        cost := 0.0;
+
+        i := 1;
+        WHILE i <= h DO
+            y_pred := A * y_pred + B * dac_candidate + C;
+            pred_error := SP - y_pred;
+            cost := cost + pred_error * pred_error;
+            i := i + 1;
+        END_WHILE;
+
+        delta_dac := dac_candidate - last_dac;
+        cost := cost + LAMBDA_DU * delta_dac * delta_dac;
+
+        IF cost < best_cost THEN
+            best_cost := cost;
+            best_dac := dac_candidate;
+            PRED_FINAL := y_pred;
+        END_IF;
+
+        IF DAC_STEP <= 0.0 THEN
+            dac_candidate := DAC_MAX + 1.0;
+        ELSE
+            dac_candidate := dac_candidate + DAC_STEP;
+        END_IF;
+
+    END_WHILE;
+
+    IF best_dac > DAC_MAX THEN
+        best_dac := DAC_MAX;
+    ELSIF best_dac < DAC_MIN THEN
+        best_dac := DAC_MIN;
+    END_IF;
+
+    DAC_OUT := best_dac;
+
+    IF DAC_MAX > 0.0 THEN
+        MV_PERCENT := (DAC_OUT / DAC_MAX) * 100.0;
+    ELSE
+        MV_PERCENT := 0.0;
+    END_IF;
+
+    IF DAC_OUT > 1.0 THEN
+        ENABLE_CMD := TRUE;
+    ELSE
+        ENABLE_CMD := FALSE;
+    END_IF;
+
+    COST_MIN := best_cost;
+    last_dac := DAC_OUT;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>
