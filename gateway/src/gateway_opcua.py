@@ -61,6 +61,49 @@ from gateway_processing import (
 
 
 # ============================================================
+# CSV CONFIGURATION
+# ============================================================
+
+COMMUNICATION_STATE_CONNECTED = "CONNECTED"
+COMMUNICATION_STATE_RECONNECTED = "RECONNECTED"
+
+CSV_HEADER = (
+    "timestamp",
+    "elapsed_time_s",
+    "level_raw",
+    "level_cm",
+    "level_filtered_gateway_cm",
+    "setpoint_raw_equivalent",
+    "setpoint_cm",
+    "error_cm",
+    "filtered_error_gateway_cm",
+    "dac_gateway_command",
+    "dac_br_feedback",
+    "mv_gateway_percent",
+    "mv_br_percent",
+    "enable_gateway_command",
+    "enable_br_feedback",
+    "kp",
+    "ki",
+    "kd",
+    "sampling_time_s",
+    "manual_mode",
+    "manual_output",
+    "reset",
+    "pv_filter_alpha",
+    "pv_filter_reset",
+    "dac_limiter_max_delta",
+    "dac_limiter_min",
+    "dac_limiter_max",
+    "dac_limiter_reset",
+    "level_scale",
+    "notes",
+    "communication_state",
+    "reconnection_count",
+)
+
+
+# ============================================================
 # AUXILIARY FUNCTIONS
 # ============================================================
 
@@ -87,38 +130,7 @@ def open_csv_logger(file_path: Path) -> tuple[Any, csv.writer]:
     csv_file = file_path.open(mode="w", newline="", encoding="utf-8")
     writer = csv.writer(csv_file, delimiter=";")
 
-    writer.writerow([
-        "timestamp",
-        "elapsed_time_s",
-        "level_raw",
-        "level_cm",
-        "level_filtered_gateway_cm",
-        "setpoint_raw_equivalent",
-        "setpoint_cm",
-        "error_cm",
-        "filtered_error_gateway_cm",
-        "dac_gateway_command",
-        "dac_br_feedback",
-        "mv_gateway_percent",
-        "mv_br_percent",
-        "enable_gateway_command",
-        "enable_br_feedback",
-        "kp",
-        "ki",
-        "kd",
-        "sampling_time_s",
-        "manual_mode",
-        "manual_output",
-        "reset",
-        "pv_filter_alpha",
-        "pv_filter_reset",
-        "dac_limiter_max_delta",
-        "dac_limiter_min",
-        "dac_limiter_max",
-        "dac_limiter_reset",
-        "level_scale",
-        "notes",
-    ])
+    writer.writerow(CSV_HEADER)
 
     csv_file.flush()
     return csv_file, writer
@@ -263,6 +275,8 @@ async def main() -> None:
         start_time = time.monotonic()
         last_log_time = 0.0
         next_reconnect_time = 0.0
+        reconnection_count = 0
+        communication_state = COMMUNICATION_STATE_CONNECTED
 
         async with server:
             logging.info(
@@ -376,6 +390,10 @@ async def main() -> None:
                                 reconnected_raw_level
                             )
                             last_log_time = elapsed_time_s
+                            reconnection_count += 1
+                            communication_state = (
+                                COMMUNICATION_STATE_RECONNECTED
+                            )
 
                             logging.info(
                                 "Reconnected to the B&R OPC UA server."
@@ -479,17 +497,17 @@ async def main() -> None:
                                 timespec="milliseconds"
                             ),
                             round(elapsed_time_s, 3),
-                            level_raw,
-                            level_cm,
-                            filtered_level_gateway_cm,
+                            round(level_raw, 6),
+                            round(level_cm, 6),
+                            round(filtered_level_gateway_cm, 6),
                             PI_SETPOINT_RAW_EQUIVALENT,
                             PI_SETPOINT_CM,
-                            error_cm,
-                            filtered_error_gateway_cm,
+                            round(error_cm, 6),
+                            round(filtered_error_gateway_cm, 6),
                             dac_command,
                             confirmed_dac,
-                            mv_gateway_percent,
-                            mv_br_percent,
+                            round(mv_gateway_percent, 6),
+                            round(mv_br_percent, 6),
                             enable_command,
                             confirmed_enable,
                             PI_KP,
@@ -512,7 +530,17 @@ async def main() -> None:
                                 "in 4diac FORTE. The gateway filter is used "
                                 "only for offline analysis."
                             ),
+                            communication_state,
+                            reconnection_count,
                         ])
+
+                        if (
+                            communication_state
+                            == COMMUNICATION_STATE_RECONNECTED
+                        ):
+                            communication_state = (
+                                COMMUNICATION_STATE_CONNECTED
+                            )
 
                         csv_file.flush()
 
