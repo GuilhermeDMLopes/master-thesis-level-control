@@ -16,6 +16,7 @@ from gateway_config import (
     BR_ENABLE_NODE_ID,
     BR_ENDPOINT,
     BR_LEVEL_NODE_ID,
+    BR_RECONNECT_INTERVAL_S,
     CSV_PATH,
     DAC_LIMITER_MAX,
     DAC_LIMITER_MAX_DELTA,
@@ -39,6 +40,12 @@ from gateway_config import (
     PI_SETPOINT_RAW_EQUIVALENT,
     PV_FILTER_ALPHA,
     PV_FILTER_RESET,
+)
+
+from gateway_connection import (
+    BrConnection,
+    close_br_connection,
+    open_br_connection,
 )
 
 from gateway_interface import (
@@ -121,32 +128,99 @@ def open_csv_logger(file_path: Path) -> tuple[Any, csv.writer]:
 # GATEWAY
 # ============================================================
 
+async def synchronize_after_reconnection(
+    *,
+    connection: BrConnection,
+    level_variable: Any,
+    enable_command_variable: Any,
+    dac_command_variable: Any,
+    enable_feedback_variable: Any,
+    dac_feedback_variable: Any,
+) -> tuple[float, bool, int]:
+    """
+    Publish the confirmed PLC state and discard commands queued offline.
+
+    Command variables are reset to values read from the PLC. Therefore, a
+    command changed by a FORTE client while the PLC was disconnected is not
+    transmitted automatically when communication returns.
+    """
+    raw_level = float(connection.raw_level)
+    confirmed_enable = bool(connection.enable)
+    confirmed_dac = int(connection.dac)
+
+    await level_variable.write_value(
+        ua.Variant(
+            raw_level,
+            ua.VariantType.Double,
+        )
+    )
+
+    await enable_command_variable.write_value(
+        ua.Variant(
+            confirmed_enable,
+            ua.VariantType.Boolean,
+        )
+    )
+
+    await dac_command_variable.write_value(
+        ua.Variant(
+            confirmed_dac,
+            ua.VariantType.Int16,
+        )
+    )
+
+    await publish_feedback_values(
+        enable_feedback_variable=enable_feedback_variable,
+        dac_feedback_variable=dac_feedback_variable,
+        confirmed_enable=confirmed_enable,
+        confirmed_dac=confirmed_dac,
+    )
+
+    return raw_level, confirmed_enable, confirmed_dac
+
+
+def connection_error_text(error: BaseException) -> str:
+    """Return a concise connection error description for gateway logs."""
+    detail = str(error).strip()
+
+    if detail:
+        return f"{error.__class__.__name__}: {detail}"
+
+    return error.__class__.__name__
+
+
 async def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
 
-    br_client = Client(BR_ENDPOINT)
+    br_connection: BrConnection | None = None
     csv_file = None
     filtered_level_gateway_cm: float | None = None
 
     try:
         logging.info("Connecting to the B&R OPC UA server: %s", BR_ENDPOINT)
-        await br_client.connect()
+
+        br_connection = await open_br_connection(
+            endpoint=BR_ENDPOINT,
+            level_node_id=BR_LEVEL_NODE_ID,
+            enable_node_id=BR_ENABLE_NODE_ID,
+            dac_node_id=BR_DAC_NODE_ID,
+        )
+
         logging.info("Connected to the B&R OPC UA server.")
 
-        br_level_node = br_client.get_node(BR_LEVEL_NODE_ID)
-        br_enable_node = br_client.get_node(BR_ENABLE_NODE_ID)
-        br_dac_node = br_client.get_node(BR_DAC_NODE_ID)
-
-        initial_raw_level = await br_level_node.read_value()
-        initial_enable = await br_enable_node.read_value()
-        initial_dac = await br_dac_node.read_value()
+        initial_raw_level = br_connection.raw_level
+        initial_enable = br_connection.enable
+        initial_dac = br_connection.dac
 
         logging.info("Initial values read from the B&R PLC:")
         logging.info("  Raw level = %s", initial_raw_level)
-        logging.info("  Level     = %.3f cm", raw_level_to_cm(initial_raw_level))
+        logging.info(
+            "  Level     = %.3f cm",
+            raw_level_to_cm(initial_raw_level),
+        )
         logging.info("  Enable    = %s", initial_enable)
         logging.info("  DAC       = %s", initial_dac)
 
@@ -157,7 +231,9 @@ async def main() -> None:
         server.set_endpoint(GATEWAY_ENDPOINT)
         server.set_server_name("B&R to 4diac OPC UA Gateway")
 
-        namespace_index = await server.register_namespace(GATEWAY_NAMESPACE_URI)
+        namespace_index = await server.register_namespace(
+            GATEWAY_NAMESPACE_URI
+        )
 
         gateway_object = await server.nodes.objects.add_object(
             namespace_index,
@@ -186,17 +262,30 @@ async def main() -> None:
 
         start_time = time.monotonic()
         last_log_time = 0.0
+        next_reconnect_time = 0.0
 
         async with server:
-            logging.info("Gateway OPC UA server running at: %s", GATEWAY_ENDPOINT)
-            logging.info("Gateway namespace registered as ns=%s", namespace_index)
+            logging.info(
+                "Gateway OPC UA server running at: %s",
+                GATEWAY_ENDPOINT,
+            )
+            logging.info(
+                "Gateway namespace registered as ns=%s",
+                namespace_index,
+            )
             logging.info("NodeIds expected by 4diac FORTE:")
             logging.info(
                 "  ns=%s;s=Nivel  [Double/LREAL, raw level]",
                 namespace_index,
             )
-            logging.info("  ns=%s;s=Enable [Boolean, command]", namespace_index)
-            logging.info("  ns=%s;s=DAC    [Int16, command]", namespace_index)
+            logging.info(
+                "  ns=%s;s=Enable [Boolean, command]",
+                namespace_index,
+            )
+            logging.info(
+                "  ns=%s;s=DAC    [Int16, command]",
+                namespace_index,
+            )
             logging.info(
                 "  ns=%s;s=%s [Boolean, feedback, read only]",
                 namespace_index,
@@ -209,10 +298,106 @@ async def main() -> None:
             )
 
             while True:
-                try:
-                    elapsed_time_s = time.monotonic() - start_time
+                elapsed_time_s = time.monotonic() - start_time
 
-                    raw_level_value = await br_level_node.read_value()
+                if br_connection is None:
+                    current_time = time.monotonic()
+
+                    if current_time >= next_reconnect_time:
+                        logging.info(
+                            "Attempting to reconnect to the B&R OPC UA "
+                            "server: %s",
+                            BR_ENDPOINT,
+                        )
+
+                        try:
+                            candidate_connection = await open_br_connection(
+                                endpoint=BR_ENDPOINT,
+                                level_node_id=BR_LEVEL_NODE_ID,
+                                enable_node_id=BR_ENABLE_NODE_ID,
+                                dac_node_id=BR_DAC_NODE_ID,
+                            )
+
+                        except (
+                            ConnectionError,
+                            OSError,
+                            asyncio.TimeoutError,
+                        ) as error:
+                            next_reconnect_time = (
+                                time.monotonic()
+                                + BR_RECONNECT_INTERVAL_S
+                            )
+
+                            logging.warning(
+                                (
+                                    "Reconnection attempt failed (%s). "
+                                    "Next attempt in %.1f seconds."
+                                ),
+                                connection_error_text(error),
+                                BR_RECONNECT_INTERVAL_S,
+                            )
+
+                        except Exception:
+                            next_reconnect_time = (
+                                time.monotonic()
+                                + BR_RECONNECT_INTERVAL_S
+                            )
+
+                            logging.exception(
+                                (
+                                    "Unexpected error while reconnecting to "
+                                    "the B&R OPC UA server. Next attempt in "
+                                    "%.1f seconds."
+                                ),
+                                BR_RECONNECT_INTERVAL_S,
+                            )
+
+                        else:
+                            br_connection = candidate_connection
+
+                            (
+                                reconnected_raw_level,
+                                last_enable_command,
+                                last_dac_command,
+                            ) = await synchronize_after_reconnection(
+                                connection=br_connection,
+                                level_variable=level_variable,
+                                enable_command_variable=enable_variable,
+                                dac_command_variable=dac_variable,
+                                enable_feedback_variable=(
+                                    enable_feedback_variable
+                                ),
+                                dac_feedback_variable=(
+                                    dac_feedback_variable
+                                ),
+                            )
+
+                            filtered_level_gateway_cm = raw_level_to_cm(
+                                reconnected_raw_level
+                            )
+                            last_log_time = elapsed_time_s
+
+                            logging.info(
+                                "Reconnected to the B&R OPC UA server."
+                            )
+                            logging.info(
+                                (
+                                    "PLC communication restored: raw level=%s, "
+                                    "Enable=%s, DAC=%s. Offline commands were "
+                                    "discarded."
+                                ),
+                                reconnected_raw_level,
+                                last_enable_command,
+                                last_dac_command,
+                            )
+
+                    await asyncio.sleep(GATEWAY_CYCLE_TIME_S)
+                    continue
+
+                try:
+                    raw_level_value = (
+                        await br_connection.level_node.read_value()
+                    )
                     await level_variable.write_value(
                         ua.Variant(
                             float(raw_level_value),
@@ -220,14 +405,14 @@ async def main() -> None:
                         )
                     )
 
-                    enable_command = bool(await enable_variable.read_value())
+                    enable_command = bool(
+                        await enable_variable.read_value()
+                    )
                     dac_command = int(await dac_variable.read_value())
 
-                    # This baseline preserves the current behavior. Command and
-                    # feedback separation will be reviewed in a later stage.
                     if enable_command != last_enable_command:
                         await write_value_only(
-                            br_enable_node,
+                            br_connection.enable_node,
                             enable_command,
                             ua.VariantType.Boolean,
                         )
@@ -239,7 +424,7 @@ async def main() -> None:
 
                     if dac_command != last_dac_command:
                         await write_value_only(
-                            br_dac_node,
+                            br_connection.dac_node,
                             dac_command,
                             ua.VariantType.Int16,
                         )
@@ -252,11 +437,15 @@ async def main() -> None:
                     if (elapsed_time_s - last_log_time) >= LOG_PERIOD_S:
                         last_log_time = elapsed_time_s
 
-                        confirmed_raw_level = await br_level_node.read_value()
-                        confirmed_enable = bool(
-                            await br_enable_node.read_value()
+                        confirmed_raw_level = (
+                            await br_connection.level_node.read_value()
                         )
-                        confirmed_dac = int(await br_dac_node.read_value())
+                        confirmed_enable = bool(
+                            await br_connection.enable_node.read_value()
+                        )
+                        confirmed_dac = int(
+                            await br_connection.dac_node.read_value()
+                        )
 
                         await publish_feedback_values(
                             enable_feedback_variable=(
@@ -286,7 +475,9 @@ async def main() -> None:
                         mv_br_percent = dac_to_percent(confirmed_dac)
 
                         csv_writer.writerow([
-                            datetime.now().isoformat(timespec="milliseconds"),
+                            datetime.now().isoformat(
+                                timespec="milliseconds"
+                            ),
                             round(elapsed_time_s, 3),
                             level_raw,
                             level_cm,
@@ -316,10 +507,10 @@ async def main() -> None:
                             DAC_LIMITER_RESET,
                             LEVEL_SCALE,
                             (
-                                "Baseline gateway with the PI/PID, PV filter, "
-                                "and DAC rate limiter implemented in 4diac "
-                                "FORTE. The gateway filter is used only for "
-                                "offline analysis."
+                                "Baseline gateway with the PI/PID, PV "
+                                "filter, and DAC rate limiter implemented "
+                                "in 4diac FORTE. The gateway filter is used "
+                                "only for offline analysis."
                             ),
                         ])
 
@@ -344,8 +535,32 @@ async def main() -> None:
                             confirmed_enable,
                         )
 
+                except (
+                    ConnectionError,
+                    OSError,
+                    asyncio.TimeoutError,
+                ) as error:
+                    logging.warning(
+                        (
+                            "B&R PLC connection lost (%s). The gateway "
+                            "server remains active. Next reconnection "
+                            "attempt in %.1f seconds."
+                        ),
+                        connection_error_text(error),
+                        BR_RECONNECT_INTERVAL_S,
+                    )
+
+                    await close_br_connection(br_connection)
+                    br_connection = None
+                    next_reconnect_time = (
+                        time.monotonic()
+                        + BR_RECONNECT_INTERVAL_S
+                    )
+
                 except Exception:
-                    logging.exception("Error during the gateway cycle.")
+                    logging.exception(
+                        "Unexpected error during the gateway cycle."
+                    )
 
                 await asyncio.sleep(GATEWAY_CYCLE_TIME_S)
 
@@ -363,13 +578,8 @@ async def main() -> None:
             except Exception:
                 logging.exception("Could not close the CSV file correctly.")
 
-        try:
-            await br_client.disconnect()
-            logging.info("Disconnected from the B&R OPC UA server.")
-        except Exception:
-            logging.exception(
-                "Could not disconnect from the B&R OPC UA server cleanly."
-            )
+        await close_br_connection(br_connection)
+        logging.info("Disconnected from the B&R OPC UA server.")
 
 
 if __name__ == "__main__":

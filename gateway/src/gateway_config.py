@@ -57,6 +57,9 @@ GATEWAY_DAC_FEEDBACK_NODE_ID = "DACFeedback"
 # Internal gateway execution period.
 GATEWAY_CYCLE_TIME_S = 0.1
 
+# Delay between attempts to reconnect to the B&R PLC.
+BR_RECONNECT_INTERVAL_S = 5.0
+
 
 # ============================================================
 # LEVEL CONFIGURATION
