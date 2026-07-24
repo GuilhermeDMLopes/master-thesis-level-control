@@ -374,43 +374,102 @@
 			</DataConnections>
 		</SubAppNetwork>
 	</Application>
+	<Application Name="GATEWAY_COMM_TEST" Comment="">
+		<SubAppNetwork>
+			<FB Name="CommTestInitSplit1" Type="E_SPLIT" Comment="" x="7800.0" y="3180.0">
+			</FB>
+			<FB Name="CommTestEnableFeedbackRead" Type="SUBSCRIBE_1" Comment="" x="10200.0" y="4246.666666666667">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=EnableFeedback]&quot;"/>
+			</FB>
+			<FB Name="CommTestDACWrite" Type="CLIENT_1_0" Comment="" x="13133.333333333334" y="7446.666666666667">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+			</FB>
+			<FB Name="CommTestInitSplit3" Type="E_SPLIT" Comment="" x="10466.666666666668" y="5313.333333333334">
+			</FB>
+			<FB Name="CommTestInitSplit2" Type="E_SPLIT" Comment="" x="9000.0" y="4246.666666666667">
+			</FB>
+			<FB Name="CommTestInitMerge" Type="E_MERGE" Comment="" x="6866.666666666667" y="3180.0">
+			</FB>
+			<FB Name="CommTestInitSplit4" Type="E_SPLIT" Comment="" x="11933.333333333334" y="6380.0">
+			</FB>
+			<FB Name="CommTestEnableWrite" Type="CLIENT_1_0" Comment="" x="13000.0" y="6380.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+			</FB>
+			<FB Name="CommTestNivelRead" Type="SUBSCRIBE_1" Comment="" x="9000.0" y="3180.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+			</FB>
+			<FB Name="CommTestDACFeedbackRead" Type="SUBSCRIBE_1" Comment="" x="11666.666666666668" y="5313.333333333334">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=DACFeedback]&quot;"/>
+			</FB>
+			<FB Name="CommTestNivelType" Type="LREAL2LREAL" Comment="" x="10400.0" y="3466.666666666667">
+			</FB>
+			<FB Name="CommTestEnableFeedbackType" Type="BOOL2BOOL" Comment="" x="11600.0" y="4533.333333333334">
+			</FB>
+			<FB Name="CommTestDACFeedbackType" Type="INT2INT" Comment="" x="13200.0" y="5600.0">
+			</FB>
+			<FB Name="CommTestEnableCommand" Type="BOOL2BOOL" Comment="" x="14266.666666666668" y="6266.666666666667">
+				<Parameter Name="IN" Value="FALSE"/>
+			</FB>
+			<FB Name="CommTestDACCommand" Type="INT2INT" Comment="" x="14400.0" y="7333.333333333334">
+				<Parameter Name="IN" Value="0"/>
+			</FB>
+			<EventConnections>
+				<Connection Source="CommTestInitSplit1.EO2" Destination="CommTestInitSplit2.EI" Comment="" dx1="280.0" dx2="280.0" dy="0.0"/>
+				<Connection Source="CommTestInitSplit3.EO2" Destination="CommTestInitSplit4.EI" Comment="" dx1="413.33333333333337" dx2="413.33333333333337" dy="0.0"/>
+				<Connection Source="CommTestInitSplit1.EO1" Destination="CommTestNivelRead.INIT" Comment=""/>
+				<Connection Source="CommTestInitSplit2.EO2" Destination="CommTestInitSplit3.EI" Comment="" dx1="413.33333333333337" dx2="413.33333333333337" dy="0.0"/>
+				<Connection Source="CommTestInitSplit3.EO1" Destination="CommTestDACFeedbackRead.INIT" Comment=""/>
+				<Connection Source="CommTestInitSplit4.EO2" Destination="CommTestDACWrite.INIT" Comment="" dx1="226.66666666666669" dx2="226.66666666666669" dy="0.0"/>
+				<Connection Source="CommTestInitMerge.EO" Destination="CommTestInitSplit1.EI" Comment=""/>
+				<Connection Source="CommTestInitSplit4.EO1" Destination="CommTestEnableWrite.INIT" Comment=""/>
+				<Connection Source="CommTestInitSplit2.EO1" Destination="CommTestEnableFeedbackRead.INIT" Comment=""/>
+				<Connection Source="CommTestNivelRead.IND" Destination="CommTestNivelType.REQ" Comment="" dx1="286.6666666666667"/>
+				<Connection Source="CommTestEnableFeedbackRead.IND" Destination="CommTestEnableFeedbackType.REQ" Comment="" dx1="306.6666666666667"/>
+				<Connection Source="CommTestDACFeedbackRead.IND" Destination="CommTestDACFeedbackType.REQ" Comment="" dx1="400.0"/>
+			</EventConnections>
+			<DataConnections>
+				<Connection Source="CommTestNivelRead.RD_1" Destination="CommTestNivelType.IN" Comment="" dx1="353.33333333333337"/>
+				<Connection Source="CommTestEnableFeedbackRead.RD_1" Destination="CommTestEnableFeedbackType.IN" Comment="" dx1="440.0"/>
+				<Connection Source="CommTestDACFeedbackRead.RD_1" Destination="CommTestDACFeedbackType.IN" Comment="" dx1="400.0"/>
+				<Connection Source="CommTestEnableCommand.OUT" Destination="CommTestEnableWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="206.66666666666669"/>
+				<Connection Source="CommTestDACCommand.OUT" Destination="CommTestDACWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="206.66666666666669"/>
+			</DataConnections>
+		</SubAppNetwork>
+	</Application>
 	<Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="3000.0" y="1173.3333333333335">
 		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
 		<Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" Comment="device profile"/>
 		<Attribute Name="Color" Type="STRING" Value="255,190,111" Comment="color"/>
 		<Resource Name="Res0" Type="EMB_RES" Comment="" x="0.0" y="0.0">
 			<FBNetwork>
-				<FB Name="NivelReadPID_1" Type="SUBSCRIBE_1" Comment="" x="-39293.333333333336" y="-15893.333333333334">
-					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+				<FB Name="MVScaleDiv" Type="F_DIV" Comment="" x="-33866.66666666667" y="-15466.666666666668">
+					<Parameter Name="IN2" Value="LREAL#10.0"/>
 				</FB>
-				<FB Name="EnableWritePID_1" Type="CLIENT_1_0" Comment="" x="-35293.333333333336" y="-12426.666666666668">
-					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
-				</FB>
-				<FB Name="DACTypePID_1" Type="F_LREAL_TO_INT" Comment="" x="-32493.333333333336" y="-12426.666666666668">
-				</FB>
-				<FB Name="NivelScalePID_1" Type="F_DIV" Comment="" x="-37026.66666666667" y="-16160.0">
-					<Parameter Name="IN2" Value="LREAL#1000.0"/>
-				</FB>
-				<FB Name="DACScaleMul_1" Type="F_MUL" Comment="" x="-32533.333333333336" y="-15066.666666666668">
-					<Parameter Name="IN2" Value="LREAL#3276.7"/>
-				</FB>
-				<FB Name="DAC_RATE_LIMITER_1" Type="DAC_RATE_LIMITER" Comment="" x="-30800.0" y="-14533.333333333334">
-					<Parameter Name="MAX_DELTA_DAC" Value="LREAL#150.0"/>
-					<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
-					<Parameter Name="DAC_MAX" Value="LREAL#32767.0"/>
-					<Parameter Name="RESET" Value="FALSE"/>
+				<FB Name="InitSplitPID_1" Type="E_SPLIT" Comment="" x="-40240.0" y="-14826.666666666668">
 				</FB>
 				<FB Name="PV_FILTERPID_1" Type="PV_FILTER" Comment="" x="-36226.66666666667" y="-15360.0">
 					<Parameter Name="ALPHA" Value="LREAL#0.95"/>
 					<Parameter Name="RESET" Value="FALSE"/>
 				</FB>
-				<FB Name="CYCLEPID_1" Type="E_CYCLE" Comment="" x="-38760.0" y="-13760.0">
-					<Parameter Name="DT" Value="T#100ms"/>
+				<FB Name="DACScaleMul_1" Type="F_MUL" Comment="" x="-32533.333333333336" y="-15066.666666666668">
+					<Parameter Name="IN2" Value="LREAL#3276.7"/>
 				</FB>
-				<FB Name="MVScaleDiv" Type="F_DIV" Comment="" x="-33866.66666666667" y="-15466.666666666668">
-					<Parameter Name="IN2" Value="LREAL#10.0"/>
+				<FB Name="NivelScalePID_1" Type="F_DIV" Comment="" x="-37026.66666666667" y="-16160.0">
+					<Parameter Name="IN2" Value="LREAL#1000.0"/>
+				</FB>
+				<FB Name="NivelReadPID_1" Type="SUBSCRIBE_1" Comment="" x="-39293.333333333336" y="-15893.333333333334">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+				</FB>
+				<FB Name="NivelTypePID_1" Type="LREAL2LREAL" Comment="" x="-38093.333333333336" y="-15360.0">
+				</FB>
+				<FB Name="EnableCheck_1" Type="F_GT" Comment="" x="-33826.66666666667" y="-13226.666666666668">
+					<Parameter Name="IN2" Value="LREAL#1.0"/>
 				</FB>
 				<FB Name="PID_1" Type="PID_LEVEL" Comment="" x="-35026.66666666667" y="-14693.333333333334">
 					<Parameter Name="SP" Value="LREAL#14.0"/>
@@ -422,64 +481,146 @@
 					<Parameter Name="MAN_OUT" Value="LREAL#0.0"/>
 					<Parameter Name="RESET" Value="FALSE"/>
 				</FB>
+				<FB Name="CYCLEPID_1" Type="E_CYCLE" Comment="" x="-38760.0" y="-13760.0">
+					<Parameter Name="DT" Value="T#100ms"/>
+				</FB>
+				<FB Name="EnableWritePID_1" Type="CLIENT_1_0" Comment="" x="-35293.333333333336" y="-12426.666666666668">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+				</FB>
+				<FB Name="DAC_RATE_LIMITER_1" Type="DAC_RATE_LIMITER" Comment="" x="-30800.0" y="-14533.333333333334">
+					<Parameter Name="MAX_DELTA_DAC" Value="LREAL#150.0"/>
+					<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+					<Parameter Name="DAC_MAX" Value="LREAL#32767.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
 				<FB Name="DACWritePID_1" Type="CLIENT_1_0" Comment="" x="-33426.66666666667" y="-11840.0">
 					<Parameter Name="QI" Value="TRUE"/>
 					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
 				</FB>
-				<FB Name="InitSplitPID_1" Type="E_SPLIT" Comment="" x="-40240.0" y="-14826.666666666668">
+				<FB Name="DACTypePID_1" Type="F_LREAL_TO_INT" Comment="" x="-32493.333333333336" y="-12426.666666666668">
 				</FB>
-				<FB Name="EnableCheck_1" Type="F_GT" Comment="" x="-33826.66666666667" y="-13226.666666666668">
-					<Parameter Name="IN2" Value="LREAL#1.0"/>
+				<FB Name="CommTestEnableFeedbackRead" Type="SUBSCRIBE_1" Comment="" x="10200.0" y="4246.666666666667">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=EnableFeedback]&quot;"/>
 				</FB>
-				<FB Name="NivelTypePID_1" Type="LREAL2LREAL" Comment="" x="-38093.333333333336" y="-15360.0">
+				<FB Name="CommTestEnableWrite" Type="CLIENT_1_0" Comment="" x="13000.0" y="6380.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+				</FB>
+				<FB Name="CommTestInitSplit1" Type="E_SPLIT" Comment="" x="7800.0" y="3180.0">
+				</FB>
+				<FB Name="CommTestNivelRead" Type="SUBSCRIBE_1" Comment="" x="9000.0" y="3180.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+				</FB>
+				<FB Name="CommTestInitMerge" Type="E_MERGE" Comment="" x="6866.666666666667" y="3180.0">
+				</FB>
+				<FB Name="CommTestInitSplit4" Type="E_SPLIT" Comment="" x="11933.333333333334" y="6380.0">
+				</FB>
+				<FB Name="CommTestDACFeedbackRead" Type="SUBSCRIBE_1" Comment="" x="11666.666666666668" y="5313.333333333334">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=DACFeedback]&quot;"/>
+				</FB>
+				<FB Name="CommTestInitSplit2" Type="E_SPLIT" Comment="" x="9000.0" y="4246.666666666667">
+				</FB>
+				<FB Name="CommTestInitSplit3" Type="E_SPLIT" Comment="" x="10466.666666666668" y="5313.333333333334">
+				</FB>
+				<FB Name="CommTestDACWrite" Type="CLIENT_1_0" Comment="" x="13133.333333333334" y="7446.666666666667">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+				</FB>
+				<FB Name="CommTestNivelType" Type="LREAL2LREAL" Comment="" x="10400.0" y="3333.3333333333335">
+				</FB>
+				<FB Name="CommTestEnableFeedbackType" Type="BOOL2BOOL" Comment="" x="12133.333333333334" y="4400.0">
+				</FB>
+				<FB Name="CommTestDACFeedbackType" Type="INT2INT" Comment="" x="13333.333333333334" y="5466.666666666667">
+				</FB>
+				<FB Name="CommTestEnableCommand" Type="BOOL2BOOL" Comment="" x="14266.666666666668" y="6266.666666666667">
+					<Parameter Name="IN" Value="FALSE"/>
+				</FB>
+				<FB Name="CommTestDACCommand" Type="INT2INT" Comment="" x="14400.0" y="7333.333333333334">
+					<Parameter Name="IN" Value="0"/>
 				</FB>
 				<EventConnections>
-					<Connection Source="DACScaleMul_1.CNF" Destination="DAC_RATE_LIMITER_1.REQ" Comment="" dx1="573.3333333333334"/>
-					<Connection Source="DAC_RATE_LIMITER_1.CNF" Destination="DACTypePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="1053.3333333333335"/>
-					<Connection Source="NivelScalePID_1.CNF" Destination="PV_FILTERPID_1.REQ" Comment="" dx1="86.66666666666667"/>
 					<Connection Source="MVScaleDiv.CNF" Destination="DACScaleMul_1.REQ" Comment="" dx1="400.0"/>
-					<Connection Source="PV_FILTERPID_1.CNF" Destination="PID_1.REQ" Comment="" dx1="233.33333333333334"/>
-					<Connection Source="PID_1.CNF" Destination="MVScaleDiv.REQ" Comment="" dx1="186.66666666666669"/>
-					<Connection Source="DACTypePID_1.CNF" Destination="DACWritePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="340.0"/>
-					<Connection Source="InitSplitPID_1.EO1" Destination="DACWritePID_1.INIT" Comment="" dx1="3080.0"/>
+					<Connection Source="NivelScalePID_1.CNF" Destination="PV_FILTERPID_1.REQ" Comment="" dx1="86.66666666666667"/>
 					<Connection Source="InitSplitPID_1.EO1" Destination="NivelReadPID_1.INIT" Comment="" dx1="146.66666666666669"/>
-					<Connection Source="InitSplitPID_1.EO2" Destination="EnableWritePID_1.INIT" Comment="" dx1="2146.666666666667"/>
-					<Connection Source="InitSplitPID_1.EO2" Destination="CYCLEPID_1.START" Comment="" dx1="413.33333333333337"/>
-					<Connection Source="DACTypePID_1.CNF" Destination="EnableCheck_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="-400.0"/>
-					<Connection Source="EnableCheck_1.CNF" Destination="EnableWritePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="446.6666666666667"/>
-					<Connection Source="CYCLEPID_1.EO" Destination="NivelTypePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="-800.0"/>
 					<Connection Source="NivelTypePID_1.CNF" Destination="NivelScalePID_1.REQ" Comment="" dx1="153.33333333333334"/>
-					<Connection Source="START.COLD" Destination="InitSplitPID_1.EI" Comment="" dx1="373.33333333333337"/>
-					<Connection Source="START.WARM" Destination="InitSplitPID_1.EI" Comment="" dx1="373.33333333333337"/>
+					<Connection Source="PID_1.CNF" Destination="MVScaleDiv.REQ" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="PV_FILTERPID_1.CNF" Destination="PID_1.REQ" Comment="" dx1="233.33333333333334"/>
+					<Connection Source="CYCLEPID_1.EO" Destination="NivelTypePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="-800.0"/>
+					<Connection Source="InitSplitPID_1.EO2" Destination="CYCLEPID_1.START" Comment="" dx1="413.33333333333337"/>
+					<Connection Source="EnableCheck_1.CNF" Destination="EnableWritePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="446.6666666666667"/>
+					<Connection Source="InitSplitPID_1.EO2" Destination="EnableWritePID_1.INIT" Comment="" dx1="2146.666666666667"/>
+					<Connection Source="DACScaleMul_1.CNF" Destination="DAC_RATE_LIMITER_1.REQ" Comment="" dx1="573.3333333333334"/>
+					<Connection Source="InitSplitPID_1.EO1" Destination="DACWritePID_1.INIT" Comment="" dx1="3080.0"/>
+					<Connection Source="DACTypePID_1.CNF" Destination="EnableCheck_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="-400.0"/>
+					<Connection Source="DACTypePID_1.CNF" Destination="DACWritePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="340.0"/>
+					<Connection Source="DAC_RATE_LIMITER_1.CNF" Destination="DACTypePID_1.REQ" Comment="" dx1="80.0" dx2="80.0" dy="1053.3333333333335"/>
+					<Connection Source="CommTestInitSplit1.EO1" Destination="CommTestNivelRead.INIT" Comment=""/>
+					<Connection Source="CommTestInitMerge.EO" Destination="CommTestInitSplit1.EI" Comment=""/>
+					<Connection Source="CommTestInitSplit4.EO1" Destination="CommTestEnableWrite.INIT" Comment=""/>
+					<Connection Source="CommTestInitSplit1.EO2" Destination="CommTestInitSplit2.EI" Comment="" dx1="280.0"/>
+					<Connection Source="CommTestInitSplit2.EO1" Destination="CommTestEnableFeedbackRead.INIT" Comment=""/>
+					<Connection Source="CommTestInitSplit2.EO2" Destination="CommTestInitSplit3.EI" Comment="" dx1="413.33333333333337"/>
+					<Connection Source="CommTestInitSplit3.EO1" Destination="CommTestDACFeedbackRead.INIT" Comment=""/>
+					<Connection Source="CommTestInitSplit3.EO2" Destination="CommTestInitSplit4.EI" Comment="" dx1="413.33333333333337"/>
+					<Connection Source="CommTestInitSplit4.EO2" Destination="CommTestDACWrite.INIT" Comment="" dx1="226.66666666666669"/>
+					<Connection Source="CommTestStart.COLD" Destination="CommTestInitMerge.EI1" Comment="" dx1="166.66666666666669"/>
+					<Connection Source="CommTestStart.WARM" Destination="CommTestInitMerge.EI2" Comment="" dx1="166.66666666666669"/>
+					<Connection Source="CommTestNivelRead.IND" Destination="CommTestNivelType.REQ" Comment="" dx1="280.0"/>
+					<Connection Source="CommTestEnableFeedbackRead.IND" Destination="CommTestEnableFeedbackType.REQ" Comment="" dx1="1040.0"/>
+					<Connection Source="CommTestDACFeedbackRead.IND" Destination="CommTestDACFeedbackType.REQ" Comment="" dx1="840.0"/>
 				</EventConnections>
 				<DataConnections>
-					<Connection Source="DACScaleMul_1.OUT" Destination="DAC_RATE_LIMITER_1.DAC_IN" Comment="" dx1="573.3333333333334"/>
-					<Connection Source="DAC_RATE_LIMITER_1.DAC_OUT" Destination="DACTypePID_1.IN" Comment="" dx1="80.0" dx2="80.0" dy="1053.3333333333335"/>
-					<Connection Source="NivelScalePID_1.OUT" Destination="PV_FILTERPID_1.PV_IN" Comment="" dx1="86.66666666666667"/>
 					<Connection Source="MVScaleDiv.OUT" Destination="DACScaleMul_1.IN1" Comment="" dx1="400.0"/>
-					<Connection Source="PV_FILTERPID_1.PV_OUT" Destination="PID_1.PV" Comment="" dx1="233.33333333333334"/>
-					<Connection Source="PID_1.MV" Destination="MVScaleDiv.IN1" Comment="" dx1="186.66666666666669"/>
-					<Connection Source="DACTypePID_1.OUT" Destination="DACWritePID_1.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="440.0"/>
-					<Connection Source="PID_1.MV" Destination="EnableCheck_1.IN1" Comment="" dx1="240.0"/>
-					<Connection Source="EnableCheck_1.OUT" Destination="EnableWritePID_1.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="546.6666666666667"/>
-					<Connection Source="NivelReadPID_1.RD_1" Destination="NivelTypePID_1.IN" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="NivelScalePID_1.OUT" Destination="PV_FILTERPID_1.PV_IN" Comment="" dx1="86.66666666666667"/>
 					<Connection Source="NivelTypePID_1.OUT" Destination="NivelScalePID_1.IN1" Comment="" dx1="153.33333333333334"/>
+					<Connection Source="NivelReadPID_1.RD_1" Destination="NivelTypePID_1.IN" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="PID_1.MV" Destination="EnableCheck_1.IN1" Comment="" dx1="240.0"/>
+					<Connection Source="PID_1.MV" Destination="MVScaleDiv.IN1" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="PV_FILTERPID_1.PV_OUT" Destination="PID_1.PV" Comment="" dx1="233.33333333333334"/>
+					<Connection Source="EnableCheck_1.OUT" Destination="EnableWritePID_1.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="546.6666666666667"/>
+					<Connection Source="DACScaleMul_1.OUT" Destination="DAC_RATE_LIMITER_1.DAC_IN" Comment="" dx1="573.3333333333334"/>
+					<Connection Source="DACTypePID_1.OUT" Destination="DACWritePID_1.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="440.0"/>
+					<Connection Source="DAC_RATE_LIMITER_1.DAC_OUT" Destination="DACTypePID_1.IN" Comment="" dx1="80.0" dx2="80.0" dy="1053.3333333333335"/>
+					<Connection Source="CommTestNivelRead.RD_1" Destination="CommTestNivelType.IN" Comment="" dx1="280.0"/>
+					<Connection Source="CommTestEnableFeedbackRead.RD_1" Destination="CommTestEnableFeedbackType.IN" Comment="" dx1="1040.0"/>
+					<Connection Source="CommTestDACFeedbackRead.RD_1" Destination="CommTestDACFeedbackType.IN" Comment="" dx1="840.0"/>
+					<Connection Source="CommTestEnableCommand.OUT" Destination="CommTestEnableWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="200.0"/>
+					<Connection Source="CommTestDACCommand.OUT" Destination="CommTestDACWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="1480.0"/>
 				</DataConnections>
 			</FBNetwork>
 		</Resource>
 	</Device>
-	<Mapping From="OPAS_Tank_SystemApp.NivelReadPID_1" To="FORTE_PC.Res0.NivelReadPID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.EnableWritePID_1" To="FORTE_PC.Res0.EnableWritePID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.DACTypePID_1" To="FORTE_PC.Res0.DACTypePID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.NivelScalePID_1" To="FORTE_PC.Res0.NivelScalePID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.DACScaleMul_1" To="FORTE_PC.Res0.DACScaleMul_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.DAC_RATE_LIMITER_1" To="FORTE_PC.Res0.DAC_RATE_LIMITER_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.PV_FILTERPID_1" To="FORTE_PC.Res0.PV_FILTERPID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.CYCLEPID_1" To="FORTE_PC.Res0.CYCLEPID_1"/>
 	<Mapping From="OPAS_Tank_SystemApp.MVScaleDiv" To="FORTE_PC.Res0.MVScaleDiv"/>
-	<Mapping From="OPAS_Tank_SystemApp.PID_1" To="FORTE_PC.Res0.PID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.DACWritePID_1" To="FORTE_PC.Res0.DACWritePID_1"/>
 	<Mapping From="OPAS_Tank_SystemApp.InitSplitPID_1" To="FORTE_PC.Res0.InitSplitPID_1"/>
-	<Mapping From="OPAS_Tank_SystemApp.EnableCheck_1" To="FORTE_PC.Res0.EnableCheck_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.PV_FILTERPID_1" To="FORTE_PC.Res0.PV_FILTERPID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.DACScaleMul_1" To="FORTE_PC.Res0.DACScaleMul_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.NivelScalePID_1" To="FORTE_PC.Res0.NivelScalePID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.NivelReadPID_1" To="FORTE_PC.Res0.NivelReadPID_1"/>
 	<Mapping From="OPAS_Tank_SystemApp.NivelTypePID_1" To="FORTE_PC.Res0.NivelTypePID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.EnableCheck_1" To="FORTE_PC.Res0.EnableCheck_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.PID_1" To="FORTE_PC.Res0.PID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.CYCLEPID_1" To="FORTE_PC.Res0.CYCLEPID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.EnableWritePID_1" To="FORTE_PC.Res0.EnableWritePID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.DAC_RATE_LIMITER_1" To="FORTE_PC.Res0.DAC_RATE_LIMITER_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.DACWritePID_1" To="FORTE_PC.Res0.DACWritePID_1"/>
+	<Mapping From="OPAS_Tank_SystemApp.DACTypePID_1" To="FORTE_PC.Res0.DACTypePID_1"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestEnableFeedbackRead" To="FORTE_PC.Res0.CommTestEnableFeedbackRead"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestEnableWrite" To="FORTE_PC.Res0.CommTestEnableWrite"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestInitSplit1" To="FORTE_PC.Res0.CommTestInitSplit1"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestNivelRead" To="FORTE_PC.Res0.CommTestNivelRead"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestInitMerge" To="FORTE_PC.Res0.CommTestInitMerge"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestInitSplit4" To="FORTE_PC.Res0.CommTestInitSplit4"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestDACFeedbackRead" To="FORTE_PC.Res0.CommTestDACFeedbackRead"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestInitSplit2" To="FORTE_PC.Res0.CommTestInitSplit2"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestInitSplit3" To="FORTE_PC.Res0.CommTestInitSplit3"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestDACWrite" To="FORTE_PC.Res0.CommTestDACWrite"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestNivelType" To="FORTE_PC.Res0.CommTestNivelType"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestEnableFeedbackType" To="FORTE_PC.Res0.CommTestEnableFeedbackType"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestDACFeedbackType" To="FORTE_PC.Res0.CommTestDACFeedbackType"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestEnableCommand" To="FORTE_PC.Res0.CommTestEnableCommand"/>
+	<Mapping From="GATEWAY_COMM_TEST.CommTestDACCommand" To="FORTE_PC.Res0.CommTestDACCommand"/>
 </System>
