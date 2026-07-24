@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 
@@ -23,8 +24,20 @@ CSV_OUTPUT_DIRECTORY = PROJECT_ROOT / "data" / "raw"
 # OPC UA CONFIGURATION
 # ============================================================
 
-# OPC UA server provided by the real B&R PLC.
-BR_ENDPOINT = "opc.tcp://10.0.0.3:4840"
+# Default OPC UA server provided by the real B&R PLC.
+DEFAULT_BR_ENDPOINT = "opc.tcp://10.0.0.3:4840"
+
+# The endpoint may be overridden without editing the source code.
+#
+# Real PLC:
+#     BR_ENDPOINT is not defined in the environment.
+#
+# Local simulator:
+#     BR_ENDPOINT=opc.tcp://127.0.0.1:4842
+BR_ENDPOINT = os.environ.get(
+    "BR_ENDPOINT",
+    DEFAULT_BR_ENDPOINT,
+)
 
 # OPC UA server exposed by the Python gateway to 4diac FORTE.
 GATEWAY_ENDPOINT = "opc.tcp://0.0.0.0:4841"
