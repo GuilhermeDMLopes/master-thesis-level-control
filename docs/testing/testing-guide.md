@@ -4,7 +4,7 @@
 
 This document describes how to configure the Python development environment and execute the automated offline tests for the project.
 
-The current tests validate gateway processing functions and OPC UA interface helpers without requiring:
+The current tests validate gateway processing functions, OPC UA interface helpers, and preservation of the historical 4diac project without requiring:
 
 - A B&R PLC.
 - An OPC UA server.
@@ -129,14 +129,14 @@ The `-q` option produces a compact report.
 The current offline gateway test baseline contains:
 
 ```text
-30 tests
+38 tests
 ```
 
 A successful result is similar to:
 
 ```text
 ........................ [100%]
-30 passed
+38 passed
 ```
 
 The execution time may vary between computers.
@@ -436,5 +436,16 @@ git check-ignore -v ".pytest_cache"
 The initial offline gateway processing suite was successfully validated with:
 
 ```text
-30 passed
+38 passed
 ```
+
+## Run the 4diac Preservation Tests
+
+```powershell
+.\.venv\Scripts\python.exe `
+    -m pytest `
+    "tests\test_4diac_gateway_contract.py" `
+    -v
+```
+
+These tests allow additive changes to the 4diac project but detect removal or renaming of recorded historical artifacts.

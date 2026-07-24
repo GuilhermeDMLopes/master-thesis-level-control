@@ -285,7 +285,7 @@ The software must not be connected to the physical plant without a previously de
 
 ## Testing
 
-The project includes automated offline tests for gateway processing functions and OPC UA interface helpers.
+The project includes automated offline tests for gateway processing functions, OPC UA interface helpers, and preservation of the historical 4diac project artifacts.
 
 Install the development dependencies:
 
