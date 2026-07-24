@@ -285,7 +285,7 @@ The software must not be connected to the physical plant without a previously de
 
 ## Testing
 
-The project includes automated offline tests for the gateway processing functions.
+The project includes automated offline tests for gateway processing functions and OPC UA interface helpers.
 
 Install the development dependencies:
 

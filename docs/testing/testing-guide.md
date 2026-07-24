@@ -4,7 +4,7 @@
 
 This document describes how to configure the Python development environment and execute the automated offline tests for the project.
 
-The current tests validate gateway processing functions without requiring:
+The current tests validate gateway processing functions and OPC UA interface helpers without requiring:
 
 - A B&R PLC.
 - An OPC UA server.
@@ -126,17 +126,17 @@ Execute all automated tests from the repository root:
 
 The `-q` option produces a compact report.
 
-The initial gateway processing test baseline contains:
+The current offline gateway test baseline contains:
 
 ```text
-24 tests
+30 tests
 ```
 
 A successful result is similar to:
 
 ```text
 ........................ [100%]
-24 passed
+30 passed
 ```
 
 The execution time may vary between computers.
@@ -158,6 +158,14 @@ Use verbose mode to display every test case:
     -v
 ```
 
+## Run Only the Gateway Interface Tests
+
+```powershell
+.\.venv\Scripts\python.exe `
+    -m pytest `
+    "tests\test_gateway_interface.py" `
+    -v
+```
 ## Run a Specific Test Function
 
 Example:
@@ -252,6 +260,19 @@ Cases include:
 - Alpha equal to zero.
 - Alpha equal to one.
 
+## Gateway OPC UA Interface Coverage
+
+The gateway interface tests validate:
+
+- Creation of the legacy `Nivel`, `Enable`, and `DAC` NodeIds.
+- Creation of `EnableFeedback` and `DACFeedback`.
+- Initial OPC UA values and Variant types.
+- Write access only for command variables.
+- Read-only behavior of process and feedback variables.
+- References returned by `GatewayVariables`.
+- Publication of confirmed PLC feedback values.
+- Separation between command and feedback variables.
+- Conversion to OPC UA `Boolean` and `Int16` values.
 ## Validate Python Syntax
 
 Validate the gateway source modules without executing the gateway:
@@ -296,6 +317,7 @@ opc.tcp://10.0.0.3:4840
 ```text
 tests/
 |-- conftest.py
+|-- test_gateway_interface.py
 `-- test_gateway_processing.py
 ```
 
@@ -306,6 +328,11 @@ Adds the following source directory to the Python import path during test execut
 ```text
 gateway/src
 ```
+
+### `test_gateway_interface.py`
+
+Contains offline unit tests for NodeId creation, access rules,
+initial values, and feedback publication in the gateway OPC UA interface.
 
 ### `test_gateway_processing.py`
 
@@ -409,5 +436,5 @@ git check-ignore -v ".pytest_cache"
 The initial offline gateway processing suite was successfully validated with:
 
 ```text
-24 passed
+30 passed
 ```
