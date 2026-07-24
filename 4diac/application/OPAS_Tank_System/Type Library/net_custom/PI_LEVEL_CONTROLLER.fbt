@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="PI_LEVEL_CONTROLLER" Comment="PI level controller with anti-windup, manual tracking, and diagnostics">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="Guilherme" Date="2026-07-24">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="Execute one PI controller cycle">
+				<With Var="PROCESS_VARIABLE"/>
+				<With Var="SETPOINT"/>
+				<With Var="PROPORTIONAL_GAIN"/>
+				<With Var="INTEGRAL_GAIN"/>
+				<With Var="SAMPLING_TIME_S"/>
+				<With Var="OUTPUT_MIN"/>
+				<With Var="OUTPUT_MAX"/>
+				<With Var="MANUAL"/>
+				<With Var="MANUAL_OUTPUT"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="Controller cycle completed">
+				<With Var="OUTPUT"/>
+				<With Var="ERROR"/>
+				<With Var="PROPORTIONAL_TERM"/>
+				<With Var="INTEGRAL_TERM"/>
+				<With Var="UNSATURATED_OUTPUT"/>
+				<With Var="SATURATED"/>
+				<With Var="MANUAL_ACTIVE"/>
+				<With Var="RESET_ACTIVE"/>
+				<With Var="CONFIGURATION_VALID"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PROCESS_VARIABLE" Type="LREAL" Comment="Measured process level"/>
+			<VarDeclaration Name="SETPOINT" Type="LREAL" Comment="Desired process level"/>
+			<VarDeclaration Name="PROPORTIONAL_GAIN" Type="LREAL" Comment="Proportional gain"/>
+			<VarDeclaration Name="INTEGRAL_GAIN" Type="LREAL" Comment="Integral gain"/>
+			<VarDeclaration Name="SAMPLING_TIME_S" Type="LREAL" Comment="Controller sampling time in seconds"/>
+			<VarDeclaration Name="OUTPUT_MIN" Type="LREAL" Comment="Minimum controller output"/>
+			<VarDeclaration Name="OUTPUT_MAX" Type="LREAL" Comment="Maximum controller output"/>
+			<VarDeclaration Name="MANUAL" Type="BOOL" Comment="Enable manual mode"/>
+			<VarDeclaration Name="MANUAL_OUTPUT" Type="LREAL" Comment="Requested output in manual mode"/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment="Apply deterministic reset behavior"/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="OUTPUT" Type="LREAL" Comment="Saturated controller output"/>
+			<VarDeclaration Name="ERROR" Type="LREAL" Comment="Setpoint minus process variable"/>
+			<VarDeclaration Name="PROPORTIONAL_TERM" Type="LREAL" Comment="Proportional contribution"/>
+			<VarDeclaration Name="INTEGRAL_TERM" Type="LREAL" Comment="Stored integral contribution"/>
+			<VarDeclaration Name="UNSATURATED_OUTPUT" Type="LREAL" Comment="Controller output before clamping"/>
+			<VarDeclaration Name="SATURATED" Type="BOOL" Comment="Output or manual command was clamped"/>
+			<VarDeclaration Name="MANUAL_ACTIVE" Type="BOOL" Comment="Controller cycle executed in manual mode"/>
+			<VarDeclaration Name="RESET_ACTIVE" Type="BOOL" Comment="Controller cycle executed reset behavior"/>
+			<VarDeclaration Name="CONFIGURATION_VALID" Type="BOOL" Comment="Sampling time and output limits are valid"/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="integral_term_internal" Type="LREAL" Comment="Stored integral contribution" InitialValue="0.0"/>
+			<VarDeclaration Name="manual_was_active" Type="BOOL" Comment="Previous cycle used manual mode" InitialValue="FALSE"/>
+			<VarDeclaration Name="integral_increment" Type="LREAL" Comment="Candidate integral change" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_integral" Type="LREAL" Comment="Candidate integral contribution" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_unsaturated_output" Type="LREAL" Comment="Candidate output before anti-windup decision" InitialValue="0.0"/>
+			<VarDeclaration Name="clamped_manual_output" Type="LREAL" Comment="Manual command after output limits" InitialValue="0.0"/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" Comment="Initial state" x="533.3333333333334" y="400.0">
+			</ECState>
+			<ECState Name="CALCULATE" Comment="Execute the PI algorithm" x="933.3333333333334" y="900.0">
+				<ECAction Algorithm="PI_CONTROL_ALGORITHM"/>
+			</ECState>
+			<ECState Name="CONFIRM" Comment="Publish controller outputs" x="1466.6666666666667" y="400.0">
+				<ECAction Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="CALCULATE" Condition="REQ" Comment="" x="733.3333333333334" y="680.0"/>
+			<ECTransition Source="CALCULATE" Destination="CONFIRM" Condition="1" Comment="" x="1373.3333333333335" y="746.6666666666667"/>
+			<ECTransition Source="CONFIRM" Destination="START" Condition="1" Comment="" x="1160.0" y="480.0"/>
+		</ECC>
+		<Algorithm Name="PI_CONTROL_ALGORITHM" Comment="Positional PI controller with conditional anti-windup and manual tracking">
+			<ST><![CDATA[ERROR := SETPOINT - PROCESS_VARIABLE;
+PROPORTIONAL_TERM := PROPORTIONAL_GAIN * ERROR;
+
+CONFIGURATION_VALID :=
+    (SAMPLING_TIME_S > 0.0)
+    AND
+    (OUTPUT_MIN < OUTPUT_MAX);
+
+IF NOT CONFIGURATION_VALID THEN
+    integral_term_internal := 0.0;
+    manual_was_active := FALSE;
+
+    OUTPUT := 0.0;
+    INTEGRAL_TERM := 0.0;
+    UNSATURATED_OUTPUT := 0.0;
+    SATURATED := FALSE;
+    MANUAL_ACTIVE := FALSE;
+    RESET_ACTIVE := FALSE;
+
+ELSIF RESET THEN
+    integral_term_internal := 0.0;
+    manual_was_active := FALSE;
+
+    OUTPUT := 0.0;
+
+    IF OUTPUT > OUTPUT_MAX THEN
+        OUTPUT := OUTPUT_MAX;
+    ELSIF OUTPUT < OUTPUT_MIN THEN
+        OUTPUT := OUTPUT_MIN;
+    END_IF;
+
+    INTEGRAL_TERM := 0.0;
+    UNSATURATED_OUTPUT := OUTPUT;
+    SATURATED := FALSE;
+    MANUAL_ACTIVE := MANUAL;
+    RESET_ACTIVE := TRUE;
+
+ELSIF MANUAL THEN
+    clamped_manual_output := MANUAL_OUTPUT;
+
+    IF clamped_manual_output > OUTPUT_MAX THEN
+        clamped_manual_output := OUTPUT_MAX;
+    ELSIF clamped_manual_output < OUTPUT_MIN THEN
+        clamped_manual_output := OUTPUT_MIN;
+    END_IF;
+
+    OUTPUT := clamped_manual_output;
+    integral_term_internal := OUTPUT - PROPORTIONAL_TERM;
+
+    INTEGRAL_TERM := integral_term_internal;
+    UNSATURATED_OUTPUT := OUTPUT;
+    SATURATED := OUTPUT <> MANUAL_OUTPUT;
+    MANUAL_ACTIVE := TRUE;
+    RESET_ACTIVE := FALSE;
+    manual_was_active := TRUE;
+
+ELSE
+    IF manual_was_active THEN
+        manual_was_active := FALSE;
+    ELSE
+        integral_increment :=
+            INTEGRAL_GAIN
+            * ERROR
+            * SAMPLING_TIME_S;
+
+        candidate_integral :=
+            integral_term_internal
+            + integral_increment;
+
+        candidate_unsaturated_output :=
+            PROPORTIONAL_TERM
+            + candidate_integral;
+
+        IF NOT (
+            (
+                candidate_unsaturated_output > OUTPUT_MAX
+                AND
+                integral_increment > 0.0
+            )
+            OR
+            (
+                candidate_unsaturated_output < OUTPUT_MIN
+                AND
+                integral_increment < 0.0
+            )
+        ) THEN
+            integral_term_internal :=
+                candidate_integral;
+        END_IF;
+    END_IF;
+
+    INTEGRAL_TERM := integral_term_internal;
+
+    UNSATURATED_OUTPUT :=
+        PROPORTIONAL_TERM
+        + INTEGRAL_TERM;
+
+    OUTPUT := UNSATURATED_OUTPUT;
+
+    IF OUTPUT > OUTPUT_MAX THEN
+        OUTPUT := OUTPUT_MAX;
+    ELSIF OUTPUT < OUTPUT_MIN THEN
+        OUTPUT := OUTPUT_MIN;
+    END_IF;
+
+    SATURATED := OUTPUT <> UNSATURATED_OUTPUT;
+    MANUAL_ACTIVE := FALSE;
+    RESET_ACTIVE := FALSE;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>
