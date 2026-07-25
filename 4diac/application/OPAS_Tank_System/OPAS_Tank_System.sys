@@ -441,6 +441,22 @@
 			</DataConnections>
 		</SubAppNetwork>
 	</Application>
+	<Application Name="PI_CONTROLLER_TEST" Comment="">
+		<SubAppNetwork>
+			<FB Name="ControllerUnderTest" Type="PI_LEVEL_CONTROLLER" Comment="" x="5466.666666666667" y="2000.0">
+				<Parameter Name="PROCESS_VARIABLE" Value="LREAL#10.0"/>
+				<Parameter Name="SETPOINT" Value="LREAL#14.0"/>
+				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
+				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.5"/>
+				<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
+				<Parameter Name="OUTPUT_MIN" Value="LREAL#0.0"/>
+				<Parameter Name="OUTPUT_MAX" Value="LREAL#100.0"/>
+				<Parameter Name="MANUAL" Value="FALSE"/>
+				<Parameter Name="MANUAL_OUTPUT" Value="LREAL#0.0"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+		</SubAppNetwork>
+	</Application>
 	<Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="3000.0" y="1173.3333333333335">
 		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
 		<Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" Comment="device profile"/>
@@ -542,6 +558,18 @@
 				<FB Name="CommTestDACCommand" Type="INT2INT" Comment="" x="14400.0" y="7333.333333333334">
 					<Parameter Name="IN" Value="0"/>
 				</FB>
+				<FB Name="ControllerUnderTest" Type="PI_LEVEL_CONTROLLER" Comment="" x="1200.0" y="800.0">
+					<Parameter Name="PROCESS_VARIABLE" Value="LREAL#10.0"/>
+					<Parameter Name="SETPOINT" Value="LREAL#14.0"/>
+					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
+					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.5"/>
+					<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
+					<Parameter Name="OUTPUT_MIN" Value="LREAL#0.0"/>
+					<Parameter Name="OUTPUT_MAX" Value="LREAL#100.0"/>
+					<Parameter Name="MANUAL" Value="FALSE"/>
+					<Parameter Name="MANUAL_OUTPUT" Value="LREAL#0.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
 				<EventConnections>
 					<Connection Source="MVScaleDiv.CNF" Destination="DACScaleMul_1.REQ" Comment="" dx1="400.0"/>
 					<Connection Source="NivelScalePID_1.CNF" Destination="PV_FILTERPID_1.REQ" Comment="" dx1="86.66666666666667"/>
@@ -623,4 +651,5 @@
 	<Mapping From="GATEWAY_COMM_TEST.CommTestDACFeedbackType" To="FORTE_PC.Res0.CommTestDACFeedbackType"/>
 	<Mapping From="GATEWAY_COMM_TEST.CommTestEnableCommand" To="FORTE_PC.Res0.CommTestEnableCommand"/>
 	<Mapping From="GATEWAY_COMM_TEST.CommTestDACCommand" To="FORTE_PC.Res0.CommTestDACCommand"/>
+	<Mapping From="PI_CONTROLLER_TEST.ControllerUnderTest" To="FORTE_PC.Res0.ControllerUnderTest"/>
 </System>
