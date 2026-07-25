@@ -139,3 +139,46 @@ These effects must be added only when supported by experimental data.
 ## Preservation Requirement
 
 The existing deterministic simulator profile remains the validated communication baseline. Dynamic behavior will be added as a separate selectable mode after this isolated plant model passes its tests.
+
+## OPC UA Simulator Integration
+
+The B&R-compatible OPC UA simulator supports two explicit modes:
+
+```text
+deterministic
+dynamic
+```
+
+The deterministic mode remains the default so the previously validated communication baseline is preserved.
+
+Run the original deterministic profile:
+
+```powershell
+.\.venv\Scripts\python.exe `
+    "simulation\br_plc_simulator.py"
+```
+
+Run the provisional dynamic plant:
+
+```powershell
+.\.venv\Scripts\python.exe `
+    "simulation\br_plc_simulator.py" `
+    --mode dynamic
+```
+
+The mode can also be selected through the environment:
+
+```powershell
+$env:BR_SIMULATION_MODE = "dynamic"
+
+.\.venv\Scripts\python.exe `
+    "simulation\br_plc_simulator.py"
+```
+
+In dynamic mode, the simulator reads the B&R-compatible `Enable` and `DAC` variables every cycle and publishes:
+
+```text
+Nivel = level_cm * 1000.0
+```
+
+The OPC UA endpoint, namespace index, and legacy NodeIds remain unchanged.
