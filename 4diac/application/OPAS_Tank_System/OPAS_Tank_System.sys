@@ -567,11 +567,11 @@
 					<Connection Source="CommTestInitSplit3.EO1" Destination="CommTestDACFeedbackRead.INIT" Comment=""/>
 					<Connection Source="CommTestInitSplit3.EO2" Destination="CommTestInitSplit4.EI" Comment="" dx1="413.33333333333337"/>
 					<Connection Source="CommTestInitSplit4.EO2" Destination="CommTestDACWrite.INIT" Comment="" dx1="226.66666666666669"/>
-					<Connection Source="CommTestStart.COLD" Destination="CommTestInitMerge.EI1" Comment="" dx1="166.66666666666669"/>
-					<Connection Source="CommTestStart.WARM" Destination="CommTestInitMerge.EI2" Comment="" dx1="166.66666666666669"/>
 					<Connection Source="CommTestNivelRead.IND" Destination="CommTestNivelType.REQ" Comment="" dx1="280.0"/>
 					<Connection Source="CommTestEnableFeedbackRead.IND" Destination="CommTestEnableFeedbackType.REQ" Comment="" dx1="1040.0"/>
 					<Connection Source="CommTestDACFeedbackRead.IND" Destination="CommTestDACFeedbackType.REQ" Comment="" dx1="840.0"/>
+					<Connection Source="START.COLD" Destination="CommTestInitMerge.EI1" Comment="" dx1="366.6666666666667"/>
+					<Connection Source="START.WARM" Destination="CommTestInitMerge.EI2" Comment="" dx1="366.6666666666667"/>
 				</EventConnections>
 				<DataConnections>
 					<Connection Source="MVScaleDiv.OUT" Destination="DACScaleMul_1.IN1" Comment="" dx1="400.0"/>
