@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="SAFE_DAC_RATE_LIMITER" Comment="DAC rate limiter with deterministic startup, reset, bounds, and diagnostics">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="Guilherme" Date="2026-07-26">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="Execute one safe DAC rate-limiter cycle">
+				<With Var="DAC_IN"/>
+				<With Var="MAX_DELTA_DAC"/>
+				<With Var="DAC_MIN"/>
+				<With Var="DAC_MAX"/>
+				<With Var="INITIAL_DAC"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="Safe DAC rate-limiter cycle completed">
+				<With Var="DAC_OUT"/>
+				<With Var="LIMITED"/>
+				<With Var="INITIALIZED"/>
+				<With Var="RESET_ACTIVE"/>
+				<With Var="CONFIGURATION_VALID"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="DAC_IN" Type="LREAL" Comment="Requested DAC command"/>
+			<VarDeclaration Name="MAX_DELTA_DAC" Type="LREAL" Comment="Maximum DAC output change per execution"/>
+			<VarDeclaration Name="DAC_MIN" Type="LREAL" Comment="Minimum allowed DAC output"/>
+			<VarDeclaration Name="DAC_MAX" Type="LREAL" Comment="Maximum allowed DAC output"/>
+			<VarDeclaration Name="INITIAL_DAC" Type="LREAL" Comment="Deterministic output used at startup and reset"/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment="Apply deterministic reset behavior"/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="DAC_OUT" Type="LREAL" Comment="Bounded and rate-limited DAC output"/>
+			<VarDeclaration Name="LIMITED" Type="BOOL" Comment="Output differs from the requested DAC input"/>
+			<VarDeclaration Name="INITIALIZED" Type="BOOL" Comment="Limiter has valid initialized state"/>
+			<VarDeclaration Name="RESET_ACTIVE" Type="BOOL" Comment="Current cycle executed reset behavior"/>
+			<VarDeclaration Name="CONFIGURATION_VALID" Type="BOOL" Comment="Rate and output-limit configuration is valid"/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="previous_dac" Type="LREAL" Comment="Stored DAC output from the previous valid cycle" InitialValue="0.0"/>
+			<VarDeclaration Name="initialized_internal" Type="BOOL" Comment="Internal initialization state" InitialValue="FALSE"/>
+			<VarDeclaration Name="bounded_input" Type="LREAL" Comment="Requested DAC after output bounds" InitialValue="0.0"/>
+			<VarDeclaration Name="bounded_initial" Type="LREAL" Comment="Initial DAC after output bounds" InitialValue="0.0"/>
+			<VarDeclaration Name="delta_dac" Type="LREAL" Comment="Difference between bounded input and previous output" InitialValue="0.0"/>
+			<VarDeclaration Name="limited_delta" Type="LREAL" Comment="DAC difference after rate limiting" InitialValue="0.0"/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" Comment="Initial state" x="533.3333333333334" y="400.0">
+			</ECState>
+			<ECState Name="CALCULATE" Comment="Execute safe DAC rate limiting" x="933.3333333333334" y="900.0">
+				<ECAction Algorithm="SAFE_DAC_RATE_LIMITER_ALGORITHM"/>
+			</ECState>
+			<ECState Name="CONFIRM" Comment="Publish limiter outputs" x="1466.6666666666667" y="400.0">
+				<ECAction Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="CALCULATE" Condition="REQ" Comment="" x="733.3333333333334" y="680.0"/>
+			<ECTransition Source="CALCULATE" Destination="CONFIRM" Condition="1" Comment="" x="1373.3333333333335" y="746.6666666666667"/>
+			<ECTransition Source="CONFIRM" Destination="START" Condition="1" Comment="" x="1160.0" y="480.0"/>
+		</ECC>
+		<Algorithm Name="SAFE_DAC_RATE_LIMITER_ALGORITHM" Comment="Deterministic startup, reset, bounds, and symmetric DAC rate limiting">
+			<ST><![CDATA[CONFIGURATION_VALID :=
+    (MAX_DELTA_DAC > 0.0)
+    AND
+    (DAC_MIN < DAC_MAX);
+
+IF NOT CONFIGURATION_VALID THEN
+    previous_dac := 0.0;
+    initialized_internal := FALSE;
+
+    DAC_OUT := 0.0;
+    LIMITED := TRUE;
+    INITIALIZED := FALSE;
+    RESET_ACTIVE := FALSE;
+
+ELSE
+    bounded_initial := INITIAL_DAC;
+
+    IF bounded_initial > DAC_MAX THEN
+        bounded_initial := DAC_MAX;
+    ELSIF bounded_initial < DAC_MIN THEN
+        bounded_initial := DAC_MIN;
+    END_IF;
+
+    IF RESET OR NOT initialized_internal THEN
+        previous_dac := bounded_initial;
+        DAC_OUT := previous_dac;
+        initialized_internal := TRUE;
+
+        LIMITED := DAC_OUT <> DAC_IN;
+        INITIALIZED := TRUE;
+        RESET_ACTIVE := RESET;
+
+    ELSE
+        bounded_input := DAC_IN;
+
+        IF bounded_input > DAC_MAX THEN
+            bounded_input := DAC_MAX;
+        ELSIF bounded_input < DAC_MIN THEN
+            bounded_input := DAC_MIN;
+        END_IF;
+
+        delta_dac := bounded_input - previous_dac;
+
+        IF delta_dac > MAX_DELTA_DAC THEN
+            limited_delta := MAX_DELTA_DAC;
+        ELSIF delta_dac < -MAX_DELTA_DAC THEN
+            limited_delta := -MAX_DELTA_DAC;
+        ELSE
+            limited_delta := delta_dac;
+        END_IF;
+
+        DAC_OUT := previous_dac + limited_delta;
+
+        IF DAC_OUT > DAC_MAX THEN
+            DAC_OUT := DAC_MAX;
+        ELSIF DAC_OUT < DAC_MIN THEN
+            DAC_OUT := DAC_MIN;
+        END_IF;
+
+        previous_dac := DAC_OUT;
+
+        LIMITED := DAC_OUT <> DAC_IN;
+        INITIALIZED := TRUE;
+        RESET_ACTIVE := FALSE;
+    END_IF;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>
