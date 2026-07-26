@@ -93,3 +93,11 @@ Desktop.ini
 *.zip
 *.rar
 *.7z
+
+# Curated offline PI closed-loop baseline
+!data/sample/pi-offline-closed-loop-20260726.zip
+!results/pi-offline-closed-loop/
+!results/pi-offline-closed-loop/metrics.csv
+!results/pi-offline-closed-loop/level-response.png
+!results/pi-offline-closed-loop/control-effort.png
+!results/pi-offline-closed-loop/error.png

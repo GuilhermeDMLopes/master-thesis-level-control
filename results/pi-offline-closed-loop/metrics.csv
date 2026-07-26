@@ -1,0 +1,35 @@
+metric,value
+CSV rows,2993
+Total recording duration (s),428.954
+Closed-loop start in CSV (s),12.157
+Closed-loop duration (s),416.797
+Initial level at control start (cm),6.956185
+Setpoint (cm),14.0
+10–90% rise time (s),22.609
+First setpoint crossing (s),30.889999999999997
+Peak level (cm),15.602199
+Peak time (s),50.203
+Overshoot relative to setpoint (%),11.444278571428576
+Overshoot relative to step amplitude (%),22.746182289001066
+Settling time ±5% (s),71.125
+Settling time ±2% (s),114.312
+Settling time ±1% (s),124.45300000000002
+IAE (cm·s),176.7824492635
+ISE (cm²·s),612.3226129882582
+ITAE (cm·s²),5655.1649784204865
+Final 60 s mean level (cm),14.000052125
+Final 60 s level standard deviation (cm),2.1771756359983897e-05
+Final 60 s mean signed error (cm),-5.21249999999851e-05
+Final 60 s mean absolute error (cm),5.21249999999851e-05
+Final 60 s maximum absolute error (cm),9.999999999976694e-05
+Final 60 s mean DAC,11200
+Final 60 s mean MV (%),35.0
+Maximum DAC,17945
+Maximum DAC time (s),21.203
+Initial DAC jump,9084
+Median CSV interval (s),0.125
+Mean CSV interval (s),0.14333021390374331
+Communication states,{'CONNECTED': 2993}
+Maximum reconnection count,0
+DAC command-feedback mismatches,0
+Enable command-feedback mismatches,0

@@ -457,6 +457,85 @@
 			</FB>
 		</SubAppNetwork>
 	</Application>
+	<Application Name="PI_OFFLINE_CLOSED_LOOP" Comment="">
+		<SubAppNetwork>
+			<FB Name="OfflineInitMerge" Type="E_MERGE" Comment="" x="-1066.6666666666667" y="0.0">
+			</FB>
+			<FB Name="OfflineLevelRead" Type="SUBSCRIBE_1" Comment="" x="133.33333333333334" y="0.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+			</FB>
+			<FB Name="OfflineLevelType" Type="LREAL2LREAL" Comment="" x="133.33333333333334" y="1066.6666666666667">
+			</FB>
+			<FB Name="OfflineLevelScale" Type="F_DIV" Comment="" x="133.33333333333334" y="1866.6666666666667">
+				<Parameter Name="IN2" Value="LREAL#1000.0"/>
+			</FB>
+			<FB Name="OfflinePVFilter" Type="PV_FILTER" Comment="" x="133.33333333333334" y="2800.0">
+				<Parameter Name="ALPHA" Value="LREAL#0.95"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="OfflinePI" Type="PI_LEVEL_CONTROLLER" Comment="" x="1733.3333333333335" y="0.0">
+				<Parameter Name="SETPOINT" Value="LREAL#14.0"/>
+				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
+				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.5"/>
+				<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
+				<Parameter Name="OUTPUT_MIN" Value="LREAL#0.0"/>
+				<Parameter Name="OUTPUT_MAX" Value="LREAL#100.0"/>
+				<Parameter Name="MANUAL" Value="FALSE"/>
+				<Parameter Name="MANUAL_OUTPUT" Value="LREAL#0.0"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="OfflineDACScale" Type="F_MUL" Comment="" x="2266.666666666667" y="1600.0">
+				<Parameter Name="IN2" Value="LREAL#320.0"/>
+			</FB>
+			<FB Name="OfflineDACLimiter" Type="DAC_RATE_LIMITER" Comment="" x="2133.3333333333335" y="2400.0">
+				<Parameter Name="MAX_DELTA_DAC" Value="LREAL#150.0"/>
+				<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+				<Parameter Name="DAC_MAX" Value="LREAL#32000.0"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="OfflineDACType" Type="F_LREAL_TO_INT" Comment="" x="2266.666666666667" y="3466.666666666667">
+			</FB>
+			<FB Name="OfflineDACWrite" Type="CLIENT_1_0" Comment="" x="4400.0" y="133.33333333333334">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+			</FB>
+			<FB Name="OfflineEnableCheck" Type="F_GT" Comment="" x="4400.0" y="1333.3333333333335">
+				<Parameter Name="IN2" Value="LREAL#0.0"/>
+			</FB>
+			<FB Name="OfflineEnableWrite" Type="CLIENT_1_0" Comment="" x="4400.0" y="2266.666666666667">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+			</FB>
+			<EventConnections>
+				<Connection Source="OfflineLevelRead.IND" Destination="OfflineLevelType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="606.6666666666667"/>
+				<Connection Source="OfflineLevelType.CNF" Destination="OfflineLevelScale.REQ" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				<Connection Source="OfflineLevelScale.CNF" Destination="OfflinePVFilter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="466.6666666666667"/>
+				<Connection Source="OfflinePVFilter.CNF" Destination="OfflinePI.REQ" Comment="" dx1="433.33333333333337"/>
+				<Connection Source="OfflinePI.CNF" Destination="OfflineDACScale.REQ" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+				<Connection Source="OfflineDACScale.CNF" Destination="OfflineDACLimiter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				<Connection Source="OfflineDACLimiter.CNF" Destination="OfflineDACType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="533.3333333333334"/>
+				<Connection Source="OfflineDACType.CNF" Destination="OfflineDACWrite.REQ" Comment="" dx1="580.0"/>
+				<Connection Source="OfflineDACWrite.CNF" Destination="OfflineEnableCheck.REQ" Comment="" dx1="80.0" dx2="80.0" dy="546.6666666666667"/>
+				<Connection Source="OfflineEnableCheck.CNF" Destination="OfflineEnableWrite.REQ" Comment="" dx1="80.0" dx2="80.0" dy="513.3333333333334"/>
+				<Connection Source="OfflineInitMerge.EO" Destination="OfflineEnableWrite.INIT" Comment="" dx1="2400.0"/>
+				<Connection Source="OfflineEnableWrite.INITO" Destination="OfflineDACWrite.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-1066.6666666666667"/>
+				<Connection Source="OfflineDACWrite.INITO" Destination="OfflineLevelRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-66.66666666666667"/>
+			</EventConnections>
+			<DataConnections>
+				<Connection Source="OfflineLevelRead.RD_1" Destination="OfflineLevelType.IN" Comment="" dx1="80.0" dx2="80.0" dy="380.0"/>
+				<Connection Source="OfflineLevelType.OUT" Destination="OfflineLevelScale.IN1" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				<Connection Source="OfflineLevelScale.OUT" Destination="OfflinePVFilter.PV_IN" Comment="" dx1="80.0" dx2="80.0" dy="466.6666666666667"/>
+				<Connection Source="OfflinePVFilter.PV_OUT" Destination="OfflinePI.PROCESS_VARIABLE" Comment="" dx1="433.33333333333337"/>
+				<Connection Source="OfflinePI.OUTPUT" Destination="OfflineDACScale.IN1" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+				<Connection Source="OfflineDACScale.OUT" Destination="OfflineDACLimiter.DAC_IN" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				<Connection Source="OfflineDACLimiter.DAC_OUT" Destination="OfflineDACType.IN" Comment="" dx1="80.0" dx2="80.0" dy="533.3333333333334"/>
+				<Connection Source="OfflineDACType.OUT" Destination="OfflineDACWrite.SD_1" Comment="" dx1="580.0"/>
+				<Connection Source="OfflinePI.OUTPUT" Destination="OfflineEnableCheck.IN1" Comment="" dx1="493.33333333333337"/>
+				<Connection Source="OfflineEnableCheck.OUT" Destination="OfflineEnableWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="613.3333333333334"/>
+			</DataConnections>
+		</SubAppNetwork>
+	</Application>
 	<Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="3000.0" y="1173.3333333333335">
 		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
 		<Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" Comment="device profile"/>
@@ -621,6 +700,87 @@
 				</DataConnections>
 			</FBNetwork>
 		</Resource>
+		<Resource Name="ResOfflinePI" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+			<FBNetwork>
+				<FB Name="OfflineDACType" Type="F_LREAL_TO_INT" Comment="" x="2266.666666666667" y="3466.666666666667">
+				</FB>
+				<FB Name="OfflinePVFilter" Type="PV_FILTER" Comment="" x="133.33333333333334" y="2800.0">
+					<Parameter Name="ALPHA" Value="LREAL#0.95"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="OfflineDACWrite" Type="CLIENT_1_0" Comment="" x="4400.0" y="133.33333333333334">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+				</FB>
+				<FB Name="OfflineLevelScale" Type="F_DIV" Comment="" x="133.33333333333334" y="1866.6666666666667">
+					<Parameter Name="IN2" Value="LREAL#1000.0"/>
+				</FB>
+				<FB Name="OfflineEnableWrite" Type="CLIENT_1_0" Comment="" x="4400.0" y="2266.666666666667">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+				</FB>
+				<FB Name="OfflineDACLimiter" Type="DAC_RATE_LIMITER" Comment="" x="2133.3333333333335" y="2400.0">
+					<Parameter Name="MAX_DELTA_DAC" Value="LREAL#150.0"/>
+					<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+					<Parameter Name="DAC_MAX" Value="LREAL#32000.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="OfflineEnableCheck" Type="F_GT" Comment="" x="4400.0" y="1333.3333333333335">
+					<Parameter Name="IN2" Value="LREAL#0.0"/>
+				</FB>
+				<FB Name="OfflineDACScale" Type="F_MUL" Comment="" x="2266.666666666667" y="1600.0">
+					<Parameter Name="IN2" Value="LREAL#320.0"/>
+				</FB>
+				<FB Name="OfflineLevelRead" Type="SUBSCRIBE_1" Comment="" x="133.33333333333334" y="0.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+				</FB>
+				<FB Name="OfflinePI" Type="PI_LEVEL_CONTROLLER" Comment="" x="1733.3333333333335" y="0.0">
+					<Parameter Name="SETPOINT" Value="LREAL#14.0"/>
+					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
+					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.5"/>
+					<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
+					<Parameter Name="OUTPUT_MIN" Value="LREAL#0.0"/>
+					<Parameter Name="OUTPUT_MAX" Value="LREAL#100.0"/>
+					<Parameter Name="MANUAL" Value="FALSE"/>
+					<Parameter Name="MANUAL_OUTPUT" Value="LREAL#0.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="OfflineLevelType" Type="LREAL2LREAL" Comment="" x="133.33333333333334" y="1066.6666666666667">
+				</FB>
+				<FB Name="OfflineInitMerge" Type="E_MERGE" Comment="" x="-1066.6666666666667" y="133.33333333333334">
+				</FB>
+				<EventConnections>
+					<Connection Source="OfflineDACType.CNF" Destination="OfflineDACWrite.REQ" Comment="" dx1="580.0"/>
+					<Connection Source="OfflineLevelScale.CNF" Destination="OfflinePVFilter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="466.6666666666667"/>
+					<Connection Source="OfflineDACLimiter.CNF" Destination="OfflineDACType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="533.3333333333334"/>
+					<Connection Source="OfflineDACWrite.CNF" Destination="OfflineEnableCheck.REQ" Comment="" dx1="80.0" dx2="80.0" dy="546.6666666666667"/>
+					<Connection Source="OfflineEnableCheck.CNF" Destination="OfflineEnableWrite.REQ" Comment="" dx1="80.0" dx2="80.0" dy="513.3333333333334"/>
+					<Connection Source="OfflineDACScale.CNF" Destination="OfflineDACLimiter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+					<Connection Source="OfflinePVFilter.CNF" Destination="OfflinePI.REQ" Comment="" dx1="433.33333333333337"/>
+					<Connection Source="OfflinePI.CNF" Destination="OfflineDACScale.REQ" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+					<Connection Source="OfflineLevelRead.IND" Destination="OfflineLevelType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="480.0"/>
+					<Connection Source="OfflineLevelType.CNF" Destination="OfflineLevelScale.REQ" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+					<Connection Source="START.COLD" Destination="OfflineInitMerge.EI1" Comment="" dx1="260.0"/>
+					<Connection Source="START.WARM" Destination="OfflineInitMerge.EI2" Comment="" dx1="260.0"/>
+					<Connection Source="OfflineInitMerge.EO" Destination="OfflineEnableWrite.INIT" Comment="" dx1="2400.0"/>
+					<Connection Source="OfflineEnableWrite.INITO" Destination="OfflineDACWrite.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-1066.6666666666667"/>
+					<Connection Source="OfflineDACWrite.INITO" Destination="OfflineLevelRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-66.66666666666667"/>
+				</EventConnections>
+				<DataConnections>
+					<Connection Source="OfflineDACType.OUT" Destination="OfflineDACWrite.SD_1" Comment="" dx1="580.0"/>
+					<Connection Source="OfflineLevelScale.OUT" Destination="OfflinePVFilter.PV_IN" Comment="" dx1="80.0" dx2="80.0" dy="466.6666666666667"/>
+					<Connection Source="OfflineDACLimiter.DAC_OUT" Destination="OfflineDACType.IN" Comment="" dx1="80.0" dx2="80.0" dy="533.3333333333334"/>
+					<Connection Source="OfflineEnableCheck.OUT" Destination="OfflineEnableWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="613.3333333333334"/>
+					<Connection Source="OfflineDACScale.OUT" Destination="OfflineDACLimiter.DAC_IN" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+					<Connection Source="OfflinePVFilter.PV_OUT" Destination="OfflinePI.PROCESS_VARIABLE" Comment="" dx1="433.33333333333337"/>
+					<Connection Source="OfflinePI.OUTPUT" Destination="OfflineDACScale.IN1" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+					<Connection Source="OfflinePI.OUTPUT" Destination="OfflineEnableCheck.IN1" Comment="" dx1="493.33333333333337"/>
+					<Connection Source="OfflineLevelRead.RD_1" Destination="OfflineLevelType.IN" Comment="" dx1="80.0" dx2="80.0" dy="380.0"/>
+					<Connection Source="OfflineLevelType.OUT" Destination="OfflineLevelScale.IN1" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				</DataConnections>
+			</FBNetwork>
+		</Resource>
 	</Device>
 	<Mapping From="OPAS_Tank_SystemApp.MVScaleDiv" To="FORTE_PC.Res0.MVScaleDiv"/>
 	<Mapping From="OPAS_Tank_SystemApp.InitSplitPID_1" To="FORTE_PC.Res0.InitSplitPID_1"/>
@@ -652,4 +812,16 @@
 	<Mapping From="GATEWAY_COMM_TEST.CommTestEnableCommand" To="FORTE_PC.Res0.CommTestEnableCommand"/>
 	<Mapping From="GATEWAY_COMM_TEST.CommTestDACCommand" To="FORTE_PC.Res0.CommTestDACCommand"/>
 	<Mapping From="PI_CONTROLLER_TEST.ControllerUnderTest" To="FORTE_PC.Res0.ControllerUnderTest"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineDACType" To="FORTE_PC.ResOfflinePI.OfflineDACType"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflinePVFilter" To="FORTE_PC.ResOfflinePI.OfflinePVFilter"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineDACWrite" To="FORTE_PC.ResOfflinePI.OfflineDACWrite"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineLevelScale" To="FORTE_PC.ResOfflinePI.OfflineLevelScale"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineEnableWrite" To="FORTE_PC.ResOfflinePI.OfflineEnableWrite"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineDACLimiter" To="FORTE_PC.ResOfflinePI.OfflineDACLimiter"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineEnableCheck" To="FORTE_PC.ResOfflinePI.OfflineEnableCheck"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineDACScale" To="FORTE_PC.ResOfflinePI.OfflineDACScale"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineLevelRead" To="FORTE_PC.ResOfflinePI.OfflineLevelRead"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflinePI" To="FORTE_PC.ResOfflinePI.OfflinePI"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineLevelType" To="FORTE_PC.ResOfflinePI.OfflineLevelType"/>
+	<Mapping From="PI_OFFLINE_CLOSED_LOOP.OfflineInitMerge" To="FORTE_PC.ResOfflinePI.OfflineInitMerge"/>
 </System>
