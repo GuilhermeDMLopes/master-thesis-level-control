@@ -12,10 +12,16 @@ from gateway_opcua import (
 
 
 def test_csv_header_is_english_and_contains_connection_metadata() -> None:
-    assert len(CSV_HEADER) == 32
-    assert CSV_HEADER[-2:] == (
+    assert len(CSV_HEADER) == 36
+    assert CSV_HEADER[30:32] == (
         "communication_state",
         "reconnection_count",
+    )
+    assert CSV_HEADER[-4:] == (
+        "dac_gateway_applied",
+        "mv_gateway_applied_percent",
+        "dac_boundary_limited",
+        "dac_boundary_max_delta",
     )
 
     legacy_portuguese_headers = {

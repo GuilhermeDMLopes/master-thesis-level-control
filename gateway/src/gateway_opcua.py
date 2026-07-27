@@ -18,6 +18,9 @@ from gateway_config import (
     BR_LEVEL_NODE_ID,
     BR_RECONNECT_INTERVAL_S,
     CSV_PATH,
+    DAC_BOUNDARY_MAX,
+    DAC_BOUNDARY_MAX_DELTA,
+    DAC_BOUNDARY_MIN,
     DAC_LIMITER_MAX,
     DAC_LIMITER_MAX_DELTA,
     DAC_LIMITER_MIN,
@@ -55,6 +58,7 @@ from gateway_interface import (
 
 from gateway_processing import (
     dac_to_percent,
+    limit_dac_boundary_step,
     raw_level_to_cm,
     update_filtered_value,
 )
@@ -100,6 +104,10 @@ CSV_HEADER = (
     "notes",
     "communication_state",
     "reconnection_count",
+    "dac_gateway_applied",
+    "mv_gateway_applied_percent",
+    "dac_boundary_limited",
+    "dac_boundary_max_delta",
 )
 
 
@@ -267,7 +275,19 @@ async def main() -> None:
         dac_feedback_variable = gateway_variables.dac_feedback
 
         last_enable_command = bool(initial_enable)
-        last_dac_command = int(initial_dac)
+        boundary_reference_dac = int(initial_dac)
+        last_gateway_applied_dac = int(initial_dac)
+        dac_boundary_limited = False
+
+        # Validate the final write-boundary limiter before the gateway server
+        # starts accepting commands from FORTE.
+        limit_dac_boundary_step(
+            requested_dac=initial_dac,
+            reference_dac=initial_dac,
+            maximum_delta=DAC_BOUNDARY_MAX_DELTA,
+            dac_min=DAC_BOUNDARY_MIN,
+            dac_max=DAC_BOUNDARY_MAX,
+        )
 
         csv_file, csv_writer = open_csv_logger(CSV_PATH)
         logging.info("Experiment CSV created at: %s", CSV_PATH)
@@ -286,6 +306,15 @@ async def main() -> None:
             logging.info(
                 "Gateway namespace registered as ns=%s",
                 namespace_index,
+            )
+            logging.info(
+                (
+                    "Final DAC boundary limiter: maximum delta=%s, "
+                    "minimum=%s, maximum=%s"
+                ),
+                DAC_BOUNDARY_MAX_DELTA,
+                DAC_BOUNDARY_MIN,
+                DAC_BOUNDARY_MAX,
             )
             logging.info("NodeIds expected by 4diac FORTE:")
             logging.info(
@@ -372,7 +401,7 @@ async def main() -> None:
                             (
                                 reconnected_raw_level,
                                 last_enable_command,
-                                last_dac_command,
+                                reconnected_dac,
                             ) = await synchronize_after_reconnection(
                                 connection=br_connection,
                                 level_variable=level_variable,
@@ -389,6 +418,9 @@ async def main() -> None:
                             filtered_level_gateway_cm = raw_level_to_cm(
                                 reconnected_raw_level
                             )
+                            boundary_reference_dac = reconnected_dac
+                            last_gateway_applied_dac = reconnected_dac
+                            dac_boundary_limited = False
                             last_log_time = elapsed_time_s
                             reconnection_count += 1
                             communication_state = (
@@ -406,7 +438,7 @@ async def main() -> None:
                                 ),
                                 reconnected_raw_level,
                                 last_enable_command,
-                                last_dac_command,
+                                reconnected_dac,
                             )
 
                     await asyncio.sleep(GATEWAY_CYCLE_TIME_S)
@@ -440,16 +472,39 @@ async def main() -> None:
                             enable_command,
                         )
 
-                    if dac_command != last_dac_command:
+                    boundary_result = limit_dac_boundary_step(
+                        requested_dac=dac_command,
+                        reference_dac=boundary_reference_dac,
+                        maximum_delta=DAC_BOUNDARY_MAX_DELTA,
+                        dac_min=DAC_BOUNDARY_MIN,
+                        dac_max=DAC_BOUNDARY_MAX,
+                    )
+                    dac_boundary_limited = boundary_result.limited
+
+                    if (
+                        boundary_result.applied_dac
+                        != boundary_reference_dac
+                    ):
                         await write_value_only(
                             br_connection.dac_node,
-                            dac_command,
+                            boundary_result.applied_dac,
                             ua.VariantType.Int16,
                         )
-                        last_dac_command = dac_command
+                        boundary_reference_dac = (
+                            boundary_result.applied_dac
+                        )
+                        last_gateway_applied_dac = (
+                            boundary_result.applied_dac
+                        )
                         logging.info(
-                            "Written to B&R PLC: DAC = %s",
+                            (
+                                "Written to B&R PLC: DAC requested=%s, "
+                                "applied=%s, delta=%s, limited=%s"
+                            ),
                             dac_command,
+                            boundary_result.applied_dac,
+                            boundary_result.applied_delta,
+                            boundary_result.limited,
                         )
 
                     if (elapsed_time_s - last_log_time) >= LOG_PERIOD_S:
@@ -464,6 +519,7 @@ async def main() -> None:
                         confirmed_dac = int(
                             await br_connection.dac_node.read_value()
                         )
+                        boundary_reference_dac = confirmed_dac
 
                         await publish_feedback_values(
                             enable_feedback_variable=(
@@ -490,6 +546,9 @@ async def main() -> None:
                         )
 
                         mv_gateway_percent = dac_to_percent(dac_command)
+                        mv_gateway_applied_percent = dac_to_percent(
+                            last_gateway_applied_dac
+                        )
                         mv_br_percent = dac_to_percent(confirmed_dac)
 
                         csv_writer.writerow([
@@ -525,13 +584,21 @@ async def main() -> None:
                             DAC_LIMITER_RESET,
                             LEVEL_SCALE,
                             (
-                                "Baseline gateway with the PI/PID, PV "
-                                "filter, and DAC rate limiter implemented "
-                                "in 4diac FORTE. The gateway filter is used "
-                                "only for offline analysis."
+                                "PI/PID and SAFE_DAC_RATE_LIMITER execute "
+                                "in 4diac FORTE. The gateway applies a "
+                                "final DAC boundary limit before each PLC "
+                                "write. The gateway filter is used only "
+                                "for offline analysis."
                             ),
                             communication_state,
                             reconnection_count,
+                            last_gateway_applied_dac,
+                            round(
+                                mv_gateway_applied_percent,
+                                6,
+                            ),
+                            dac_boundary_limited,
+                            DAC_BOUNDARY_MAX_DELTA,
                         ])
 
                         if (
@@ -548,8 +615,9 @@ async def main() -> None:
                             (
                                 "CSV: t=%.1fs | Level=%.2f cm | "
                                 "Filtered level=%.2f cm | Setpoint=%.2f cm | "
-                                "Filtered error=%.2f cm | DAC command=%s | "
-                                "DAC feedback=%s | Enable command=%s | "
+                                "Filtered error=%.2f cm | DAC requested=%s | "
+                                "DAC applied=%s | DAC feedback=%s | "
+                                "Boundary limited=%s | Enable command=%s | "
                                 "Enable feedback=%s"
                             ),
                             elapsed_time_s,
@@ -558,7 +626,9 @@ async def main() -> None:
                             PI_SETPOINT_CM,
                             filtered_error_gateway_cm,
                             dac_command,
+                            last_gateway_applied_dac,
                             confirmed_dac,
+                            dac_boundary_limited,
                             enable_command,
                             confirmed_enable,
                         )

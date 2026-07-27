@@ -125,6 +125,9 @@ DAC
 Python Gateway
     |
     v
+Final DAC boundary limiter
+    |
+    v
 B&R PLC DAC
 ```
 
@@ -189,6 +192,15 @@ The command value and the feedback value may temporarily be different.
 
 That difference is important for communication diagnostics.
 
+The gateway also records the final DAC value successfully applied after
+boundary limiting:
+
+```text
+dac_gateway_applied
+```
+
+This is a CSV diagnostic value, not a second writable OPC UA command NodeId.
+
 ## OPC UA Access Rules
 
 ### `Nivel`
@@ -214,7 +226,8 @@ That difference is important for communication diagnostics.
 
 - FORTE writable.
 - Gateway readable.
-- Used as the command sent to the B&R PLC.
+- Represents the requested command from FORTE.
+- Passes through the final gateway DAC boundary limiter before a PLC write.
 
 ### `DACFeedback`
 
@@ -329,7 +342,8 @@ The new interface will allow FORTE and CSV analysis to compare:
 
 ```text
 Enable == EnableFeedback
-DAC == DACFeedback
+DAC == dac_gateway_applied
+dac_gateway_applied == DACFeedback
 ```
 
 A difference does not automatically indicate an error.
@@ -343,6 +357,41 @@ Temporary differences may occur because of:
 - Gateway cycle timing.
 - Value conversion.
 - Failed or delayed writes.
+- Intentional final DAC boundary limiting.
+
+During a normal limited ramp, this relationship is expected:
+
+```text
+DAC != dac_gateway_applied
+dac_gateway_applied == DACFeedback
+```
+
+The first difference separates requested and applied values. The second
+comparison verifies the PLC-confirmed command.
+
+## Final DAC Write-Boundary Protection
+
+`SAFE_DAC_RATE_LIMITER` limits every IEC 61499 execution. More than one FORTE
+update may still occur before one gateway read. The gateway therefore applies
+a final rate limit immediately before every B&R DAC write.
+
+The calculation uses:
+
+```text
+requested DAC = value read from gateway NodeId DAC
+reference DAC = latest successfully applied or PLC-confirmed value
+maximum delta = 150 DAC units per successful gateway write
+```
+
+After a successful reconnection:
+
+1. Offline commands are discarded.
+2. `DAC` is synchronized with the PLC-confirmed DAC.
+3. `DACFeedback` is synchronized with the PLC-confirmed DAC.
+4. The final limiter reference is reset to that same confirmed value.
+
+This prevents a stale pre-disconnection reference from causing a large first
+write after communication returns.
 
 The interface only exposes the values. Fault-detection rules will be defined later.
 

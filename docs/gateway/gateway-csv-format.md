@@ -59,6 +59,10 @@ Raw experiment CSV files are ignored by Git. Small representative datasets may b
 | `notes` | Experiment and implementation notes | string |
 | `communication_state` | Communication state associated with the valid sample | enum string |
 | `reconnection_count` | Number of successful PLC reconnections since gateway startup | non-negative integer |
+| `dac_gateway_applied` | Last DAC value successfully written by the gateway after final boundary limiting | integer |
+| `mv_gateway_applied_percent` | Gateway-applied DAC value converted to percent | % |
+| `dac_boundary_limited` | Whether the final gateway boundary limiter is currently separating requested and applied DAC values | Boolean |
+| `dac_boundary_max_delta` | Maximum absolute change allowed for each DAC write performed by the gateway | DAC units |
 
 ## Communication State Values
 
@@ -105,12 +109,37 @@ enable_gateway_command
 
 represent the values exposed by the gateway command nodes.
 
+The requested DAC command is not necessarily the value written in the same
+gateway cycle. The final gateway boundary limiter produces:
+
+```text
+dac_gateway_applied
+```
+
+and guarantees, for consecutive successful gateway writes:
+
+```text
+abs(dac_gateway_applied(k) - dac_gateway_applied(k - 1))
+    <= dac_boundary_max_delta
+```
+
 ```text
 dac_br_feedback
 enable_br_feedback
 ```
 
 represent values read back and confirmed from the PLC.
+
+During a limited transition, the expected relationship is:
+
+```text
+dac_gateway_command != dac_gateway_applied
+dac_gateway_applied == dac_br_feedback
+```
+
+The first comparison indicates intentional boundary limiting. The second
+comparison verifies that the PLC confirmed the value most recently applied by
+the gateway.
 
 After reconnection, offline commands are discarded and the gateway command nodes are synchronized with the values confirmed by the PLC.
 
@@ -125,9 +154,10 @@ During a PLC disconnection:
 - previous feedback values may remain exposed to OPC UA clients;
 - commands written while offline are not automatically forwarded after reconnection.
 
-## Current Validation Result
+## Previous Validation Result
 
-The CSV format was validated with the local B&R PLC simulator.
+The 32-column format that preceded the final DAC boundary limiter was
+validated with the local B&R PLC simulator.
 
 Observed results:
 
@@ -149,13 +179,31 @@ communication_state = RECONNECTED
 reconnection_count = 1
 ```
 
+## Final DAC Boundary Limiter
+
+The IEC 61499 `SAFE_DAC_RATE_LIMITER` limits each FORTE execution. OPC UA and
+gateway scheduling may still cause more than one FORTE value to be replaced
+before the gateway reads the command node. The gateway therefore applies a
+second, final limiter at the PLC write boundary.
+
+The gateway limiter:
+
+- uses the last successfully written or PLC-confirmed DAC as its reference;
+- limits both upward and downward writes;
+- preserves the configured operational range `0..32000`;
+- resets its reference from `DACFeedback` after reconnection;
+- leaves the writable `DAC` NodeId as the requested FORTE command;
+- does not modify `Enable` timing.
+
 ## Compatibility Notes
 
-The existing 30 columns were preserved. The following columns were appended:
+The existing 32 columns were preserved. The following columns were appended:
 
 ```text
-communication_state
-reconnection_count
+dac_gateway_applied
+mv_gateway_applied_percent
+dac_boundary_limited
+dac_boundary_max_delta
 ```
 
 This additive change avoids breaking scripts that depend on the previous column order.

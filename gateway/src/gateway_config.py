@@ -130,6 +130,22 @@ DAC_LIMITER_RESET = False
 
 
 # ============================================================
+# FINAL DAC BOUNDARY LIMITER
+# ============================================================
+
+# The IEC 61499 limiter constrains each FORTE execution. The gateway applies
+# an additional final limit at the PLC write boundary because more than one
+# FORTE update may occur between two gateway reads.
+#
+# This guarantees that every DAC value effectively written by the gateway
+# changes by no more than DAC_BOUNDARY_MAX_DELTA relative to the latest value
+# successfully applied or confirmed by the PLC.
+DAC_BOUNDARY_MAX_DELTA = 150
+DAC_BOUNDARY_MIN = DAC_MIN
+DAC_BOUNDARY_MAX = DAC_MAX
+
+
+# ============================================================
 # CSV LOGGING
 # ============================================================
 
