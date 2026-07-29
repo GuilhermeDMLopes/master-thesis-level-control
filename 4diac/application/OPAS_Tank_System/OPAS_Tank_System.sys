@@ -616,6 +616,81 @@
 			</DataConnections>
 		</SubAppNetwork>
 	</Application>
+	<Application Name="PI_REAL_RAW_SAFE" Comment="Real plant PI in raw counts with manual-zero startup, output bias, safe DAC limiting, and no automatic resource start">
+		<SubAppNetwork>
+			<FB Name="RawLevelRead" Type="SUBSCRIBE_1" Comment="Read raw level counts from the local gateway" x="1600.0" y="933.3333333333334">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+			</FB>
+			<FB Name="RawLevelType" Type="LREAL2LREAL" Comment="Preserve raw level counts as LREAL" x="1600.0" y="2000.0">
+			</FB>
+			<FB Name="RawPVFilter" Type="PV_FILTER" Comment="First-order filter for raw level counts" x="1600.0" y="3000.0">
+				<Parameter Name="ALPHA" Value="LREAL#0.95"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Conservative PI controller in raw level counts and DAC deviation units" x="3200.0" y="933.3333333333334">
+				<Parameter Name="SETPOINT" Value="LREAL#450.0"/>
+				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#25.0"/>
+				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.15"/>
+				<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
+				<Parameter Name="OUTPUT_MIN" Value="LREAL#-9000.0"/>
+				<Parameter Name="OUTPUT_MAX" Value="LREAL#3000.0"/>
+				<Parameter Name="MANUAL" Value="TRUE"/>
+				<Parameter Name="MANUAL_OUTPUT" Value="LREAL#-9000.0"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="RawDACBias" Type="F_ADD" Comment="Add 9000 DAC feedforward bias to the PI deviation output" x="3733.3333333333335" y="2533.3333333333335">
+				<Parameter Name="IN2" Value="LREAL#9000.0"/>
+			</FB>
+			<FB Name="RawSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Final application-level DAC bounds and symmetric rate limit" x="3333.3333333333335" y="3333.3333333333335">
+				<Parameter Name="MAX_DELTA_DAC" Value="LREAL#150.0"/>
+				<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+				<Parameter Name="DAC_MAX" Value="LREAL#12000.0"/>
+				<Parameter Name="INITIAL_DAC" Value="LREAL#0.0"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="RawDACType" Type="F_LREAL_TO_INT" Comment="Convert safe DAC command to the gateway Int16 contract" x="3600.0" y="4533.333333333334">
+			</FB>
+			<FB Name="RawDACWrite" Type="CLIENT_1_0" Comment="Write DAC command to the local gateway" x="5866.666666666667" y="1066.6666666666667">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+			</FB>
+			<FB Name="RawEnableCheck" Type="F_GT" Comment="Enable output only while the biased requested DAC is positive" x="5866.666666666667" y="2266.666666666667">
+				<Parameter Name="IN2" Value="LREAL#0.0"/>
+			</FB>
+			<FB Name="RawEnableWrite" Type="CLIENT_1_0" Comment="Write Enable command to the local gateway" x="5866.666666666667" y="3200.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+			</FB>
+			<FB Name="RawInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; not connected to START.COLD or START.WARM" x="400.0" y="1066.6666666666667">
+			</FB>
+			<EventConnections>
+				<Connection Source="RawLevelRead.IND" Destination="RawLevelType.REQ" Comment=""/>
+				<Connection Source="RawLevelType.CNF" Destination="RawPVFilter.REQ" Comment=""/>
+				<Connection Source="RawPVFilter.CNF" Destination="RawPI.REQ" Comment=""/>
+				<Connection Source="RawPI.CNF" Destination="RawDACBias.REQ" Comment=""/>
+				<Connection Source="RawDACBias.CNF" Destination="RawSafeDACLimiter.REQ" Comment=""/>
+				<Connection Source="RawSafeDACLimiter.CNF" Destination="RawDACType.REQ" Comment=""/>
+				<Connection Source="RawDACType.CNF" Destination="RawDACWrite.REQ" Comment=""/>
+				<Connection Source="RawDACWrite.CNF" Destination="RawEnableCheck.REQ" Comment=""/>
+				<Connection Source="RawEnableCheck.CNF" Destination="RawEnableWrite.REQ" Comment=""/>
+				<Connection Source="RawInitMerge.EO" Destination="RawEnableWrite.INIT" Comment=""/>
+				<Connection Source="RawEnableWrite.INITO" Destination="RawDACWrite.INIT" Comment=""/>
+				<Connection Source="RawDACWrite.INITO" Destination="RawLevelRead.INIT" Comment=""/>
+			</EventConnections>
+			<DataConnections>
+				<Connection Source="RawLevelRead.RD_1" Destination="RawLevelType.IN" Comment=""/>
+				<Connection Source="RawLevelType.OUT" Destination="RawPVFilter.PV_IN" Comment=""/>
+				<Connection Source="RawPVFilter.PV_OUT" Destination="RawPI.PROCESS_VARIABLE" Comment=""/>
+				<Connection Source="RawPI.OUTPUT" Destination="RawDACBias.IN1" Comment=""/>
+				<Connection Source="RawDACBias.OUT" Destination="RawSafeDACLimiter.DAC_IN" Comment=""/>
+				<Connection Source="RawSafeDACLimiter.DAC_OUT" Destination="RawDACType.IN" Comment=""/>
+				<Connection Source="RawDACType.OUT" Destination="RawDACWrite.SD_1" Comment=""/>
+				<Connection Source="RawDACBias.OUT" Destination="RawEnableCheck.IN1" Comment=""/>
+				<Connection Source="RawEnableCheck.OUT" Destination="RawEnableWrite.SD_1" Comment=""/>
+			</DataConnections>
+		</SubAppNetwork>
+	</Application>
 	<Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="3000.0" y="1173.3333333333335">
 		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
 		<Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" Comment="device profile"/>
@@ -943,6 +1018,81 @@
 				</DataConnections>
 			</FBNetwork>
 		</Resource>
+		<Resource Name="ResRealRawPI" Type="EMB_RES" Comment="Manual-start resource for PI_REAL_RAW_SAFE" x="0.0" y="0.0">
+			<FBNetwork>
+				<FB Name="RawLevelRead" Type="SUBSCRIBE_1" Comment="Read raw level counts from the local gateway" x="1600.0" y="933.3333333333334">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+				</FB>
+				<FB Name="RawLevelType" Type="LREAL2LREAL" Comment="Preserve raw level counts as LREAL" x="1600.0" y="2000.0">
+				</FB>
+				<FB Name="RawPVFilter" Type="PV_FILTER" Comment="First-order filter for raw level counts" x="1600.0" y="3000.0">
+					<Parameter Name="ALPHA" Value="LREAL#0.95"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Conservative PI controller in raw level counts and DAC deviation units" x="3200.0" y="933.3333333333334">
+					<Parameter Name="SETPOINT" Value="LREAL#450.0"/>
+					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#25.0"/>
+					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.15"/>
+					<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
+					<Parameter Name="OUTPUT_MIN" Value="LREAL#-9000.0"/>
+					<Parameter Name="OUTPUT_MAX" Value="LREAL#3000.0"/>
+					<Parameter Name="MANUAL" Value="TRUE"/>
+					<Parameter Name="MANUAL_OUTPUT" Value="LREAL#-9000.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="RawDACBias" Type="F_ADD" Comment="Add 9000 DAC feedforward bias to the PI deviation output" x="3733.3333333333335" y="2533.3333333333335">
+					<Parameter Name="IN2" Value="LREAL#9000.0"/>
+				</FB>
+				<FB Name="RawSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Final application-level DAC bounds and symmetric rate limit" x="3333.3333333333335" y="3333.3333333333335">
+					<Parameter Name="MAX_DELTA_DAC" Value="LREAL#150.0"/>
+					<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+					<Parameter Name="DAC_MAX" Value="LREAL#12000.0"/>
+					<Parameter Name="INITIAL_DAC" Value="LREAL#0.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="RawDACType" Type="F_LREAL_TO_INT" Comment="Convert safe DAC command to the gateway Int16 contract" x="3600.0" y="4533.333333333334">
+				</FB>
+				<FB Name="RawDACWrite" Type="CLIENT_1_0" Comment="Write DAC command to the local gateway" x="5866.666666666667" y="1066.6666666666667">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+				</FB>
+				<FB Name="RawEnableCheck" Type="F_GT" Comment="Enable output only while the biased requested DAC is positive" x="5866.666666666667" y="2266.666666666667">
+					<Parameter Name="IN2" Value="LREAL#0.0"/>
+				</FB>
+				<FB Name="RawEnableWrite" Type="CLIENT_1_0" Comment="Write Enable command to the local gateway" x="5866.666666666667" y="3200.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+				</FB>
+				<FB Name="RawInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; not connected to START.COLD or START.WARM" x="400.0" y="1066.6666666666667">
+				</FB>
+				<EventConnections>
+					<Connection Source="RawLevelRead.IND" Destination="RawLevelType.REQ" Comment=""/>
+					<Connection Source="RawLevelType.CNF" Destination="RawPVFilter.REQ" Comment=""/>
+					<Connection Source="RawPVFilter.CNF" Destination="RawPI.REQ" Comment=""/>
+					<Connection Source="RawPI.CNF" Destination="RawDACBias.REQ" Comment=""/>
+					<Connection Source="RawDACBias.CNF" Destination="RawSafeDACLimiter.REQ" Comment=""/>
+					<Connection Source="RawSafeDACLimiter.CNF" Destination="RawDACType.REQ" Comment=""/>
+					<Connection Source="RawDACType.CNF" Destination="RawDACWrite.REQ" Comment=""/>
+					<Connection Source="RawDACWrite.CNF" Destination="RawEnableCheck.REQ" Comment=""/>
+					<Connection Source="RawEnableCheck.CNF" Destination="RawEnableWrite.REQ" Comment=""/>
+					<Connection Source="RawInitMerge.EO" Destination="RawEnableWrite.INIT" Comment=""/>
+					<Connection Source="RawEnableWrite.INITO" Destination="RawDACWrite.INIT" Comment=""/>
+					<Connection Source="RawDACWrite.INITO" Destination="RawLevelRead.INIT" Comment=""/>
+				</EventConnections>
+				<DataConnections>
+					<Connection Source="RawLevelRead.RD_1" Destination="RawLevelType.IN" Comment=""/>
+					<Connection Source="RawLevelType.OUT" Destination="RawPVFilter.PV_IN" Comment=""/>
+					<Connection Source="RawPVFilter.PV_OUT" Destination="RawPI.PROCESS_VARIABLE" Comment=""/>
+					<Connection Source="RawPI.OUTPUT" Destination="RawDACBias.IN1" Comment=""/>
+					<Connection Source="RawDACBias.OUT" Destination="RawSafeDACLimiter.DAC_IN" Comment=""/>
+					<Connection Source="RawSafeDACLimiter.DAC_OUT" Destination="RawDACType.IN" Comment=""/>
+					<Connection Source="RawDACType.OUT" Destination="RawDACWrite.SD_1" Comment=""/>
+					<Connection Source="RawDACBias.OUT" Destination="RawEnableCheck.IN1" Comment=""/>
+					<Connection Source="RawEnableCheck.OUT" Destination="RawEnableWrite.SD_1" Comment=""/>
+				</DataConnections>
+			</FBNetwork>
+		</Resource>
 	</Device>
 	<Mapping From="OPAS_Tank_SystemApp.MVScaleDiv" To="FORTE_PC.Res0.MVScaleDiv"/>
 	<Mapping From="OPAS_Tank_SystemApp.InitSplitPID_1" To="FORTE_PC.Res0.InitSplitPID_1"/>
@@ -998,4 +1148,15 @@
 	<Mapping From="PI_OFFLINE_SAFE_DAC_CLOSED_LOOP.OfflineDACType" To="FORTE_PC.ResOfflineSafeDAC.OfflineDACType"/>
 	<Mapping From="PI_OFFLINE_SAFE_DAC_CLOSED_LOOP.OfflineInitMerge" To="FORTE_PC.ResOfflineSafeDAC.OfflineInitMerge"/>
 	<Mapping From="PI_OFFLINE_SAFE_DAC_CLOSED_LOOP.OfflinePI" To="FORTE_PC.ResOfflineSafeDAC.OfflinePI"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawLevelRead" To="FORTE_PC.ResRealRawPI.RawLevelRead"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawLevelType" To="FORTE_PC.ResRealRawPI.RawLevelType"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawPVFilter" To="FORTE_PC.ResRealRawPI.RawPVFilter"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawPI" To="FORTE_PC.ResRealRawPI.RawPI"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawDACBias" To="FORTE_PC.ResRealRawPI.RawDACBias"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawSafeDACLimiter" To="FORTE_PC.ResRealRawPI.RawSafeDACLimiter"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawDACType" To="FORTE_PC.ResRealRawPI.RawDACType"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawDACWrite" To="FORTE_PC.ResRealRawPI.RawDACWrite"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawEnableCheck" To="FORTE_PC.ResRealRawPI.RawEnableCheck"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawEnableWrite" To="FORTE_PC.ResRealRawPI.RawEnableWrite"/>
+	<Mapping From="PI_REAL_RAW_SAFE.RawInitMerge" To="FORTE_PC.ResRealRawPI.RawInitMerge"/>
 </System>
