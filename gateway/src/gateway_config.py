@@ -47,18 +47,50 @@ BR_LEVEL_NODE_ID = "ns=6;s=::Program:Nivel"
 BR_ENABLE_NODE_ID = "ns=6;s=::Program:Enable"
 BR_DAC_NODE_ID = "ns=6;s=::Program:DAC"
 
+# PLC communication-watchdog NodeIds.
+BR_HEARTBEAT_NODE_ID = "ns=6;s=::Program:Heartbeat"
+BR_SAFETY_RESET_NODE_ID = "ns=6;s=::Program:SafetyReset"
+BR_WATCHDOG_HEALTHY_NODE_ID = "ns=6;s=::Program:WatchdogHealthy"
+BR_WATCHDOG_TRIPPED_NODE_ID = "ns=6;s=::Program:WatchdogTripped"
+BR_APPLIED_ENABLE_NODE_ID = "ns=6;s=::Program:AppliedEnable"
+BR_APPLIED_DAC_NODE_ID = "ns=6;s=::Program:AppliedDAC"
+
 # Namespace exposed by the Python gateway.
 GATEWAY_NAMESPACE_URI = "urn:br-4diac-gateway"
 
-# Read-only feedback NodeIds exposed by the gateway.
+# Read-only feedback and watchdog NodeIds exposed by the gateway.
 GATEWAY_ENABLE_FEEDBACK_NODE_ID = "EnableFeedback"
 GATEWAY_DAC_FEEDBACK_NODE_ID = "DACFeedback"
+GATEWAY_WATCHDOG_HEALTHY_NODE_ID = "WatchdogHealthy"
+GATEWAY_WATCHDOG_TRIPPED_NODE_ID = "WatchdogTripped"
+GATEWAY_APPLIED_ENABLE_NODE_ID = "AppliedEnable"
+GATEWAY_APPLIED_DAC_NODE_ID = "AppliedDAC"
 
 # Internal gateway execution period.
 GATEWAY_CYCLE_TIME_S = 0.1
 
 # Delay between attempts to reconnect to the B&R PLC.
 BR_RECONNECT_INTERVAL_S = 5.0
+
+
+# ============================================================
+# PLC WATCHDOG CONFIGURATION
+# ============================================================
+
+# The PLC watchdog is validated with a 100 ms PLC task and a 10-cycle timeout.
+# The gateway updates Heartbeat more frequently than that timeout.
+WATCHDOG_HEARTBEAT_PERIOD_S = 0.2
+
+# SafetyReset is a rising-edge input. The pulse is held long enough to be
+# observed by the 100 ms PLC task.
+WATCHDOG_RESET_PULSE_S = 0.3
+
+# Maximum time allowed for the PLC to report a healthy watchdog after a safe
+# startup or reconnection handshake.
+WATCHDOG_STARTUP_TIMEOUT_S = 3.0
+
+# Polling period used during the startup handshake.
+WATCHDOG_STARTUP_POLL_PERIOD_S = 0.1
 
 
 # ============================================================

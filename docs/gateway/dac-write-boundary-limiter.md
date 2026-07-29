@@ -65,12 +65,21 @@ For each connected gateway cycle:
 
 ## Startup
 
-At gateway startup, the boundary reference is initialized from the DAC value
-read from the PLC. The initial gateway server command and feedback variables
-also retain that confirmed value.
+At gateway startup, the PLC watchdog handshake first forces:
 
-With a zero initial DAC and a large positive FORTE request, the effective PLC
-write sequence is:
+```text
+Enable=False
+DAC=0
+AppliedEnable=False
+AppliedDAC=0
+```
+
+The boundary reference and writable gateway DAC command then start from zero.
+The gateway server begins accepting FORTE commands only after
+`WatchdogHealthy=True` and `WatchdogTripped=False`.
+
+With a large positive FORTE request, the effective PLC command-write sequence
+starts from:
 
 ```text
 150, 300, 450, 600, ...
@@ -83,14 +92,15 @@ still limited.
 
 After communication is restored:
 
-1. Read the current PLC level, Enable, and DAC.
-2. Discard commands written while the PLC was offline.
-3. Synchronize the writable `Enable` and `DAC` nodes with confirmed PLC values.
-4. Synchronize `EnableFeedback` and `DACFeedback`.
-5. Reset the boundary reference and last applied value from the confirmed DAC.
+1. Force PLC `Enable=False` and `DAC=0`.
+2. Re-establish Heartbeat and pulse `SafetyReset`.
+3. Confirm a healthy watchdog with zero applied outputs.
+4. Discard commands written while the PLC was offline.
+5. Reset writable gateway `Enable` and `DAC` nodes to safe zero values.
+6. Synchronize command feedback and watchdog diagnostics.
+7. Reset the boundary reference and last applied value to zero.
 
-The first post-reconnection write is therefore limited relative to the actual
-PLC state rather than a stale pre-disconnection state.
+The first post-reconnection positive write is therefore limited from zero.
 
 ## Invalid Configuration
 
