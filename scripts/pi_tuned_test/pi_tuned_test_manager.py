@@ -1280,18 +1280,28 @@ async def command_monitor() -> None:
                 "3. Reactivate the physical stop "
                 "when flow stops."
             )
+            print()
+            shutdown_confirmation = input(
+                "Depois de aplicar os dois valores no "
+                "4diac, digite RETURN_ZERO_APPLIED: "
+            ).strip()
 
-            heading("WAITING FOR COMPLETE ZERO")
+            if shutdown_confirmation != "RETURN_ZERO_APPLIED":
+                raise RuntimeError(
+                    "The manual zero-return command "
+                    "was not confirmed."
+                )
 
-            zero_reference = time.monotonic()
-            deadline = zero_reference + 75.0
-            stable_zero = 0
+            heading("WAITING FOR APPLIED OUTPUT DISABLE")
+
+            disable_reference = time.monotonic()
+            disable_deadline = disable_reference + 12.0
             immediate_disable_seen = False
 
-            while time.monotonic() < deadline:
+            while time.monotonic() < disable_deadline:
                 state, _ = await sample(
-                    "RETURN_ZERO",
-                    zero_reference,
+                    "DISABLE_OUTPUT",
+                    disable_reference,
                 )
 
                 applied_zero = (
@@ -1301,11 +1311,32 @@ async def command_monitor() -> None:
 
                 if applied_zero:
                     immediate_disable_seen = True
+                    break
+
+                await asyncio.sleep(SAMPLE_S)
+            else:
+                raise RuntimeError(
+                    "Applied output did not disable "
+                    "after the confirmed manual command."
+                )
+
+            heading("WAITING FOR COMPLETE COMMAND ZERO")
+
+            zero_reference = time.monotonic()
+            zero_deadline = zero_reference + 135.0
+            stable_zero = 0
+
+            while time.monotonic() < zero_deadline:
+                state, _ = await sample(
+                    "RETURN_ZERO",
+                    zero_reference,
+                )
 
                 complete_zero = (
                     state["Enable"] is False
                     and int(state["DAC"]) == 0
-                    and applied_zero
+                    and state["AppliedEnable"] is False
+                    and int(state["AppliedDAC"]) == 0
                 )
 
                 if complete_zero:
@@ -1319,7 +1350,8 @@ async def command_monitor() -> None:
                 await asyncio.sleep(SAMPLE_S)
             else:
                 raise RuntimeError(
-                    "Complete zero was not confirmed."
+                    "Complete command zero was not "
+                    "confirmed within 135 seconds."
                 )
 
     if not immediate_disable_seen:

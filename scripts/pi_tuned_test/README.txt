@@ -36,7 +36,10 @@ Sequencia no 4diac durante o monitor:
   - Apos a observacao automatica:
       MANUAL_OUTPUT=-9000.
       depois MANUAL=TRUE.
+      confirme no terminal com RETURN_ZERO_APPLIED.
   - Reative a parada fisica quando o fluxo parar.
+  - O script valida a desabilitacao fisica em ate 12 s
+    e permite ate 135 s para o comando DAC chegar a zero.
 
 Em qualquer anomalia:
   - Acione a parada fisica.
