@@ -2,17 +2,33 @@
 
 ## Overview
 
-This repository contains the software, documentation, and experimental structure developed for a master's thesis on level control using:
+This repository contains the software, engineering artifacts, automated tests, experimental procedures, and datasets developed for a master's thesis on level control using:
 
-- A real B&R PLC;
+- a real B&R PLC;
 - OPC UA communication;
-- A Python integration gateway;
+- a Python integration gateway;
 - Eclipse 4diac IDE;
 - Eclipse 4diac FORTE;
-- A PI controller;
-- A future Model Predictive Controller.
+- a validated real-plant PI baseline;
+- a Model Predictive Controller under development.
 
-The main objective is to develop, validate, and compare PI and MPC control strategies applied to a real level process.
+The research objective is to develop, validate, and compare PI and MPC control strategies on a real level-control process while preserving reproducibility, operational safety, and the complete engineering history of the project.
+
+## Current Project Status
+
+The real-plant communication path and the fail-closed raw-count PI baseline have been validated.
+
+Validated checkpoints:
+
+| Checkpoint | Git tag | Result |
+|---|---|---|
+| Initial repository and gateway baseline | `baseline-gateway-v1` | Repository, Python environment, gateway source, and complete 4diac project validated |
+| Real FORTE/gateway communication with zero output | `real-forte-zero-output-v1` | PLC–gateway–FORTE communication validated without positive actuator output |
+| Real raw-count PI baseline | `real-raw-pi-v1` | Safe real-plant PI test completed, evidence preserved, and automated acceptance criteria passed |
+
+The validated PI checkpoint is integrated into `main`. The complete automated test suite currently contains **149 passing tests**.
+
+The MPC has not yet been validated on the real plant. Model identification and offline MPC preparation are the current development focus.
 
 ## Current Architecture
 
@@ -31,74 +47,124 @@ OPC UA Client
 PI controller and future MPC
 ```
 
-## Why the Python Gateway Is Required
-
-The B&R PLC already exposes process variables through an OPC UA server.
-
-However, 4diac FORTE was not able to access the original NodeIds exposed by the B&R OPC UA server. The Python gateway was introduced as an integration layer that translates the original B&R NodeIds into simplified NodeIds that can be used by FORTE.
-
-The gateway currently:
-
-1. Connects to the B&R OPC UA server.
-2. Reads process variables and actuator states.
-3. Exposes simplified OPC UA NodeIds for FORTE.
-4. Receives control commands from FORTE.
-5. Writes control commands to the B&R PLC.
-6. Records experimental data in CSV files.
-
-The gateway is part of the current system architecture and will remain in use during the PI and MPC development phases.
-
-## Current Communication Path
+Current communication path:
 
 ```text
 B&R PLC <-> Python Gateway <-> 4diac FORTE
 ```
 
+## Why the Python Gateway Is Required
+
+The B&R PLC exposes the process variables through an OPC UA server. However, 4diac FORTE could not reliably use the original NodeIds exposed by the PLC.
+
+The Python gateway is therefore maintained as an explicit integration layer. It:
+
+- connects to the B&R OPC UA server;
+- reads process variables, actuator feedback, watchdog state, and safety state;
+- exposes simplified OPC UA NodeIds for FORTE;
+- receives control commands from FORTE;
+- writes permitted commands to the B&R PLC;
+- records experimental data;
+- supports heartbeat and communication diagnostics;
+- participates in the fail-closed command path.
+
+The simplified NodeIds used by the existing 4diac applications remain:
+
+```text
+Nivel
+Enable
+DAC
+```
+
+Changing these names requires a coordinated migration of the gateway and the 4diac applications and is not part of the current MPC preparation stage.
+
+## Safety Architecture
+
+The real plant is operated through a fail-closed command path.
+
+A communication failure, stale heartbeat, unhealthy gateway state, controlled shutdown, or related safety trip must result in:
+
+```text
+Enable = FALSE
+DAC = 0
+```
+
+The PLC remains the final authority for the applied actuator state. Test procedures distinguish commanded values from values confirmed and applied by the PLC.
+
+The real-plant workflows include:
+
+1. preflight validation;
+2. controlled stack startup;
+3. controlled experiment execution;
+4. explicit physical-stop confirmation;
+5. stack shutdown;
+6. final PLC safe-trip verification;
+7. evidence preservation;
+8. automated test execution.
+
+Do not bypass PLC interlocks, watchdog logic, physical stop procedures, or the documented test workflow.
+
+## Validated Real PI Baseline
+
+The validated real-plant controller is the additive 4diac application documented as `PI_REAL_RAW_SAFE`.
+
+Its current purpose is to provide:
+
+- a safe and reproducible real PI baseline;
+- a fallback controller during MPC development;
+- reference data for model identification and controller comparison;
+- a stable interface for the existing PLC–gateway–FORTE architecture.
+
+The baseline uses raw level counts in the validated control path. Historical applications using other scaling and control structures remain preserved in the 4diac project.
+
+The final baseline experiment produced:
+
+- 427 recorded rows;
+- 167 automatic-control rows;
+- an automatic DAC range of 648 counts;
+- an automatic rolling-median range from 318 to 736 counts;
+- a preserved evidence CSV with recorded SHA-256 integrity information;
+- a successful final PLC safe-trip check;
+- 149 passing automated tests.
+
+Evidence files:
+
+```text
+data/sample/real-raw-pi-v1-monitor.csv
+docs/experiments/real-raw-pi-baseline-validation.md
+docs/4diac/pi-real-raw-safe-application.md
+```
+
+The baseline establishes a valid experimental reference. It does not claim that the current PI gains are globally optimal.
+
 ## Current 4diac Project
 
-The current 4diac project is named:
+The engineering project is:
 
 ```text
 OPAS_Tank_System
 ```
 
-The complete project must be stored at:
+Repository location:
 
 ```text
 4diac/application/OPAS_Tank_System/
 ```
 
-The project currently contains:
+The complete project must remain versioned, including:
 
-```text
-OPAS_Tank_System/
-|-- .project
-|-- OPAS_Tank_System.sys
-|-- DAC_RATE_LIMITER.fbt
-|-- MPC_LEVEL.fbt
-|-- PV_FILTER.fbt
-`-- Type Library/
-```
+- `.project`;
+- `OPAS_Tank_System.sys`;
+- local function block definitions;
+- the complete `Type Library`;
+- historical communication applications;
+- historical PI/PID applications;
+- MPC development artifacts;
+- intermediate and experimental applications.
 
-The `.project` file and the `Type Library` directory are part of the 4diac engineering project and must be committed with the other project files.
+Changes to the 4diac project must be additive and documented. Existing historical applications and function blocks must not be deleted, renamed, or overwritten merely to simplify the current implementation.
 
-The presence of `MPC_LEVEL.fbt` does not mean that the MPC has already been experimentally validated. It is currently treated as a development artifact.
-
-## Current Control Structure
-
-The current 4diac application includes:
-
-- Level acquisition through OPC UA;
-- Raw-to-physical level scaling;
-- Process variable filtering;
-- PI/PID control logic;
-- Manipulated-variable scaling;
-- DAC rate limiting;
-- OPC UA command writing.
-
-The currently documented derivative gain is zero. Therefore, the existing PID configuration behaves as a PI controller.
-
-The complete closed-loop behavior still requires laboratory validation.
+The presence of `MPC_LEVEL.fbt` or other MPC artifacts does not imply that an MPC has been validated.
 
 ## Repository Structure
 
@@ -107,6 +173,7 @@ The complete closed-loop behavior still requires laboratory validation.
 |-- .gitignore
 |-- README.md
 |-- requirements.txt
+|-- requirements-dev.txt
 |-- 4diac
 |   |-- application
 |   |   `-- OPAS_Tank_System
@@ -115,9 +182,11 @@ The complete closed-loop behavior still requires laboratory validation.
 |   |-- raw
 |   `-- sample
 |-- docs
+|   |-- 4diac
 |   |-- architecture
 |   |-- current-state
-|   `-- experiments
+|   |-- experiments
+|   `-- testing
 |-- forte
 |   `-- custom-blocks
 |-- gateway
@@ -125,80 +194,56 @@ The complete closed-loop behavior still requires laboratory validation.
 |   `-- src
 |-- results
 |-- scripts
+|   `-- pi_tuned_test
 |-- simulation
 `-- tests
 ```
 
 ### `4diac/application`
 
-Contains the complete 4diac engineering project.
-
-Copy the entire directory:
-
-```text
-C:\Users\guilh\4diacIDE-workspace\OPAS_Tank_System
-```
-
-to:
-
-```text
-C:\Projetos\master-thesis-level-control\4diac\application\OPAS_Tank_System
-```
-
-Do not copy only the `.sys` file or only the `.fbt` files. Copy the complete project directory, including `.project` and `Type Library`.
-
-### `4diac/function-blocks`
-
-Reserved for standalone IEC 61499 function block definitions when they need to be maintained independently from the complete application project.
-
-The current `.fbt` files are already present inside the `OPAS_Tank_System` project, so duplication is not required during Stage 1.
+Contains the complete Eclipse 4diac engineering project. Always copy and version the complete project directory rather than selected `.sys` or `.fbt` files.
 
 ### `forte/custom-blocks`
 
-Contains C++ code exported from 4diac for inclusion in a custom FORTE build.
+Contains C++ source exported or implemented for custom FORTE builds.
 
 ### `gateway`
 
 Contains the Python OPC UA integration gateway.
 
-The current entry point is:
+Current entry point:
 
 ```text
 gateway/src/gateway_opcua.py
 ```
 
-### `docs`
-
-Contains architecture descriptions, current-state documentation, and experimental procedures.
-
-### `simulation`
-
-Reserved for offline plant models and controller simulations.
-
 ### `scripts`
 
-Reserved for data processing, plotting, and auxiliary scripts.
+Contains experiment managers, controlled commissioning workflows, identification tools, and auxiliary processing scripts.
 
-### `tests`
+Relevant current tools include:
 
-Reserved for offline and automated tests.
+```text
+scripts/open_loop_identification.py
+scripts/pi_tuned_test/
+```
 
 ### `data/raw`
 
-Contains raw experimental CSV files. These files are ignored by Git by default.
+Contains raw experimental outputs. These files are ignored by Git by default.
 
 ### `data/sample`
 
-May contain small, non-sensitive CSV examples used for documentation and tests.
+Contains selected, non-sensitive, versioned evidence datasets used for validation, documentation, and tests.
 
 ### `results`
 
-Contains generated plots, tables, and processed experimental results. Generated files are ignored by Git by default.
+Contains generated plots, identified models, processed tables, and comparison outputs. Generated content is normally ignored unless explicitly selected as thesis evidence.
 
 ## Main Technologies
 
 - Python
-- asyncua
+- `asyncua`
 - OPC UA
 - Eclipse 4diac IDE
 - Eclipse 4diac FORTE
@@ -207,458 +252,189 @@ Contains generated plots, tables, and processed experimental results. Generated 
 - B&R PLC
 - Git
 - GitHub
+- `pytest`
 
 ## Python Environment
 
 Create a virtual environment from the repository root:
 
 ```powershell
-python -m venv .venv
-```
-
-Activate it:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Install the dependencies:
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-## Gateway Execution
-
-Run the gateway from the repository root:
-
-```powershell
-python gateway/src/gateway_opcua.py
-```
-
-The gateway writes raw experiment CSV files to:
-
-```text
-data/raw/
-```
-
-Before connecting the gateway to the real plant, verify:
-
-- The B&R OPC UA endpoint;
-- The original B&R NodeIds;
-- The gateway OPC UA endpoint;
-- OPC UA variable data types;
-- Level scaling;
-- DAC limits;
-- Enable behavior;
-- PLC safety interlocks.
-
-## Current Gateway Compatibility
-
-The gateway preserves the simplified OPC UA NodeIds already used by the existing 4diac application:
-
-```text
-Nivel
-Enable
-DAC
-```
-
-These names remain unchanged even though the Python source code and documentation are written in English.
-
-Changing these NodeIds would require coordinated changes in the 4diac application and is outside Stage 1.
-
-## Safety Notice
-
-The real plant must only be operated after validating:
-
-- OPC UA communication;
-- Sensor calibration;
-- Actuator scaling;
-- Control action direction;
-- Minimum and maximum actuator values;
-- Enable behavior;
-- Command and feedback consistency;
-- PLC interlocks;
-- Emergency and safe shutdown behavior.
-
-The software must not be connected to the physical plant without a previously defined and approved test procedure.
-
-## Testing
-
-The project includes automated offline tests for gateway processing functions, OPC UA interface helpers, and preservation of the historical 4diac project artifacts.
-
-Install the development dependencies:
-
-```powershell
-python -m venv ".venv"
-
-.\.venv\Scripts\python.exe `
-    -m pip install `
-    -r requirements-dev.txt
-```
-
-Run the complete test suite:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-The tests do not require access to the B&R PLC, 4diac FORTE, or the laboratory network.
-
-Detailed instructions are available in:
-
-```text
-docs/testing/testing-guide.md
-```
-## Repository Validation
-
-The repository baseline was validated by cloning it into a separate directory and rebuilding the Python and 4diac development environments.
-
-The validated baseline is identified by the following Git tag:
-
-```text
-baseline-gateway-v1
-```
-
-### Clone the Repository
-
-Choose a directory outside the original development repository:
-
-```powershell
-New-Item `
-    -ItemType Directory `
-    -Force `
-    -Path "C:\Projetos\repository-validation" |
-    Out-Null
-
-Set-Location "C:\Projetos\repository-validation"
-```
-
-Clone the repository:
-
-```powershell
-git clone `
-    "https://github.com/GuilhermeDMLopes/master-thesis-level-control.git"
-```
-
-Enter the cloned repository:
-
-```powershell
-Set-Location `
-    "C:\Projetos\repository-validation\master-thesis-level-control"
-```
-
-### Validate the Git Repository
-
-Confirm that the working tree is clean:
-
-```powershell
-git status
-```
-
-Confirm the current commit:
-
-```powershell
-git log --oneline -1
-```
-
-Confirm the available baseline tag:
-
-```powershell
-git tag
-```
-
-Confirm the remote repository:
-
-```powershell
-git remote -v
-```
-
-Count the tracked files:
-
-```powershell
-$trackedFileCount = (
-    git ls-files |
-    Measure-Object
-).Count
-
-Write-Host "Tracked files: $trackedFileCount"
-```
-
-The initial validated baseline contains:
-
-```text
-529 tracked files
-```
-
-### Create the Python Validation Environment
-
-Confirm the Python version:
-
-```powershell
-python --version
-```
-
-The initial baseline was validated with:
-
-```text
-Python 3.10.11
-```
-
-Create a virtual environment:
-
-```powershell
 python -m venv ".venv"
 ```
 
-Confirm that the virtual environment was created:
+Install runtime and development dependencies:
 
 ```powershell
-Test-Path ".venv\Scripts\python.exe"
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 ```
 
-Install the project dependencies:
-
-```powershell
-.\.venv\Scripts\python.exe `
-    -m pip install `
-    -r requirements.txt
-```
-
-Confirm the installed `asyncua` version:
-
-```powershell
-.\.venv\Scripts\python.exe -c `
-    "import importlib.metadata as metadata; print(metadata.version('asyncua'))"
-```
-
-Expected version:
-
-```text
-1.1.8
-```
-
-Confirm that the main OPC UA classes can be imported:
-
-```powershell
-.\.venv\Scripts\python.exe -c `
-    "from asyncua import Client, Server, ua; print('asyncua import: OK')"
-```
-
-Check the installed dependencies:
+Check the environment:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-Expected result:
+## Automated Testing
 
-```text
-No broken requirements found.
-```
-
-### Validate the Gateway Source Code
-
-Validate the Python syntax without connecting to the real PLC:
+Run the complete offline test suite from the repository root:
 
 ```powershell
-.\.venv\Scripts\python.exe `
-    -m py_compile `
-    "gateway\src\gateway_opcua.py"
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
-A successful syntax validation produces no output.
-
-Do not execute the gateway outside the laboratory unless a simulation mode or a test OPC UA server is being used.
-
-The current gateway attempts to connect to the real B&R endpoint:
-
-```text
-opc.tcp://10.0.0.3:4840
-```
-
-### Import the Project into Eclipse 4diac
-
-Use a temporary workspace to avoid modifying the original development workspace.
-
-In Eclipse 4diac IDE:
-
-1. Select `File -> Switch Workspace -> Other`.
-2. Choose a temporary workspace, for example:
-
-```text
-C:\Projetos\4diac-workspace-validation
-```
-
-3. After 4diac restarts, select `File -> Import`.
-4. Select `General -> Existing Projects into Workspace`.
-5. Select the following repository directory as the root directory:
-
-```text
-<repository-root>\4diac\application
-```
-
-6. Confirm that the project `OPAS_Tank_System` is detected.
-7. Enable `Copy projects into workspace`.
-8. Select `Finish`.
-
-### Validate the Imported 4diac Project
-
-Open:
-
-```text
-OPAS_Tank_System.sys
-```
-
-Confirm that the system diagram, devices, resources, applications, event connections, and data connections are loaded.
-
-Open the main custom function blocks:
-
-```text
-DAC_RATE_LIMITER.fbt
-PV_FILTER.fbt
-MPC_LEVEL.fbt
-Type Library/net_custom/PID_LEVEL.fbt
-Type Library/net_custom/CLIENT_1_0.fbt
-```
-
-For each function block, verify:
-
-- The interface opens correctly.
-- Event inputs and outputs are visible.
-- Data inputs and outputs are visible.
-- The Execution Control Chart can be opened when applicable.
-- Algorithms can be opened.
-- No required function block type is missing.
-
-Open the 4diac `Problems` view:
-
-```text
-Window -> Show View -> Problems
-```
-
-The validation is successful when no error prevents the project or its function blocks from opening.
-
-Warnings should be reviewed, but they do not necessarily indicate that the import failed.
-
-### Confirm That the Clone Remains Clean
-
-After the validation, return to the cloned repository and execute:
+When the virtual environment is already active:
 
 ```powershell
-git status
+python -m pytest -q
 ```
 
-Expected result:
+Current validated result:
 
 ```text
-On branch main
-Your branch is up to date with 'origin/main'.
-
-nothing to commit, working tree clean
+149 passed
 ```
 
-The `.venv` directory and Python cache files must remain ignored by Git.
+The offline tests do not require access to the B&R PLC, FORTE, or the laboratory network.
 
-### Validated Baseline Result
+Testing documentation:
 
-The initial repository baseline was successfully validated with the following results:
+```text
+docs/testing/testing-guide.md
+```
 
-- Repository cloned successfully.
-- Commit `1f38b83` recovered.
-- Tag `baseline-gateway-v1` recovered.
-- 529 tracked files recovered.
-- Python 3.10.11 environment created.
-- `asyncua==1.1.8` installed.
-- No broken Python requirements found.
-- Gateway syntax validation completed.
-- `OPAS_Tank_System` imported into a temporary 4diac workspace.
-- System and custom function blocks opened correctly.
-- No errors were reported in the 4diac `Problems` view.
-- The cloned repository remained clean after validation.
+## Gateway Execution
 
+Run the gateway only in the intended laboratory environment or against an approved test/simulation endpoint:
+
+```powershell
+python gateway/src/gateway_opcua.py
+```
+
+The gateway may attempt to connect to the configured real B&R endpoint. Verify the active configuration before execution.
+
+Before a real-plant connection, confirm:
+
+- B&R OPC UA endpoint;
+- B&R NodeIds;
+- gateway OPC UA endpoint;
+- OPC UA data types;
+- heartbeat and watchdog behavior;
+- level signal interpretation;
+- DAC limits and sign;
+- command and feedback consistency;
+- Enable behavior;
+- PLC interlocks;
+- physical emergency and safe-stop procedures.
+
+## Real-Plant Experiment Evidence
+
+Raw experiment files are written under:
+
+```text
+data/raw/
+```
+
+Only selected evidence files should be copied to `data/sample/` and committed. Each preserved experiment should include:
+
+- source path;
+- experiment date and purpose;
+- row count and test phases;
+- controller configuration;
+- acceptance criteria;
+- safety result;
+- integrity hash;
+- analysis document;
+- associated commit or Git tag.
 
 ## Development Roadmap
 
-### Stage 1 â€” Project Organization and Version Control
+### Completed — Repository and Historical Preservation
 
-- Organize the source files.
-- Preserve the complete 4diac project.
-- Preserve the current gateway baseline.
-- Create the local Git repository.
-- Create the private GitHub repository.
-- Document the initial state.
+- organized the repository;
+- preserved the complete `OPAS_Tank_System` project;
+- created automated preservation checks;
+- validated a clean clone and rebuild workflow;
+- established Git tags for reproducible checkpoints.
 
-### Stage 2 â€” Gateway Review
+### Completed — Communication and Fail-Closed Integration
 
-- Separate command variables from feedback variables.
-- Improve communication diagnostics.
-- Improve error handling.
-- Standardize process units.
-- Review timing and logging behavior.
+- validated PLC–gateway communication;
+- validated gateway–FORTE communication;
+- integrated heartbeat and watchdog information;
+- confirmed zero-output communication before positive actuation;
+- implemented and tested fail-closed shutdown behavior.
 
-### Stage 3 â€” PI Controller Review
+### Completed — Real PI Baseline
 
-- Implement anti-windup.
-- Improve manual and automatic modes.
-- Add safe initialization.
-- Record internal PI variables.
-- Validate the complete output chain.
+- added the `PI_REAL_RAW_SAFE` application without replacing historical applications;
+- added controlled PI commissioning scripts;
+- tuned the PI to a conservative real-plant configuration;
+- preserved the final experiment dataset;
+- documented the acceptance result;
+- integrated the checkpoint into `main`.
 
-### Stage 4 â€” Offline Simulation
+### In Development — Plant Identification
 
-- Create a simplified process simulator.
-- Test PI behavior.
-- Test saturation.
-- Test communication failures.
-- Prepare the controller interface for the MPC.
+- review and harden the open-loop identification workflow;
+- define safe excitation levels and operating regions;
+- collect identification datasets;
+- check sensor quality, delay, saturation, and repeatability;
+- estimate low-order plant models;
+- validate models on independent data.
 
-### Stage 5 â€” Experimental PI Validation
+### In Development — Offline MPC
 
-- Calibrate the level signal.
-- Validate manual actuation.
-- Confirm the control direction.
-- Tune the PI controller.
-- Generate the PI experimental baseline.
+- define the controller input/output contract;
+- select prediction and control horizons;
+- define level and DAC constraints;
+- implement the optimization problem;
+- validate tracking, saturation, disturbances, and communication failures;
+- verify execution time against the sampling period.
 
-### Stage 6 â€” Model Predictive Control
+### Planned — Real MPC Integration
 
-- Identify the plant model.
-- Define the prediction model.
-- Define constraints and horizons.
-- Validate the MPC in simulation.
-- Validate the MPC with the real plant.
+- add the MPC path in parallel with the PI baseline;
+- preserve PI as a safe fallback;
+- integrate mode selection and bumpless transfer;
+- validate safe initialization and shutdown;
+- perform staged real-plant commissioning;
+- preserve a tagged MPC baseline.
 
-### Stage 7 â€” PI and MPC Comparison
+### Planned — PI and MPC Comparison
 
-The controllers will be compared using:
+The final experimental comparison will include:
 
 - Integral Absolute Error;
 - Integral Squared Error;
-- Overshoot;
-- Settling time;
-- Steady-state error;
-- Control effort;
-- Constraint violations;
-- Computation time;
-- Communication jitter.
+- overshoot;
+- settling time;
+- steady-state error;
+- control effort;
+- constraint violations;
+- computation time;
+- communication jitter;
+- safety and fallback behavior.
 
 ## Git and Documentation Conventions
 
-All repository documentation, source-code comments, branch names, and commit messages must be written in English.
+Repository documentation, source-code comments, branch names, and commit messages are written in English.
 
 Recommended commit examples:
 
 ```text
-chore: initialize project structure
-docs: document current communication architecture
-refactor: separate gateway configuration from runtime logic
-fix: correct level scaling documentation
-test: add offline gateway conversion tests
+docs: update validated project status
+test: preserve plant identification dataset
+feat: add offline prediction model
+feat: add constrained MPC prototype
+test: validate real MPC baseline
+docs: compare PI and MPC experiments
 ```
 
-## Project Status
+Use annotated or lightweight tags only for meaningful validated checkpoints.
 
-**Under development.**
+## Current Priority
 
-The communication architecture has been implemented, but the complete closed-loop control system still requires experimental validation.
+The immediate priority is to identify and validate a plant model, implement the MPC offline, and retain the validated PI controller as the experimental reference and fail-safe fallback.
+
+The repository should remain focused on functional progress. Additional organization or refactoring should be performed only when it directly supports reproducibility, safety, model identification, MPC integration, or the final PI–MPC comparison.
