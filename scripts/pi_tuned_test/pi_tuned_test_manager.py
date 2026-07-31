@@ -945,7 +945,7 @@ async def command_monitor() -> None:
     print("1. Keep RawPI.MANUAL=TRUE.")
     print("2. Set MANUAL_OUTPUT=3000.")
     print("3. Release the physical stop.")
-    print("4. At filtered PV 380..400, set MANUAL_OUTPUT=1500.")
+    print("4. At filtered PV 380..400, set MANUAL_OUTPUT=2700.")
     print(
         "5. At filtered PV 420..450, "
         "set MANUAL=FALSE."
@@ -1125,10 +1125,10 @@ async def command_monitor() -> None:
             print("AppliedDAC=12000: DETECTED")
             print(
                 "At filtered PV 380..400, set "
-                "RawPI.MANUAL_OUTPUT=1500."
+                "RawPI.MANUAL_OUTPUT=2700."
             )
 
-            heading("WAITING FOR 10500 STAGING")
+            heading("WAITING FOR 11700 STAGING")
 
             stage_reference = time.monotonic()
             deadline = stage_reference + 180.0
@@ -1145,7 +1145,7 @@ async def command_monitor() -> None:
                     state["AppliedDAC"]
                 )
 
-                if 10200 <= applied_dac <= 10800:
+                if 11550 <= applied_dac <= 11850:
                     stable_stage += 1
                     stage_values.append(applied_dac)
                 else:
@@ -1158,7 +1158,7 @@ async def command_monitor() -> None:
                 await asyncio.sleep(SAMPLE_S)
             else:
                 raise RuntimeError(
-                    "Stable 10500 staging was not detected."
+                    "Stable 11700 staging was not detected."
                 )
 
             stage_center = int(
@@ -1190,6 +1190,7 @@ async def command_monitor() -> None:
                 + 180.0
             )
             automatic_detected = False
+            modulation_samples = 0
 
             while time.monotonic() < deadline:
                 state, _ = await sample(
@@ -1205,8 +1206,13 @@ async def command_monitor() -> None:
                     state["AppliedEnable"] is True
                     and abs(
                         applied_dac - stage_center
-                    ) >= 350
+                    ) >= 150
                 ):
+                    modulation_samples += 1
+                else:
+                    modulation_samples = 0
+
+                if modulation_samples >= 3:
                     automatic_detected = True
                     break
 
@@ -1337,7 +1343,7 @@ async def command_monitor() -> None:
 
     print(f"CSV: {csv_path}")
     print("Manual ramp to 12000: PASSED")
-    print("10500 staging: PASSED")
+    print("11700 staging: PASSED")
     print("Automatic modulation: PASSED")
     print("Immediate applied-output disable: PASSED")
     print("Complete command return to zero: PASSED")

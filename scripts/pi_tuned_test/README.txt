@@ -30,7 +30,7 @@ Sequencia no 4diac durante o monitor:
   - MANUAL=TRUE, MANUAL_OUTPUT=3000.
   - Libere a parada fisica.
   - Quando PV filtrada estiver entre 380 e 400:
-      MANUAL_OUTPUT=1500.
+      MANUAL_OUTPUT=2700.
   - Quando PV filtrada estiver entre 420 e 450:
       MANUAL=FALSE.
   - Apos a observacao automatica:
