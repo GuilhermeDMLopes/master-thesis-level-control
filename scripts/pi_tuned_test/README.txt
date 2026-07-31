@@ -5,8 +5,8 @@ Destino:
 
 Parametros exigidos no projeto salvo:
   RawPI.SETPOINT = 450
-  RawPI.PROPORTIONAL_GAIN = 8
-  RawPI.INTEGRAL_GAIN = 0.05
+  RawPI.PROPORTIONAL_GAIN = 4
+  RawPI.INTEGRAL_GAIN = 0.02
   RawPI.SAMPLING_TIME_S = 0.1
   RawPI.MANUAL = TRUE
   RawPI.MANUAL_OUTPUT = -9000

@@ -42,8 +42,8 @@ The PI output is a deviation around a `9000` DAC feedforward bias.
 
 ```text
 SETPOINT = 450.0 raw counts
-PROPORTIONAL_GAIN = 8.0 DAC/count
-INTEGRAL_GAIN = 0.05 DAC/(count*s)
+PROPORTIONAL_GAIN = 4.0 DAC/count
+INTEGRAL_GAIN = 0.02 DAC/(count*s)
 SAMPLING_TIME_S = 0.1 s
 
 PI OUTPUT_MIN = -9000.0

@@ -41,8 +41,8 @@ EXPECTED_PARAMETERS = {
     },
     "RawPI": {
         "SETPOINT": "LREAL#450.0",
-        "PROPORTIONAL_GAIN": "LREAL#8.0",
-        "INTEGRAL_GAIN": "LREAL#0.05",
+        "PROPORTIONAL_GAIN": "LREAL#4.0",
+        "INTEGRAL_GAIN": "LREAL#0.02",
         "SAMPLING_TIME_S": "LREAL#0.1",
         "OUTPUT_MIN": "LREAL#-9000.0",
         "OUTPUT_MAX": "LREAL#3000.0",

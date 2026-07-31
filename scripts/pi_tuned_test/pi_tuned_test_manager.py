@@ -243,12 +243,12 @@ def validate_project_configuration() -> None:
     )
     assert_close(
         number_value(pi.get("PROPORTIONAL_GAIN")),
-        8.0,
+        4.0,
         "RawPI.PROPORTIONAL_GAIN",
     )
     assert_close(
         number_value(pi.get("INTEGRAL_GAIN")),
-        0.05,
+        0.02,
         "RawPI.INTEGRAL_GAIN",
     )
     assert_close(
@@ -308,8 +308,8 @@ def validate_project_configuration() -> None:
 
     print("4diac tuned PI configuration: PASSED")
     print("  SP=450")
-    print("  KP=8")
-    print("  KI=0.05")
+    print("  KP=4")
+    print("  KI=0.02")
     print("  ALPHA=0.98")
     print("  MANUAL=TRUE")
     print("  MANUAL_OUTPUT=-9000")

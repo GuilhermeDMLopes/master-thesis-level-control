@@ -630,8 +630,8 @@
 			</FB>
 			<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Conservative PI controller in raw level counts and DAC deviation units" x="3200.0" y="933.3333333333334">
 				<Parameter Name="SETPOINT" Value="LREAL#450.0"/>
-				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#8.0"/>
-				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.05"/>
+				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
+				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.02"/>
 				<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
 				<Parameter Name="OUTPUT_MIN" Value="LREAL#-9000.0"/>
 				<Parameter Name="OUTPUT_MAX" Value="LREAL#3000.0"/>
@@ -1032,8 +1032,8 @@
 				</FB>
 				<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Conservative PI controller in raw level counts and DAC deviation units" x="3200.0" y="933.3333333333334">
 					<Parameter Name="SETPOINT" Value="LREAL#450.0"/>
-					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#8.0"/>
-					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.05"/>
+					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
+					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.02"/>
 					<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
 					<Parameter Name="OUTPUT_MIN" Value="LREAL#-9000.0"/>
 					<Parameter Name="OUTPUT_MAX" Value="LREAL#3000.0"/>
