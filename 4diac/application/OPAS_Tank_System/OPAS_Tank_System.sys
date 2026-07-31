@@ -625,13 +625,13 @@
 			<FB Name="RawLevelType" Type="LREAL2LREAL" Comment="Preserve raw level counts as LREAL" x="1600.0" y="2000.0">
 			</FB>
 			<FB Name="RawPVFilter" Type="PV_FILTER" Comment="First-order filter for raw level counts" x="1600.0" y="3000.0">
-				<Parameter Name="ALPHA" Value="LREAL#0.95"/>
+				<Parameter Name="ALPHA" Value="LREAL#0.98"/>
 				<Parameter Name="RESET" Value="FALSE"/>
 			</FB>
 			<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Conservative PI controller in raw level counts and DAC deviation units" x="3200.0" y="933.3333333333334">
 				<Parameter Name="SETPOINT" Value="LREAL#450.0"/>
-				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#25.0"/>
-				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.15"/>
+				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#8.0"/>
+				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.05"/>
 				<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
 				<Parameter Name="OUTPUT_MIN" Value="LREAL#-9000.0"/>
 				<Parameter Name="OUTPUT_MAX" Value="LREAL#3000.0"/>
@@ -665,29 +665,29 @@
 			<FB Name="RawInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; not connected to START.COLD or START.WARM" x="400.0" y="1066.6666666666667">
 			</FB>
 			<EventConnections>
-				<Connection Source="RawLevelRead.IND" Destination="RawLevelType.REQ" Comment=""/>
-				<Connection Source="RawLevelType.CNF" Destination="RawPVFilter.REQ" Comment=""/>
-				<Connection Source="RawPVFilter.CNF" Destination="RawPI.REQ" Comment=""/>
-				<Connection Source="RawPI.CNF" Destination="RawDACBias.REQ" Comment=""/>
-				<Connection Source="RawDACBias.CNF" Destination="RawSafeDACLimiter.REQ" Comment=""/>
-				<Connection Source="RawSafeDACLimiter.CNF" Destination="RawDACType.REQ" Comment=""/>
-				<Connection Source="RawDACType.CNF" Destination="RawDACWrite.REQ" Comment=""/>
-				<Connection Source="RawDACWrite.CNF" Destination="RawEnableCheck.REQ" Comment=""/>
-				<Connection Source="RawEnableCheck.CNF" Destination="RawEnableWrite.REQ" Comment=""/>
-				<Connection Source="RawInitMerge.EO" Destination="RawEnableWrite.INIT" Comment=""/>
-				<Connection Source="RawEnableWrite.INITO" Destination="RawDACWrite.INIT" Comment=""/>
-				<Connection Source="RawDACWrite.INITO" Destination="RawLevelRead.INIT" Comment=""/>
+				<Connection Source="RawLevelRead.IND" Destination="RawLevelType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="480.0"/>
+				<Connection Source="RawLevelType.CNF" Destination="RawPVFilter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="500.0"/>
+				<Connection Source="RawPVFilter.CNF" Destination="RawPI.REQ" Comment="" dx1="433.33333333333337"/>
+				<Connection Source="RawPI.CNF" Destination="RawDACBias.REQ" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+				<Connection Source="RawDACBias.CNF" Destination="RawSafeDACLimiter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				<Connection Source="RawSafeDACLimiter.CNF" Destination="RawDACType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="600.0"/>
+				<Connection Source="RawDACType.CNF" Destination="RawDACWrite.REQ" Comment="" dx1="646.6666666666667"/>
+				<Connection Source="RawDACWrite.CNF" Destination="RawEnableCheck.REQ" Comment="" dx1="80.0" dx2="80.0" dy="546.6666666666667"/>
+				<Connection Source="RawEnableCheck.CNF" Destination="RawEnableWrite.REQ" Comment="" dx1="80.0" dx2="80.0" dy="513.3333333333334"/>
+				<Connection Source="RawInitMerge.EO" Destination="RawEnableWrite.INIT" Comment="" dx1="2413.3333333333335"/>
+				<Connection Source="RawEnableWrite.INITO" Destination="RawDACWrite.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-1066.6666666666667"/>
+				<Connection Source="RawDACWrite.INITO" Destination="RawLevelRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-66.66666666666667"/>
 			</EventConnections>
 			<DataConnections>
-				<Connection Source="RawLevelRead.RD_1" Destination="RawLevelType.IN" Comment=""/>
-				<Connection Source="RawLevelType.OUT" Destination="RawPVFilter.PV_IN" Comment=""/>
-				<Connection Source="RawPVFilter.PV_OUT" Destination="RawPI.PROCESS_VARIABLE" Comment=""/>
-				<Connection Source="RawPI.OUTPUT" Destination="RawDACBias.IN1" Comment=""/>
-				<Connection Source="RawDACBias.OUT" Destination="RawSafeDACLimiter.DAC_IN" Comment=""/>
-				<Connection Source="RawSafeDACLimiter.DAC_OUT" Destination="RawDACType.IN" Comment=""/>
-				<Connection Source="RawDACType.OUT" Destination="RawDACWrite.SD_1" Comment=""/>
-				<Connection Source="RawDACBias.OUT" Destination="RawEnableCheck.IN1" Comment=""/>
-				<Connection Source="RawEnableCheck.OUT" Destination="RawEnableWrite.SD_1" Comment=""/>
+				<Connection Source="RawLevelRead.RD_1" Destination="RawLevelType.IN" Comment="" dx1="80.0" dx2="80.0" dy="380.0"/>
+				<Connection Source="RawLevelType.OUT" Destination="RawPVFilter.PV_IN" Comment="" dx1="80.0" dx2="80.0" dy="500.0"/>
+				<Connection Source="RawPVFilter.PV_OUT" Destination="RawPI.PROCESS_VARIABLE" Comment="" dx1="433.33333333333337"/>
+				<Connection Source="RawPI.OUTPUT" Destination="RawDACBias.IN1" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+				<Connection Source="RawDACBias.OUT" Destination="RawSafeDACLimiter.DAC_IN" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+				<Connection Source="RawSafeDACLimiter.DAC_OUT" Destination="RawDACType.IN" Comment="" dx1="80.0" dx2="80.0" dy="600.0"/>
+				<Connection Source="RawDACType.OUT" Destination="RawDACWrite.SD_1" Comment="" dx1="646.6666666666667"/>
+				<Connection Source="RawDACBias.OUT" Destination="RawEnableCheck.IN1" Comment="" dx1="826.6666666666667"/>
+				<Connection Source="RawEnableCheck.OUT" Destination="RawEnableWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="613.3333333333334"/>
 			</DataConnections>
 		</SubAppNetwork>
 	</Application>
@@ -1027,13 +1027,13 @@
 				<FB Name="RawLevelType" Type="LREAL2LREAL" Comment="Preserve raw level counts as LREAL" x="1600.0" y="2000.0">
 				</FB>
 				<FB Name="RawPVFilter" Type="PV_FILTER" Comment="First-order filter for raw level counts" x="1600.0" y="3000.0">
-					<Parameter Name="ALPHA" Value="LREAL#0.95"/>
+					<Parameter Name="ALPHA" Value="LREAL#0.98"/>
 					<Parameter Name="RESET" Value="FALSE"/>
 				</FB>
 				<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Conservative PI controller in raw level counts and DAC deviation units" x="3200.0" y="933.3333333333334">
 					<Parameter Name="SETPOINT" Value="LREAL#450.0"/>
-					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#25.0"/>
-					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.15"/>
+					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#8.0"/>
+					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.05"/>
 					<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
 					<Parameter Name="OUTPUT_MIN" Value="LREAL#-9000.0"/>
 					<Parameter Name="OUTPUT_MAX" Value="LREAL#3000.0"/>
@@ -1067,29 +1067,29 @@
 				<FB Name="RawInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; not connected to START.COLD or START.WARM" x="400.0" y="1066.6666666666667">
 				</FB>
 				<EventConnections>
-					<Connection Source="RawLevelRead.IND" Destination="RawLevelType.REQ" Comment=""/>
-					<Connection Source="RawLevelType.CNF" Destination="RawPVFilter.REQ" Comment=""/>
-					<Connection Source="RawPVFilter.CNF" Destination="RawPI.REQ" Comment=""/>
-					<Connection Source="RawPI.CNF" Destination="RawDACBias.REQ" Comment=""/>
-					<Connection Source="RawDACBias.CNF" Destination="RawSafeDACLimiter.REQ" Comment=""/>
-					<Connection Source="RawSafeDACLimiter.CNF" Destination="RawDACType.REQ" Comment=""/>
-					<Connection Source="RawDACType.CNF" Destination="RawDACWrite.REQ" Comment=""/>
-					<Connection Source="RawDACWrite.CNF" Destination="RawEnableCheck.REQ" Comment=""/>
-					<Connection Source="RawEnableCheck.CNF" Destination="RawEnableWrite.REQ" Comment=""/>
-					<Connection Source="RawInitMerge.EO" Destination="RawEnableWrite.INIT" Comment=""/>
-					<Connection Source="RawEnableWrite.INITO" Destination="RawDACWrite.INIT" Comment=""/>
-					<Connection Source="RawDACWrite.INITO" Destination="RawLevelRead.INIT" Comment=""/>
+					<Connection Source="RawLevelRead.IND" Destination="RawLevelType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="480.0"/>
+					<Connection Source="RawLevelType.CNF" Destination="RawPVFilter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="500.0"/>
+					<Connection Source="RawPVFilter.CNF" Destination="RawPI.REQ" Comment="" dx1="433.33333333333337"/>
+					<Connection Source="RawPI.CNF" Destination="RawDACBias.REQ" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+					<Connection Source="RawDACBias.CNF" Destination="RawSafeDACLimiter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+					<Connection Source="RawSafeDACLimiter.CNF" Destination="RawDACType.REQ" Comment="" dx1="80.0" dx2="80.0" dy="600.0"/>
+					<Connection Source="RawDACType.CNF" Destination="RawDACWrite.REQ" Comment="" dx1="646.6666666666667"/>
+					<Connection Source="RawDACWrite.CNF" Destination="RawEnableCheck.REQ" Comment="" dx1="80.0" dx2="80.0" dy="546.6666666666667"/>
+					<Connection Source="RawEnableCheck.CNF" Destination="RawEnableWrite.REQ" Comment="" dx1="80.0" dx2="80.0" dy="513.3333333333334"/>
+					<Connection Source="RawInitMerge.EO" Destination="RawEnableWrite.INIT" Comment="" dx1="2413.3333333333335"/>
+					<Connection Source="RawEnableWrite.INITO" Destination="RawDACWrite.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-1066.6666666666667"/>
+					<Connection Source="RawDACWrite.INITO" Destination="RawLevelRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-66.66666666666667"/>
 				</EventConnections>
 				<DataConnections>
-					<Connection Source="RawLevelRead.RD_1" Destination="RawLevelType.IN" Comment=""/>
-					<Connection Source="RawLevelType.OUT" Destination="RawPVFilter.PV_IN" Comment=""/>
-					<Connection Source="RawPVFilter.PV_OUT" Destination="RawPI.PROCESS_VARIABLE" Comment=""/>
-					<Connection Source="RawPI.OUTPUT" Destination="RawDACBias.IN1" Comment=""/>
-					<Connection Source="RawDACBias.OUT" Destination="RawSafeDACLimiter.DAC_IN" Comment=""/>
-					<Connection Source="RawSafeDACLimiter.DAC_OUT" Destination="RawDACType.IN" Comment=""/>
-					<Connection Source="RawDACType.OUT" Destination="RawDACWrite.SD_1" Comment=""/>
-					<Connection Source="RawDACBias.OUT" Destination="RawEnableCheck.IN1" Comment=""/>
-					<Connection Source="RawEnableCheck.OUT" Destination="RawEnableWrite.SD_1" Comment=""/>
+					<Connection Source="RawLevelRead.RD_1" Destination="RawLevelType.IN" Comment="" dx1="80.0" dx2="80.0" dy="380.0"/>
+					<Connection Source="RawLevelType.OUT" Destination="RawPVFilter.PV_IN" Comment="" dx1="80.0" dx2="80.0" dy="500.0"/>
+					<Connection Source="RawPVFilter.PV_OUT" Destination="RawPI.PROCESS_VARIABLE" Comment="" dx1="433.33333333333337"/>
+					<Connection Source="RawPI.OUTPUT" Destination="RawDACBias.IN1" Comment="" dx1="80.0" dx2="80.0" dy="800.0"/>
+					<Connection Source="RawDACBias.OUT" Destination="RawSafeDACLimiter.DAC_IN" Comment="" dx1="80.0" dx2="80.0" dy="400.0"/>
+					<Connection Source="RawSafeDACLimiter.DAC_OUT" Destination="RawDACType.IN" Comment="" dx1="80.0" dx2="80.0" dy="600.0"/>
+					<Connection Source="RawDACType.OUT" Destination="RawDACWrite.SD_1" Comment="" dx1="646.6666666666667"/>
+					<Connection Source="RawDACBias.OUT" Destination="RawEnableCheck.IN1" Comment="" dx1="826.6666666666667"/>
+					<Connection Source="RawEnableCheck.OUT" Destination="RawEnableWrite.SD_1" Comment="" dx1="80.0" dx2="80.0" dy="613.3333333333334"/>
 				</DataConnections>
 			</FBNetwork>
 		</Resource>

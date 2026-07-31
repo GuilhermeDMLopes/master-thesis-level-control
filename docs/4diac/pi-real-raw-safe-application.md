@@ -38,12 +38,12 @@ biased DAC request
 
 The PI output is a deviation around a `9000` DAC feedforward bias.
 
-## Initial parameters
+## Current tuned commissioning parameters
 
 ```text
 SETPOINT = 450.0 raw counts
-PROPORTIONAL_GAIN = 25.0 DAC/count
-INTEGRAL_GAIN = 0.15 DAC/(count*s)
+PROPORTIONAL_GAIN = 8.0 DAC/count
+INTEGRAL_GAIN = 0.05 DAC/(count*s)
 SAMPLING_TIME_S = 0.1 s
 
 PI OUTPUT_MIN = -9000.0
@@ -53,10 +53,10 @@ DAC bias = 9000.0
 final DAC range = 0.0 .. 12000.0
 MAX_DELTA_DAC = 150.0 per execution
 
-PV_FILTER ALPHA = 0.95
+PV_FILTER ALPHA = 0.98
 ```
 
-These gains are commissioning candidates, not final tuned values.
+These are conservative real-plant commissioning parameters. Final tuning still depends on the validated experiment.
 
 ## Fail-closed startup
 
@@ -89,8 +89,8 @@ RawDACWrite = 0
 5. Trigger `RawInitMerge.EI1` exactly once.
 6. Confirm continued zero output before releasing the physical stop.
 7. For the manual fill phase, set `RawPI.MANUAL_OUTPUT = 3000.0`; the bias produces a bounded `12000` DAC request.
-8. Before automatic transfer, reduce `RawPI.MANUAL_OUTPUT` to `0.0`; the bias produces a `9000` DAC request.
-9. Switch `RawPI.MANUAL` to `FALSE` only when the filtered raw level is near the `450` setpoint and the physical stop remains immediately accessible.
+8. When the filtered raw level reaches approximately `380` to `400` counts, reduce `RawPI.MANUAL_OUTPUT` to `1500.0`; the bias produces a `10500` DAC request.
+9. Switch `RawPI.MANUAL` to `FALSE` only when the filtered raw level is between `420` and `450` counts and the physical stop remains immediately accessible.
 10. Abort by setting:
     - `RawPI.MANUAL = TRUE`;
     - `RawPI.MANUAL_OUTPUT = -9000.0`.
