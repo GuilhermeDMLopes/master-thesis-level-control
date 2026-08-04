@@ -2,27 +2,13 @@
 
 ## Status
 
-This protocol is under development and has not yet produced a validated real-plant model.
+The identification workflow is prepared but no real open-loop model has been collected or approved.
 
-The validated PI baseline has been screened offline. It observed a raw-level range from 136 to 787 counts and an applied-DAC range from 0 to 12000 counts. These are observations from one PI commissioning run, not approved physical limits and not an identified model.
+The validated PI baseline observed a raw-level range from 136 to 787 counts and an applied-DAC range from 0 to 12000 counts. These observations are not physical limits and do not authorize a new experiment.
 
-## Purpose
+## Explicit execution boundary
 
-The procedure collects real-plant data for estimating low-order dynamic models while preserving the validated PLC–gateway fail-closed architecture.
-
-The intended identification outputs include:
-
-- effective process gain in defined operating regions;
-- dominant time constant;
-- apparent transport or communication delay;
-- pump-flow threshold;
-- actuator saturation behavior;
-- sensor noise;
-- run-to-run repeatability.
-
-## Safety Boundary
-
-The command-line modes are explicit:
+The script has two modes:
 
 ```text
 --plan
@@ -31,132 +17,103 @@ The command-line modes are explicit:
 
 `--plan` performs no OPC UA connection and no actuator write.
 
-`--execute` is the only mode permitted to connect to the real PLC and gateway. It requires all of the following:
+`--execute` requires all of the following explicit inputs:
 
-- at least one explicitly supplied `--dac-step DAC:HOLD_S`;
-- an explicitly supplied initial raw-level band;
-- an explicitly supplied maximum raw-level trip threshold;
-- the existing PLC watchdog and fail-closed path;
-- a stable initial state with `Enable=FALSE` and applied DAC equal to zero;
-- the interactive `IDENTIFICATION_READY` confirmation.
+- one or more `--dac-step DAC:HOLD_S` values;
+- approved initial raw-level minimum;
+- approved initial raw-level maximum;
+- approved maximum raw-level abort threshold;
+- approved maximum positive raw-level rate;
+- approved maximum total experiment duration;
+- interactive `IDENTIFICATION_READY` confirmation.
 
-No excitation DAC value is supplied by default. The previous unreviewed default of 12000 counts has been removed from the workflow.
+No excitation DAC, level trip, rate trip, or duration limit is supplied by default.
 
-The PLC remains the final authority for the applied output. The procedure writes `Enable=FALSE` and `DAC=0` in its final cleanup block.
+## Independent abort layers
 
-## Offline Inspection
+A real execution aborts when any of these conditions occurs:
 
-Display help:
+1. the PLC watchdog becomes unhealthy or tripped;
+2. `SafetyReset` becomes active;
+3. the measured raw level reaches the configured maximum;
+4. the positive raw-level rate exceeds the configured threshold;
+5. elapsed time reaches the configured maximum duration;
+6. the requested applied DAC is not reached within the transition timeout;
+7. the initial safe state and level band do not stabilize.
 
-```powershell
-python scripts/open_loop_identification.py --help
+The positive level-rate guard uses a configurable time window and records the calculated rate in the CSV.
+
+## Final safe-state verification
+
+After success or failure, the script requests:
+
+```text
+Enable = FALSE
+DAC = 0
 ```
 
-Display an empty plan without network access:
+It then reads the PLC and requires five consecutive samples with:
 
-```powershell
-python scripts/open_loop_identification.py --plan
+```text
+AppliedEnable = FALSE
+AppliedDAC = 0
 ```
 
-Display a proposed plan using only values that have already been reviewed for the physical plant:
+Failure to verify that final zero-output state causes the procedure itself to fail.
+
+The PLC remains the final authority for the actuator state.
+
+## Offline plan template
+
+Only use values that have documented engineering and laboratory approval:
 
 ```powershell
 python scripts/open_loop_identification.py `
     --plan `
     --initial-level-min-raw <APPROVED_INITIAL_MIN> `
     --initial-level-max-raw <APPROVED_INITIAL_MAX> `
-    --maximum-level-raw <APPROVED_TRIP_LIMIT> `
-    --dac-step <APPROVED_DAC_1>:<HOLD_SECONDS_1> `
-    --dac-step <APPROVED_DAC_2>:<HOLD_SECONDS_2> `
-    --dac-step <APPROVED_DAC_3>:<HOLD_SECONDS_3>
+    --maximum-level-raw <APPROVED_LEVEL_TRIP> `
+    --maximum-level-rate-raw-per-s <APPROVED_RATE_TRIP> `
+    --maximum-experiment-duration-s <APPROVED_TOTAL_DURATION> `
+    --dac-step <APPROVED_DAC_1>:<HOLD_1> `
+    --dac-step <APPROVED_DAC_2>:<HOLD_2>
 ```
 
-The `--dac-step` option may be repeated. The order supplied on the command line is the order executed.
+The configured maximum duration must exceed the nominal baseline, hold, and recovery time. Transition and startup time must also be considered during approval.
 
-## Real Execution Template
+## Recorded data
 
-Do not execute until the initial-level band, every DAC step, every hold duration, and the maximum raw-level trip threshold have been approved against the real plant and laboratory procedure.
-
-```powershell
-python scripts/open_loop_identification.py `
-    --execute `
-    --initial-level-min-raw <APPROVED_INITIAL_MIN> `
-    --initial-level-max-raw <APPROVED_INITIAL_MAX> `
-    --maximum-level-raw <APPROVED_TRIP_LIMIT> `
-    --dac-step <APPROVED_DAC_1>:<HOLD_SECONDS_1> `
-    --dac-step <APPROVED_DAC_2>:<HOLD_SECONDS_2>
-```
-
-Execution additionally requires typing:
-
-```text
-IDENTIFICATION_READY
-```
-
-## Recorded Data
-
-Each CSV row includes:
+Each row includes:
 
 - timestamp and elapsed time;
-- phase;
-- excitation-step index;
-- excitation DAC and hold duration;
+- phase and step information;
 - raw level;
-- approved initial-level bounds;
-- maximum raw-level trip threshold;
-- PLC heartbeat;
-- watchdog health and trip state;
-- SafetyReset state;
-- PLC command values;
+- calculated raw-level rate;
+- configured level, rate, and duration abort values;
+- heartbeat and watchdog states;
+- command values;
 - PLC-applied values;
-- gateway request values.
+- gateway-request values.
 
-Raw outputs are stored below:
+Raw results are stored under:
 
 ```text
 data/raw/open-loop-identification-<timestamp>/
 ```
 
-## Multi-Step Sequence
+## Current approval status
 
-The current sequence is:
+The following remain unresolved for real execution:
 
-1. verify a stable safe initial state inside the approved raw-level band;
-2. record a zero-output baseline;
-3. request `Enable=TRUE` with DAC zero;
-4. apply each explicitly supplied DAC step in order;
-5. confirm the PLC-applied DAC for every step;
-6. record each plateau for its explicitly supplied hold duration;
-7. abort if the watchdog becomes invalid;
-8. abort if raw level reaches the maximum trip threshold;
-9. request `Enable=FALSE`;
-10. confirm applied output removal;
-11. request DAC zero;
-12. record zero-output recovery;
-13. issue final safe commands.
+- physical tank high-level limit;
+- PLC high-level trip, if present;
+- physically approved abort level;
+- approved positive level-rate threshold;
+- minimum repeatable pump-flow DAC;
+- approved DAC sequence;
+- approved hold durations;
+- approved total duration.
 
-## Current Evidence and Limitations
+The provisional values previously displayed in an offline plan remain unapproved. In particular, 700 raw counts is not a physical limit and 9000, 10500, and 12000 are not an authorized identification sequence merely because they were displayed by `--plan`.
 
-The PI screening report is stored in:
-
-```text
-docs/experiments/real-raw-pi-identification-screening.md
-docs/experiments/real-raw-pi-identification-screening.json
-```
-
-The PI dataset is useful for observed-range and safety screening. It is not an open-loop identification dataset because the actuator and process output were coupled by manual staging and PI feedback.
-
-The maximum observed level of 787 counts is not a physical limit. The maximum observed applied DAC of 12000 counts is not an automatically approved excitation value.
-
-Before real execution, the project still requires:
-
-- explicit physical level limits;
-- an approved initial-level band;
-- reviewed DAC plateaus and hold times;
-- at least one repeated run;
-- a separate model-validation dataset;
-- post-run evidence preservation and safe-trip validation.
-
-The provisional parameters in `simulation/level_plant.py` must not be treated as identified real-plant parameters.
-
-The historical `MPC_LEVEL.fbt` remains preserved. A new MPC path will be added only after model identification and offline validation.
+The historical `MPC_LEVEL.fbt` and all existing 4diac applications remain preserved.
