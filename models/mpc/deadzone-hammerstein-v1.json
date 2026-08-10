@@ -1,0 +1,159 @@
+{
+  "model_type": "deadzone_hammerstein_first_order",
+  "continuous_time": {
+    "equation": "dy/dt = -(y-y0)/tau + (G/tau)*max(0,u-u_dead)^p",
+    "tau_s": 32.0,
+    "baseline_raw_y0": 298.0,
+    "deadzone_DAC": 11750.0,
+    "input_exponent_p": 1.2,
+    "equilibrium_gain_G_raw_per_DAC_power_p": 0.6804874743063485,
+    "equilibrium_equation": "y_eq(u)=y0+G*max(0,u-u_dead)^p"
+  },
+  "discrete_time": {
+    "sample_time_s": 0.1,
+    "a": 0.9968798777302081,
+    "equation": "y[k+1]=y0+a*(y[k]-y0)+G*(1-a)*max(0,u[k]-u_dead)^p"
+  },
+  "target_operating_point": {
+    "target_raw": 450.0,
+    "implied_equilibrium_DAC": 11840.681677122655
+  },
+  "trajectory_metrics": {
+    "train_rmse_raw": 117.43942070650785,
+    "train_mae_raw": 83.8956177903089,
+    "validation_rmse_raw": 55.744873447633516,
+    "validation_mae_raw": 49.00277665799517,
+    "validation_bias_raw": 18.175759151122737,
+    "validation_max_abs_error_raw": 136.8483466678776
+  },
+  "equilibrium_table_raw": {
+    "9500": 298.0,
+    "10500": 298.0,
+    "11000": 298.0,
+    "11500": 298.0,
+    "11700": 298.0,
+    "12000": 811.272676846844,
+    "12300": 1620.072777834438,
+    "13000": 3838.8876833159375,
+    "14000": 7466.679385988171
+  },
+  "training_sources": [
+    "data\\raw\\local-identification-20260808-120310\\local-identification.csv",
+    "data\\raw\\local-identification-20260808-120916\\local-identification.csv",
+    "data\\raw\\local-identification-v3-20260808-121546\\local-identification.csv",
+    "data\\raw\\steady-calibration-20260808-103415\\samples.csv",
+    "data\\raw\\steady-calibration-20260808-104108\\samples.csv",
+    "data\\raw\\steady-calibration-20260808-113116\\samples.csv",
+    "data\\raw\\steady-calibration-20260808-113159\\samples.csv",
+    "data\\raw\\steady-calibration-20260808-113516\\samples.csv",
+    "data\\raw\\steady-calibration-20260808-113623\\samples.csv",
+    "data\\raw\\steady-calibration-20260808-113720\\samples.csv",
+    "data\\raw\\steady-calibration-dac13000-20260808-114728\\samples.csv",
+    "data\\raw\\steady-calibration-dac14000-20260808-114400\\samples.csv"
+  ],
+  "validation_sources": [
+    "data\\raw\\steady-calibration-20260808-103827\\samples.csv"
+  ],
+  "per_source_rollout_metrics": {
+    "data\\raw\\local-identification-20260808-120310\\local-identification.csv": {
+      "count": 67,
+      "rmse_raw": 92.1592701333956,
+      "mae_raw": 83.0827704959137,
+      "bias_raw": -73.22583025269813,
+      "max_abs_error_raw": 139.26168419981215
+    },
+    "data\\raw\\local-identification-20260808-120916\\local-identification.csv": {
+      "count": 238,
+      "rmse_raw": 77.97125830786415,
+      "mae_raw": 65.04432604057047,
+      "bias_raw": -16.668271168560413,
+      "max_abs_error_raw": 161.06310611820663
+    },
+    "data\\raw\\local-identification-v3-20260808-121546\\local-identification.csv": {
+      "count": 424,
+      "rmse_raw": 191.11917738630615,
+      "mae_raw": 160.84028398464105,
+      "bias_raw": -127.29922552215334,
+      "max_abs_error_raw": 358.5603914845173
+    },
+    "data\\raw\\steady-calibration-20260808-103415\\samples.csv": {
+      "count": 148,
+      "rmse_raw": 55.830297003890685,
+      "mae_raw": 37.77672872390578,
+      "bias_raw": 28.949780131007863,
+      "max_abs_error_raw": 151.69094962392643
+    },
+    "data\\raw\\steady-calibration-20260808-103827\\samples.csv": {
+      "count": 223,
+      "rmse_raw": 55.744873447633516,
+      "mae_raw": 49.00277665799517,
+      "bias_raw": 18.175759151122737,
+      "max_abs_error_raw": 136.8483466678776
+    },
+    "data\\raw\\steady-calibration-20260808-104108\\samples.csv": {
+      "count": 225,
+      "rmse_raw": 84.19403815224011,
+      "mae_raw": 70.39466080539943,
+      "bias_raw": 39.31975515675268,
+      "max_abs_error_raw": 181.86469168329552
+    },
+    "data\\raw\\steady-calibration-20260808-113116\\samples.csv": {
+      "count": 108,
+      "rmse_raw": 60.9663370812305,
+      "mae_raw": 48.021216364429435,
+      "bias_raw": 39.58257404640199,
+      "max_abs_error_raw": 143.4894126315706
+    },
+    "data\\raw\\steady-calibration-20260808-113159\\samples.csv": {
+      "count": 107,
+      "rmse_raw": 63.52476974090003,
+      "mae_raw": 48.05980581243061,
+      "bias_raw": -15.06203420147007,
+      "max_abs_error_raw": 155.54433510202614
+    },
+    "data\\raw\\steady-calibration-20260808-113516\\samples.csv": {
+      "count": 224,
+      "rmse_raw": 63.149738656350095,
+      "mae_raw": 50.92784447999894,
+      "bias_raw": 19.22127687469476,
+      "max_abs_error_raw": 150.41713764954164
+    },
+    "data\\raw\\steady-calibration-20260808-113623\\samples.csv": {
+      "count": 182,
+      "rmse_raw": 105.87469020921426,
+      "mae_raw": 79.53581316552929,
+      "bias_raw": -30.001157362133334,
+      "max_abs_error_raw": 238.0861129953111
+    },
+    "data\\raw\\steady-calibration-20260808-113720\\samples.csv": {
+      "count": 156,
+      "rmse_raw": 88.45837003740098,
+      "mae_raw": 60.731990626949695,
+      "bias_raw": -32.40084926384203,
+      "max_abs_error_raw": 318.4590084979067
+    },
+    "data\\raw\\steady-calibration-dac13000-20260808-114728\\samples.csv": {
+      "count": 143,
+      "rmse_raw": 115.15202438019591,
+      "mae_raw": 83.64331251948443,
+      "bias_raw": 67.05204752958672,
+      "max_abs_error_raw": 316.0574907151621
+    },
+    "data\\raw\\steady-calibration-dac14000-20260808-114400\\samples.csv": {
+      "count": 132,
+      "rmse_raw": 157.2739570352816,
+      "mae_raw": 93.86970136801264,
+      "bias_raw": 70.55504423061558,
+      "max_abs_error_raw": 532.1370861339576
+    }
+  },
+  "physical_constraints": {
+    "tau_positive": true,
+    "deadzone_nonnegative": true,
+    "input_exponent_positive": true,
+    "equilibrium_gain_positive": true,
+    "monotone_input_to_equilibrium": true,
+    "stable_state_dynamics": true
+  },
+  "caution": "Candidate nonlinear model identified from preserved laboratory trajectories. It must pass offline MPC robustness tests before real commissioning."
+}
