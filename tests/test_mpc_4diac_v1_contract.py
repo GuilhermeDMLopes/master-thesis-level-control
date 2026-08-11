@@ -253,3 +253,24 @@ def test_historical_mpc_level_is_not_replaced_by_new_type():
     new = parse(NMPC)
     assert historical.get("Name") == "MPC_LEVEL"
     assert new.get("Name") == "MPC_MOVE_BLOCKED_NMPC_V1"
+def test_nmpc_st_literals_are_forte_exporter_compatible():
+    """FORTE 1.x NG export requires typed LREAL literals with a decimal point.
+
+    Keep the Basic FB algorithm free of scientific-notation typed literals as
+    well, because the exporter grammar used by the current 4diac installation
+    rejects the previously used LREAL#1.0E30 spelling.
+    """
+    st = parse(NMPC).findtext("./BasicFB/Algorithm/ST") or ""
+
+    typed_integer_lreal = re.findall(
+        r"\bLREAL#[+-]?\d+(?![\d.])",
+        st,
+    )
+    typed_scientific_lreal = re.findall(
+        r"\bLREAL#[+-]?\d+(?:\.\d+)?[Ee][+-]?\d+",
+        st,
+    )
+
+    assert typed_integer_lreal == []
+    assert typed_scientific_lreal == []
+    assert "best_cost := LREAL#1000000000.0;" in st

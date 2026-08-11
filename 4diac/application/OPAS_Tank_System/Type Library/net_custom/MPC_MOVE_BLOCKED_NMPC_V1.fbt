@@ -187,7 +187,7 @@ ELSE
                 phi_value := LREAL#0.0;
                 phi_slope := LREAL#0.0;
             ELSIF effective_input <= LREAL#50.0 THEN
-                phi_value := LREAL#0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
+                phi_value := LREAL#0.0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
                 phi_slope := LREAL#2.18672414788656;
             ELSIF effective_input <= LREAL#100.0 THEN
                 phi_value := LREAL#109.336207394328 + LREAL#2.8370487151326 * (effective_input - LREAL#50.0);
@@ -243,14 +243,14 @@ ELSE
         END_IF;
 
         best_found := FALSE;
-        best_cost := LREAL#1.0E30;
+        best_cost := LREAL#1000000000.0;
         best_target := LREAL#0.0;
         best_predicted_max := LREAL#-1.0;
         best_predicted_final := LREAL#-1.0;
 
         FOR candidate_index := 0 TO 12 DO
 CASE candidate_index OF
-    0: candidate_target := LREAL#0;
+    0: candidate_target := LREAL#0.0;
     1: candidate_target := LREAL#11540.6816771227;
     2: candidate_target := LREAL#11590.6816771227;
     3: candidate_target := LREAL#11640.6816771227;
@@ -261,8 +261,8 @@ CASE candidate_index OF
     8: candidate_target := LREAL#11890.6816771227;
     9: candidate_target := LREAL#11940.6816771227;
     10: candidate_target := LREAL#11990.6816771227;
-    11: candidate_target := LREAL#11750;
-    12: candidate_target := LREAL#12000;
+    11: candidate_target := LREAL#11750.0;
+    12: candidate_target := LREAL#12000.0;
 ELSE
     candidate_target := LREAL#0.0;
 END_CASE;
@@ -312,7 +312,7 @@ END_CASE;
                         phi_value := LREAL#0.0;
                         phi_slope := LREAL#0.0;
                     ELSIF effective_input <= LREAL#50.0 THEN
-                        phi_value := LREAL#0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
+                        phi_value := LREAL#0.0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
                         phi_slope := LREAL#2.18672414788656;
                     ELSIF effective_input <= LREAL#100.0 THEN
                         phi_value := LREAL#109.336207394328 + LREAL#2.8370487151326 * (effective_input - LREAL#50.0);
@@ -450,7 +450,7 @@ END_CASE;
                 phi_value := LREAL#0.0;
                 phi_slope := LREAL#0.0;
             ELSIF effective_input <= LREAL#50.0 THEN
-                phi_value := LREAL#0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
+                phi_value := LREAL#0.0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
                 phi_slope := LREAL#2.18672414788656;
             ELSIF effective_input <= LREAL#100.0 THEN
                 phi_value := LREAL#109.336207394328 + LREAL#2.8370487151326 * (effective_input - LREAL#50.0);
