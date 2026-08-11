@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="MPC_MEDIAN_FILTER_9" Comment="Deterministic 9-sample rolling median for the raw-count MPC model coordinate">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="1.0" Author="Guilherme" Date="2026-08-10">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="Process one new raw level sample">
+				<With Var="PV_RAW"/>
+				<With Var="RESET"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="Median value updated">
+				<With Var="PV_MEDIAN"/>
+				<With Var="INITIALIZED"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PV_RAW" Type="LREAL" Comment="Current unfiltered raw level count"/>
+			<VarDeclaration Name="RESET" Type="BOOL" Comment="Refill the complete 9-sample buffer with the current input"/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="PV_MEDIAN" Type="LREAL" Comment="Median of the most recent 9 samples"/>
+			<VarDeclaration Name="INITIALIZED" Type="BOOL" Comment="Filter buffer has deterministic initialized content"/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="initialized_internal" Type="BOOL" InitialValue="FALSE"/>
+			<VarDeclaration Name="v0" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v1" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v2" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v3" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v4" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v5" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v6" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v7" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="v8" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s0" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s1" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s2" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s3" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s4" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s5" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s6" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s7" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="s8" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="swap_value" Type="LREAL" InitialValue="0.0"/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" x="120.0" y="120.0">
+			</ECState>
+			<ECState Name="EXEC" x="520.0" y="120.0">
+				<ECAction Algorithm="ALG_MEDIAN" Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="EXEC" Condition="REQ" x="300.0" y="100.0"/>
+			<ECTransition Source="EXEC" Destination="START" Condition="1" x="300.0" y="220.0"/>
+		</ECC>
+		<Algorithm Name="ALG_MEDIAN" Comment="Shift the sample history and compute an exact median using a fixed compare-swap network">
+			<ST><![CDATA[IF RESET OR NOT initialized_internal THEN
+    v0 := PV_RAW;
+    v1 := PV_RAW;
+    v2 := PV_RAW;
+    v3 := PV_RAW;
+    v4 := PV_RAW;
+    v5 := PV_RAW;
+    v6 := PV_RAW;
+    v7 := PV_RAW;
+    v8 := PV_RAW;
+    initialized_internal := TRUE;
+ELSE
+    v0 := v1;
+    v1 := v2;
+    v2 := v3;
+    v3 := v4;
+    v4 := v5;
+    v5 := v6;
+    v6 := v7;
+    v7 := v8;
+    v8 := PV_RAW;
+END_IF;
+
+s0 := v0;
+s1 := v1;
+s2 := v2;
+s3 := v3;
+s4 := v4;
+s5 := v5;
+s6 := v6;
+s7 := v7;
+s8 := v8;
+
+IF s0 > s1 THEN
+    swap_value := s0;
+    s0 := s1;
+    s1 := swap_value;
+END_IF;
+IF s2 > s3 THEN
+    swap_value := s2;
+    s2 := s3;
+    s3 := swap_value;
+END_IF;
+IF s4 > s5 THEN
+    swap_value := s4;
+    s4 := s5;
+    s5 := swap_value;
+END_IF;
+IF s6 > s7 THEN
+    swap_value := s6;
+    s6 := s7;
+    s7 := swap_value;
+END_IF;
+IF s1 > s2 THEN
+    swap_value := s1;
+    s1 := s2;
+    s2 := swap_value;
+END_IF;
+IF s3 > s4 THEN
+    swap_value := s3;
+    s3 := s4;
+    s4 := swap_value;
+END_IF;
+IF s5 > s6 THEN
+    swap_value := s5;
+    s5 := s6;
+    s6 := swap_value;
+END_IF;
+IF s7 > s8 THEN
+    swap_value := s7;
+    s7 := s8;
+    s8 := swap_value;
+END_IF;
+IF s0 > s1 THEN
+    swap_value := s0;
+    s0 := s1;
+    s1 := swap_value;
+END_IF;
+IF s2 > s3 THEN
+    swap_value := s2;
+    s2 := s3;
+    s3 := swap_value;
+END_IF;
+IF s4 > s5 THEN
+    swap_value := s4;
+    s4 := s5;
+    s5 := swap_value;
+END_IF;
+IF s6 > s7 THEN
+    swap_value := s6;
+    s6 := s7;
+    s7 := swap_value;
+END_IF;
+IF s1 > s2 THEN
+    swap_value := s1;
+    s1 := s2;
+    s2 := swap_value;
+END_IF;
+IF s3 > s4 THEN
+    swap_value := s3;
+    s3 := s4;
+    s4 := swap_value;
+END_IF;
+IF s5 > s6 THEN
+    swap_value := s5;
+    s5 := s6;
+    s6 := swap_value;
+END_IF;
+IF s7 > s8 THEN
+    swap_value := s7;
+    s7 := s8;
+    s8 := swap_value;
+END_IF;
+IF s0 > s1 THEN
+    swap_value := s0;
+    s0 := s1;
+    s1 := swap_value;
+END_IF;
+IF s2 > s3 THEN
+    swap_value := s2;
+    s2 := s3;
+    s3 := swap_value;
+END_IF;
+IF s4 > s5 THEN
+    swap_value := s4;
+    s4 := s5;
+    s5 := swap_value;
+END_IF;
+IF s6 > s7 THEN
+    swap_value := s6;
+    s6 := s7;
+    s7 := swap_value;
+END_IF;
+IF s1 > s2 THEN
+    swap_value := s1;
+    s1 := s2;
+    s2 := swap_value;
+END_IF;
+IF s3 > s4 THEN
+    swap_value := s3;
+    s3 := s4;
+    s4 := swap_value;
+END_IF;
+IF s5 > s6 THEN
+    swap_value := s5;
+    s5 := s6;
+    s6 := swap_value;
+END_IF;
+IF s7 > s8 THEN
+    swap_value := s7;
+    s7 := s8;
+    s8 := swap_value;
+END_IF;
+IF s0 > s1 THEN
+    swap_value := s0;
+    s0 := s1;
+    s1 := swap_value;
+END_IF;
+IF s2 > s3 THEN
+    swap_value := s2;
+    s2 := s3;
+    s3 := swap_value;
+END_IF;
+IF s4 > s5 THEN
+    swap_value := s4;
+    s4 := s5;
+    s5 := swap_value;
+END_IF;
+IF s6 > s7 THEN
+    swap_value := s6;
+    s6 := s7;
+    s7 := swap_value;
+END_IF;
+IF s1 > s2 THEN
+    swap_value := s1;
+    s1 := s2;
+    s2 := swap_value;
+END_IF;
+IF s3 > s4 THEN
+    swap_value := s3;
+    s3 := s4;
+    s4 := swap_value;
+END_IF;
+IF s5 > s6 THEN
+    swap_value := s5;
+    s5 := s6;
+    s6 := swap_value;
+END_IF;
+IF s7 > s8 THEN
+    swap_value := s7;
+    s7 := s8;
+    s8 := swap_value;
+END_IF;
+IF s0 > s1 THEN
+    swap_value := s0;
+    s0 := s1;
+    s1 := swap_value;
+END_IF;
+IF s2 > s3 THEN
+    swap_value := s2;
+    s2 := s3;
+    s3 := swap_value;
+END_IF;
+IF s4 > s5 THEN
+    swap_value := s4;
+    s4 := s5;
+    s5 := swap_value;
+END_IF;
+IF s6 > s7 THEN
+    swap_value := s6;
+    s6 := s7;
+    s7 := swap_value;
+END_IF;
+
+PV_MEDIAN := s4;
+INITIALIZED := initialized_internal;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>
