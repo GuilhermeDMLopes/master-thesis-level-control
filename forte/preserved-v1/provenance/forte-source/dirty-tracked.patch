@@ -1,0 +1,76 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 66c56b655..96ca6834f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -14,7 +14,7 @@
+ #    Martin Melik Merkumians - adds compiler feature check for nullptr
+ # *******************************************************************************/
+ 
+-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
++CMAKE_MINIMUM_REQUIRED(VERSION 3.5...3.20)
+ 
+ PROJECT(FORTE)
+ 
+@@ -140,11 +140,11 @@ if (WIN32)
+     mark_as_advanced(FORTE_ADDITIONAL_CXX_FLAGS)
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FORTE_ADDITIONAL_CXX_FLAGS}")
+   endif(MSVC)
+-
+-  option(FORTE_WINDOWS_XP_COMPAT OFF "Enable some workarounds for Windows XP compatibility")
+-  if (FORTE_WINDOWS_XP_COMPAT)
+-    add_definitions(-DWINDOWS_XP_COMPAT=1)
+-  endif()
++
++  option(FORTE_WINDOWS_XP_COMPAT OFF "Enable some workarounds for Windows XP compatibility")
++  if (FORTE_WINDOWS_XP_COMPAT)
++    add_definitions(-DWINDOWS_XP_COMPAT=1)
++  endif()
+ endif(WIN32)
+ 
+ #######################################################################################
+@@ -167,12 +167,12 @@ else()
+   unset(LUAJIT_MATH_LIBRARY CACHE)
+ endif(NOT ("${FORTE_USE_LUATYPES}" STREQUAL "None"))
+ 
+-#######################################################################################
+-# Early definition of option how to generate stringlist for every source file
+-#######################################################################################
+-SET(FORTE_LINKED_STRINGDICT ON CACHE BOOL "FORTE will resolve references to the stringdict at link-stage and not compile-stage. This will reduce compiletime if the stringdict changes.")
+-mark_as_advanced(FORTE_LINKED_STRINGDICT)
+-
++#######################################################################################
++# Early definition of option how to generate stringlist for every source file
++#######################################################################################
++SET(FORTE_LINKED_STRINGDICT ON CACHE BOOL "FORTE will resolve references to the stringdict at link-stage and not compile-stage. This will reduce compiletime if the stringdict changes.")
++mark_as_advanced(FORTE_LINKED_STRINGDICT)
++
+ #######################################################################################
+ # Add subdirectories
+ #######################################################################################
+@@ -294,9 +294,9 @@ FOREACH( FBLIB_FILE ${SOURCE_FILES_TMP})
+ ENDFOREACH(FBLIB_FILE)
+ LIST(REMOVE_DUPLICATES SOURCE_FILES)
+ 
+-#######################################################################################
+-# Generate stringlist for every source file
+-#######################################################################################
++#######################################################################################
++# Generate stringlist for every source file
++#######################################################################################
+ SET(FORTE_MODIFY_SOURCES_ON_MISSING_GENERATED_INCLUDES ON CACHE BOOL "FORTE change the source-files if includes for the generated includes are missing.")
+ mark_as_advanced(FORTE_MODIFY_SOURCES_ON_MISSING_GENERATED_INCLUDES)
+ 
+diff --git a/src/modules/utils/CMakeLists.txt b/src/modules/utils/CMakeLists.txt
+index 59a668efd..76c58548e 100644
+--- a/src/modules/utils/CMakeLists.txt
++++ b/src/modules/utils/CMakeLists.txt
+@@ -23,3 +23,8 @@ forte_add_sourcefile_hcpp(FB_RANDOM GET_STRUCT_VALUE)
+ 
+ forte_add_sourcefile_hcpp(STEST_END)
+ forte_add_sourcefile_hcpp(TEST_CONDITION)
++forte_add_sourcefile_hcpp(PID_LEVEL)
++forte_add_sourcefile_hcpp(PI_LEVEL_CONTROLLER)
++forte_add_sourcefile_hcpp(MPC_LEVEL)
++forte_add_sourcefile_hcpp(DAC_RATE_LIMITER)
++forte_add_sourcefile_hcpp(PV_FILTER)
+\ No newline at end of file

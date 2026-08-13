@@ -1,0 +1,13 @@
+Toolchain snapshot
+==================
+
+cmake version 4.2.0-rc1
+Python 3.10.11
+
+CMake generator:
+Visual Studio 18 2026
+
+Generator platform:
+x64
+
+The successfully completed MPC V1 build reported MSBuild 18.4.0.
