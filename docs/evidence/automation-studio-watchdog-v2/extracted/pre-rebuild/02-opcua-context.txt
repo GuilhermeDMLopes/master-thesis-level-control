@@ -1,0 +1,119 @@
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:17 | Nivel
+  BEFORE |   <DefaultView>
+  BEFORE |     <Module Name="&lt;Default&gt;">
+  BEFORE |       <Task Name="Program">
+  MATCH  |         <Variable Name="Nivel" />
+  AFTER  |         <Variable Name="DAC" />
+  AFTER  |         <Variable Name="Enable" />
+  AFTER  |         <Variable Name="Heartbeat" />
+  AFTER  |         <Variable Name="SafetyReset" />
+  AFTER  |         <Variable Name="WatchdogHealthy" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:19 | Enable
+  BEFORE |       <Task Name="Program">
+  BEFORE |         <Variable Name="Nivel" />
+  BEFORE |         <Variable Name="DAC" />
+  MATCH  |         <Variable Name="Enable" />
+  AFTER  |         <Variable Name="Heartbeat" />
+  AFTER  |         <Variable Name="SafetyReset" />
+  AFTER  |         <Variable Name="WatchdogHealthy" />
+  AFTER  |         <Variable Name="WatchdogTripped" />
+  AFTER  |         <Variable Name="AppliedEnable" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:24 | Enable
+  BEFORE |         <Variable Name="SafetyReset" />
+  BEFORE |         <Variable Name="WatchdogHealthy" />
+  BEFORE |         <Variable Name="WatchdogTripped" />
+  MATCH  |         <Variable Name="AppliedEnable" />
+  AFTER  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+  AFTER  |     </Module>
+  AFTER  |   </DefaultView>
+  AFTER  | </OpcUaSource>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:18 | DAC
+  BEFORE |     <Module Name="&lt;Default&gt;">
+  BEFORE |       <Task Name="Program">
+  BEFORE |         <Variable Name="Nivel" />
+  MATCH  |         <Variable Name="DAC" />
+  AFTER  |         <Variable Name="Enable" />
+  AFTER  |         <Variable Name="Heartbeat" />
+  AFTER  |         <Variable Name="SafetyReset" />
+  AFTER  |         <Variable Name="WatchdogHealthy" />
+  AFTER  |         <Variable Name="WatchdogTripped" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:25 | DAC
+  BEFORE |         <Variable Name="WatchdogHealthy" />
+  BEFORE |         <Variable Name="WatchdogTripped" />
+  BEFORE |         <Variable Name="AppliedEnable" />
+  MATCH  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+  AFTER  |     </Module>
+  AFTER  |   </DefaultView>
+  AFTER  | </OpcUaSource>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:20 | Heartbeat
+  BEFORE |         <Variable Name="Nivel" />
+  BEFORE |         <Variable Name="DAC" />
+  BEFORE |         <Variable Name="Enable" />
+  MATCH  |         <Variable Name="Heartbeat" />
+  AFTER  |         <Variable Name="SafetyReset" />
+  AFTER  |         <Variable Name="WatchdogHealthy" />
+  AFTER  |         <Variable Name="WatchdogTripped" />
+  AFTER  |         <Variable Name="AppliedEnable" />
+  AFTER  |         <Variable Name="AppliedDAC" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:21 | SafetyReset
+  BEFORE |         <Variable Name="DAC" />
+  BEFORE |         <Variable Name="Enable" />
+  BEFORE |         <Variable Name="Heartbeat" />
+  MATCH  |         <Variable Name="SafetyReset" />
+  AFTER  |         <Variable Name="WatchdogHealthy" />
+  AFTER  |         <Variable Name="WatchdogTripped" />
+  AFTER  |         <Variable Name="AppliedEnable" />
+  AFTER  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:22 | WatchdogHealthy
+  BEFORE |         <Variable Name="Enable" />
+  BEFORE |         <Variable Name="Heartbeat" />
+  BEFORE |         <Variable Name="SafetyReset" />
+  MATCH  |         <Variable Name="WatchdogHealthy" />
+  AFTER  |         <Variable Name="WatchdogTripped" />
+  AFTER  |         <Variable Name="AppliedEnable" />
+  AFTER  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+  AFTER  |     </Module>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:23 | WatchdogTripped
+  BEFORE |         <Variable Name="Heartbeat" />
+  BEFORE |         <Variable Name="SafetyReset" />
+  BEFORE |         <Variable Name="WatchdogHealthy" />
+  MATCH  |         <Variable Name="WatchdogTripped" />
+  AFTER  |         <Variable Name="AppliedEnable" />
+  AFTER  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+  AFTER  |     </Module>
+  AFTER  |   </DefaultView>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:24 | AppliedEnable
+  BEFORE |         <Variable Name="SafetyReset" />
+  BEFORE |         <Variable Name="WatchdogHealthy" />
+  BEFORE |         <Variable Name="WatchdogTripped" />
+  MATCH  |         <Variable Name="AppliedEnable" />
+  AFTER  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+  AFTER  |     </Module>
+  AFTER  |   </DefaultView>
+  AFTER  | </OpcUaSource>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad:25 | AppliedDAC
+  BEFORE |         <Variable Name="WatchdogHealthy" />
+  BEFORE |         <Variable Name="WatchdogTripped" />
+  BEFORE |         <Variable Name="AppliedEnable" />
+  MATCH  |         <Variable Name="AppliedDAC" />
+  AFTER  |       </Task>
+  AFTER  |     </Module>
+  AFTER  |   </DefaultView>
+  AFTER  | </OpcUaSource>

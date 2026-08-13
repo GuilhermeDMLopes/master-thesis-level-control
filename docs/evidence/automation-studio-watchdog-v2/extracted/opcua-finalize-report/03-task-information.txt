@@ -1,0 +1,5 @@
+Detected Program task classes from compiled I/O map: 4
+
+Hardware file: C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw
+Cyclic4 duration raw=100000; derived=100 ms
+Cyclic4 tolerance raw=100000; derived=100 ms
