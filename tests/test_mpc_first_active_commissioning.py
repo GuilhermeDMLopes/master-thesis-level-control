@@ -201,12 +201,15 @@ def test_source_never_contains_positive_actuator_write():
         assert token not in source
 
 
-def test_zero_output_writes_are_explicit():
-    source = SCRIPT.read_text(encoding="utf-8")
+def test_zero_output_writes_are_explicit(module):
+    import inspect
 
-    assert "ua.Variant(False, ua.VariantType.Boolean)" in source
-    assert "ua.Variant(0, ua.VariantType.Int16)" in source
-    assert "async def force_zero_outputs" in source
+    source = inspect.getsource(module.force_zero_outputs)
+
+    assert "write_value_only(" in source
+    assert "ua.VariantType.Boolean" in source
+    assert "ua.VariantType.Int16" in source
+    assert ".write_value(" not in source
 
 
 def test_safety_reset_is_never_written():
@@ -288,3 +291,59 @@ def test_run_requires_forte_pid():
 
     assert result.returncode != 0
     assert "--forte-pid is required" in (result.stdout + result.stderr)
+
+
+def test_write_value_only_uses_value_attribute_without_timestamps(module):
+    import asyncio
+
+    class FakeNode:
+        def __init__(self):
+            self.calls = []
+
+        async def write_attribute(self, attribute, data_value):
+            self.calls.append((attribute, data_value))
+
+    node = FakeNode()
+
+    asyncio.run(
+        module.write_value_only(
+            node,
+            0,
+            module.ua.VariantType.Int16,
+        )
+    )
+
+    assert len(node.calls) == 1
+
+    attribute, data_value = node.calls[0]
+
+    assert attribute == module.ua.AttributeIds.Value
+    assert data_value.Value.Value == 0
+    assert data_value.Value.VariantType == module.ua.VariantType.Int16
+
+
+def test_safe_shutdown_source_uses_value_only_helper():
+    source = SCRIPT.read_text(encoding="utf-8")
+
+    assert "async def write_value_only" in source
+
+    force_zero = source.split(
+        "async def force_zero_outputs",
+        1,
+    )[1].split(
+        "async def verify_final_zero",
+        1,
+    )[0]
+
+    assert ".write_value(" not in force_zero
+    assert "write_value_only(" in force_zero
+
+
+def test_verified_zero_is_not_reclassified_unsafe_only_for_write_warning():
+    source = SCRIPT.read_text(encoding="utf-8")
+
+    assert "FINAL ZERO OUTPUT VERIFIED DESPITE WRITE WARNING: YES" in source
+    assert (
+        "zero output was verified, but one or more explicit zero writes "
+        "reported an error"
+    ) not in source

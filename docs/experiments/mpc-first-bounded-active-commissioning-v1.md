@@ -129,3 +129,97 @@ REAL MPC FULL OPERATION AUTHORIZED: NO
 ```
 
 The trajectory must be inspected before any longer run.
+
+## R6A-1 first active attempt - no-flow result
+
+The first real MPC authorization was executed on 2026-08-15.
+
+Preserved CSV:
+
+```text
+data/sample/mpc-first-active-r6a1-no-flow-monitor.csv
+```
+
+SHA256:
+
+```text
+C6AF1A7F72CE3A5B19B9598ECD94B4DA3E4EF0C401089FBB49047895922DD9B7
+```
+
+Observed result:
+
+```text
+active window                       approximately 15 s
+maximum commanded DAC               6300
+maximum applied DAC                 6300
+physical pump water delivery        none observed
+physical retained level             none observed
+watchdog continuously healthy       yes
+PLC watchdog trip                   no
+final Enable                        false
+final DAC                           0
+final AppliedEnable                 false
+final AppliedDAC                    0
+```
+
+The raw sensor signal varied substantially during the active window even though
+no physical water delivery was observed. The raw/median trajectory is preserved
+as evidence and is not interpreted as physical level movement without further
+evidence.
+
+### Timing finding
+
+The original MPC network used:
+
+```text
+MpcLevelRead.IND -> MpcMedian9.REQ
+```
+
+Therefore controller execution was driven by asynchronous OPC UA subscription
+events instead of the intended fixed 100 ms controller period.
+
+The first active CSV reached only DAC 6300 during the approximately 15 s active
+window, which was insufficient to reach the previously identified useful pump
+region near the actuator dead-zone.
+
+The corrected architecture uses:
+
+```text
+MpcLevelRead.INITO -> MpcCycle.START
+MpcCycle.DT = T#100ms
+MpcCycle.EO -> MpcMedian9.REQ
+```
+
+The subscriptions continue updating the latest process values, while the
+controller/median/limiter execution chain is now clocked deterministically.
+
+### Shutdown finding
+
+The first R6A supervisor attempted explicit zero-output writes using the generic
+high-level write helper and the real B&R PLC returned `BadWriteNotSupported` for
+the redundant fallback write.
+
+Despite that warning, subsequent reads verified complete zero output.
+
+The corrected supervisor now uses the same Value-only OPC UA write pattern
+already used by the gateway for the B&R PLC:
+
+```text
+write_attribute(AttributeIds.Value, DataValue(Variant(...)))
+```
+
+A write warning is no longer classified as unsafe if the independent final
+readback still verifies all command and applied outputs at zero. Failure to
+verify zero remains an abort condition.
+
+## Retry requirement
+
+Do not repeat active MPC commissioning immediately after this software change.
+
+Required sequence:
+
+1. refresh/open the changed MPC application in Eclipse 4diac;
+2. confirm `MpcCycle` is present with `DT = T#100ms`;
+3. repeat protected deployment with `ENABLE_REQUEST = FALSE`;
+4. verify zero output and healthy watchdog;
+5. only then execute the next bounded active R6A attempt.

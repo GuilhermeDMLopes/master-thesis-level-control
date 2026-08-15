@@ -160,6 +160,7 @@ def test_system_contains_exactly_one_additive_mpc_application_and_resource():
         "MpcDACWrite": "CLIENT_1_0",
         "MpcEnableWrite": "CLIENT_1_0",
         "MpcInitMerge": "E_MERGE",
+        "MpcCycle": "E_CYCLE",
     }
 
     assert {name: fb.get("Type") for name, fb in app_fbs.items()} == expected
@@ -327,3 +328,102 @@ def test_mpc_nodeid_only_opcua_pair_syntax_in_application_and_resource():
                 id_parameters[0].get("Value")
                 == f'"{expected_id}"'
             )
+
+
+def test_mpc_uses_deterministic_100ms_cycle_after_manual_initialization():
+    import xml.etree.ElementTree as ET
+
+    root = ET.parse(SYSTEM).getroot()
+
+    app = root.find(
+        ".//Application[@Name='MPC_REAL_RAW_SAFE_V1']"
+    )
+
+    resource = root.find(
+        ".//Device[@Name='FORTE_PC']"
+        "/Resource[@Name='ResRealRawMPCV1']"
+    )
+
+    assert app is not None
+    assert resource is not None
+
+    for container in (app, resource):
+        cycles = [
+            fb
+            for fb in container.iter("FB")
+            if fb.get("Name") == "MpcCycle"
+        ]
+
+        assert len(cycles) == 1
+        assert cycles[0].get("Type") == "E_CYCLE"
+
+        params = {
+            p.get("Name"): p.get("Value")
+            for p in cycles[0].findall("Parameter")
+        }
+
+        assert params["DT"] == "T#100ms"
+
+        event_connections = {
+            (
+                connection.get("Source"),
+                connection.get("Destination"),
+            )
+            for connection in container.findall(
+                ".//EventConnections/Connection"
+            )
+        }
+
+        assert (
+            "MpcLevelRead.INITO",
+            "MpcCycle.START",
+        ) in event_connections
+
+        assert (
+            "MpcCycle.EO",
+            "MpcMedian9.REQ",
+        ) in event_connections
+
+        assert (
+            "MpcLevelRead.IND",
+            "MpcMedian9.REQ",
+        ) not in event_connections
+
+    mappings = {
+        (
+            mapping.get("From"),
+            mapping.get("To"),
+        )
+        for mapping in root.findall("Mapping")
+    }
+
+    assert (
+        "MPC_REAL_RAW_SAFE_V1.MpcCycle",
+        "FORTE_PC.ResRealRawMPCV1.MpcCycle",
+    ) in mappings
+
+
+def test_mpc_cycle_has_no_automatic_system_start_connection():
+    import xml.etree.ElementTree as ET
+
+    root = ET.parse(SYSTEM).getroot()
+
+    resource = root.find(
+        ".//Device[@Name='FORTE_PC']"
+        "/Resource[@Name='ResRealRawMPCV1']"
+    )
+
+    assert resource is not None
+
+    event_connections = {
+        (
+            connection.get("Source"),
+            connection.get("Destination"),
+        )
+        for connection in resource.findall(
+            ".//EventConnections/Connection"
+        )
+    }
+
+    assert ("START.COLD", "MpcCycle.START") not in event_connections
+    assert ("START.WARM", "MpcCycle.START") not in event_connections
