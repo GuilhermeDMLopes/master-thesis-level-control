@@ -177,9 +177,9 @@ def test_application_starts_disabled_and_uses_gateway_feedback_nodes():
         "SP_RAW": "LREAL#450.0",
     }
 
-    assert params(fbs["MpcAppliedDACRead"])["ID"] == '"opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=AppliedDAC]"'
-    assert params(fbs["MpcWatchdogRead"])["ID"] == '"opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=WatchdogHealthy]"'
-    assert params(fbs["MpcLevelRead"])["ID"] == '"opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=Nivel]"'
+    assert params(fbs["MpcAppliedDACRead"])["ID"] == '"opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=AppliedDAC]"'
+    assert params(fbs["MpcWatchdogRead"])["ID"] == '"opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=WatchdogHealthy]"'
+    assert params(fbs["MpcLevelRead"])["ID"] == '"opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]"'
 
 
 def test_application_matches_identified_model_coordinate_and_applied_dac_contract():
@@ -274,3 +274,56 @@ def test_nmpc_st_literals_are_forte_exporter_compatible():
     assert typed_integer_lreal == []
     assert typed_scientific_lreal == []
     assert "best_cost := LREAL#1000000000.0;" in st
+
+
+def test_mpc_nodeid_only_opcua_pair_syntax_in_application_and_resource():
+    import xml.etree.ElementTree as ET
+
+    root = ET.parse(SYSTEM).getroot()
+
+    expected = {
+        "MpcLevelRead":
+            "opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]",
+        "MpcAppliedDACRead":
+            "opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=AppliedDAC]",
+        "MpcWatchdogRead":
+            "opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=WatchdogHealthy]",
+        "MpcDACWrite":
+            "opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]",
+        "MpcEnableWrite":
+            "opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]",
+    }
+
+    app = root.find(
+        ".//Application[@Name='MPC_REAL_RAW_SAFE_V1']"
+    )
+
+    resource = root.find(
+        ".//Device[@Name='FORTE_PC']"
+        "/Resource[@Name='ResRealRawMPCV1']"
+    )
+
+    assert app is not None
+    assert resource is not None
+
+    for container in (app, resource):
+        fbs = {
+            fb.get("Name"): fb
+            for fb in container.iter("FB")
+        }
+
+        for fb_name, expected_id in expected.items():
+            assert fb_name in fbs
+
+            id_parameters = [
+                parameter
+                for parameter in fbs[fb_name].findall("Parameter")
+                if parameter.get("Name") == "ID"
+            ]
+
+            assert len(id_parameters) == 1
+
+            assert (
+                id_parameters[0].get("Value")
+                == f'"{expected_id}"'
+            )

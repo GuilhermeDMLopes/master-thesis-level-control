@@ -695,20 +695,20 @@
 			<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
-				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=Nivel]&quot;"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
 			</FB>
 			<FB Name="MpcMedian9" Type="MPC_MEDIAN_FILTER_9" Comment="Match the rolling-median model coordinate used during identification" x="2000.0" y="800.0">
 				<Parameter Name="RESET" Value="FALSE"/>
 			</FB>
 			<FB Name="MpcAppliedDACRead" Type="SUBSCRIBE_1" Comment="Read PLC-confirmed AppliedDAC from the local gateway" x="800.0" y="2400.0">
 				<Parameter Name="QI" Value="TRUE"/>
-				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=AppliedDAC]&quot;"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=AppliedDAC]&quot;"/>
 			</FB>
 			<FB Name="MpcAppliedDACType" Type="F_INT_TO_LREAL" Comment="Convert AppliedDAC Int16 feedback to LREAL" x="2000.0" y="2400.0">
 			</FB>
 			<FB Name="MpcWatchdogRead" Type="SUBSCRIBE_1" Comment="Read PLC watchdog health from the local gateway" x="800.0" y="3600.0">
 				<Parameter Name="QI" Value="TRUE"/>
-				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=WatchdogHealthy]&quot;"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=WatchdogHealthy]&quot;"/>
 			</FB>
 			<FB Name="MpcController" Type="MPC_MOVE_BLOCKED_NMPC_V1" Comment="First commissioning-stage nonlinear MPC; disabled by default" x="3600.0" y="1400.0">
 				<Parameter Name="ENABLE_REQUEST" Value="FALSE"/>
@@ -726,11 +726,11 @@
 			</FB>
 			<FB Name="MpcDACWrite" Type="CLIENT_1_0" Comment="Write DAC command to the local gateway" x="8000.0" y="1200.0">
 				<Parameter Name="QI" Value="TRUE"/>
-				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;2:s=DAC]&quot;"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
 			</FB>
 			<FB Name="MpcEnableWrite" Type="CLIENT_1_0" Comment="Write fail-closed Enable command to the local gateway" x="8000.0" y="2600.0">
 				<Parameter Name="QI" Value="TRUE"/>
-				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;2:s=Enable]&quot;"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
 			</FB>
 			<FB Name="MpcInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; no START.COLD/WARM connection" x="400.0" y="5200.0">
 			</FB>
@@ -1168,20 +1168,20 @@
 			<FBNetwork>
 				<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=Nivel]&quot;"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
 				</FB>
 				<FB Name="MpcMedian9" Type="MPC_MEDIAN_FILTER_9" Comment="Match the rolling-median model coordinate used during identification" x="2000.0" y="800.0">
 					<Parameter Name="RESET" Value="FALSE"/>
 				</FB>
 				<FB Name="MpcAppliedDACRead" Type="SUBSCRIBE_1" Comment="Read PLC-confirmed AppliedDAC from the local gateway" x="800.0" y="2400.0">
 					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=AppliedDAC]&quot;"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=AppliedDAC]&quot;"/>
 				</FB>
 				<FB Name="MpcAppliedDACType" Type="F_INT_TO_LREAL" Comment="Convert AppliedDAC Int16 feedback to LREAL" x="2000.0" y="2400.0">
 				</FB>
 				<FB Name="MpcWatchdogRead" Type="SUBSCRIBE_1" Comment="Read PLC watchdog health from the local gateway" x="800.0" y="3600.0">
 					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;2:s=WatchdogHealthy]&quot;"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=WatchdogHealthy]&quot;"/>
 				</FB>
 				<FB Name="MpcController" Type="MPC_MOVE_BLOCKED_NMPC_V1" Comment="First commissioning-stage nonlinear MPC; disabled by default" x="3600.0" y="1400.0">
 					<Parameter Name="ENABLE_REQUEST" Value="FALSE"/>
@@ -1199,11 +1199,11 @@
 				</FB>
 				<FB Name="MpcDACWrite" Type="CLIENT_1_0" Comment="Write DAC command to the local gateway" x="8000.0" y="1200.0">
 					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;2:s=DAC]&quot;"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
 				</FB>
 				<FB Name="MpcEnableWrite" Type="CLIENT_1_0" Comment="Write fail-closed Enable command to the local gateway" x="8000.0" y="2600.0">
 					<Parameter Name="QI" Value="TRUE"/>
-					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;2:s=Enable]&quot;"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
 				</FB>
 				<FB Name="MpcInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; no START.COLD/WARM connection" x="400.0" y="5200.0">
 				</FB>
