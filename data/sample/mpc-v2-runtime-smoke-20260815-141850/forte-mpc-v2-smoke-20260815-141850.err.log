@@ -1,0 +1,6 @@
+INFO: T#18446743770991926957: FORTE is up and running
+INFO: T#18446743770993347557: Using provided bootfile location set in CMake: forte.fboot
+INFO: T#18446743770993871557: Boot file forte.fboot could not be opened. Skipping...
+INFO: T#18446743770994240457: CWin32SocketInterface: Opening TCP-Server connection at: localhost:61499
+INFO: T#18446743815084619957: Connection established by client
+INFO: T#18446743815132842657: Connection closed by peer
