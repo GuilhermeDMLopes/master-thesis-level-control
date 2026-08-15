@@ -220,6 +220,11 @@ def assert_zero_output(snapshot: dict[str, object]) -> None:
         failures.append(
             f"gateway AppliedDAC={snapshot['gw_applied_dac']!r}"
         )
+    if snapshot["gw_watchdog_healthy"] is not True:
+        failures.append(
+            "gateway WatchdogHealthy="
+            f"{snapshot['gw_watchdog_healthy']!r}"
+        )
 
     if snapshot["plc_enable"] is not False:
         failures.append(f"PLC Enable={snapshot['plc_enable']!r}")
@@ -236,6 +241,13 @@ def assert_zero_output(snapshot: dict[str, object]) -> None:
         if not exact_zero(snapshot["plc_applied_dac"]):
             failures.append(
                 f"PLC AppliedDAC={snapshot['plc_applied_dac']!r}"
+            )
+
+    if snapshot["plc_watchdog_healthy"] != "":
+        if snapshot["plc_watchdog_healthy"] is not True:
+            failures.append(
+                "PLC WatchdogHealthy="
+                f"{snapshot['plc_watchdog_healthy']!r}"
             )
 
     if failures:
@@ -259,8 +271,8 @@ def print_plan(args: argparse.Namespace) -> int:
     print(f"Sampling period: {args.sample_s:.3f} s")
     print()
     print("During --observe the script only READS PLC/gateway state.")
-    print("It aborts immediately if Enable/AppliedEnable becomes TRUE")
-    print("or DAC/AppliedDAC becomes non-zero.")
+    print("It aborts immediately if Enable/AppliedEnable becomes TRUE,")
+    print("DAC/AppliedDAC becomes non-zero, or WatchdogHealthy becomes FALSE.")
     print()
     print("For the short preflight: do NOT deploy anything; FORTE may remain stopped.")
     print("For the protected deployment run: start FORTE first, then deploy only")
@@ -344,7 +356,7 @@ async def observe(args: argparse.Namespace) -> int:
         )
         print(
             "The guard will continue monitoring and will abort on any "
-            "non-zero actuator state."
+            "non-zero actuator state or unhealthy watchdog state."
         )
         print()
 
@@ -426,7 +438,7 @@ async def observe(args: argparse.Namespace) -> int:
         f"{min(levels):.1f} .. {max(levels):.1f}"
     )
     print(f"Nivel raw median: {statistics.median(levels):.3f}")
-    print(f"WatchdogHealthy observed TRUE: {healthy_seen}")
+    print("WatchdogHealthy remained TRUE: YES")
     print("FINAL Enable=False: YES")
     print("FINAL DAC=0: YES")
     print("FINAL AppliedEnable=False: YES")

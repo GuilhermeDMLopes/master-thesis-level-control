@@ -164,10 +164,12 @@ def test_assert_zero_output_accepts_complete_zero_state(guard):
         ("gw_dac", 1.0, "gateway DAC"),
         ("gw_applied_enable", True, "gateway AppliedEnable"),
         ("gw_applied_dac", -1.0, "gateway AppliedDAC"),
+        ("gw_watchdog_healthy", False, "gateway WatchdogHealthy"),
         ("plc_enable", True, "PLC Enable"),
         ("plc_dac", 1.0, "PLC DAC"),
         ("plc_applied_enable", True, "PLC AppliedEnable"),
         ("plc_applied_dac", 1.0, "PLC AppliedDAC"),
+        ("plc_watchdog_healthy", False, "PLC WatchdogHealthy"),
     ],
 )
 def test_each_nonzero_actuator_state_trips_guard(

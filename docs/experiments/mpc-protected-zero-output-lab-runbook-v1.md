@@ -211,7 +211,7 @@ The 90 s protected run passes only if all are true:
 - final gateway `AppliedEnable = FALSE`;
 - final gateway `AppliedDAC = 0`;
 - equivalent PLC command/applied states remain zero/false;
-- `WatchdogHealthy` is observed true;
+- `WatchdogHealthy` remains true continuously for the protected run;
 - no `ZERO-OUTPUT VIOLATION` occurs;
 - no custom MPC `UNSUPPORTED_TYPE` occurs;
 - FORTE remains alive;

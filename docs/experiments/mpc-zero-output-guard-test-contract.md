@@ -19,6 +19,8 @@ The automated tests require the canonical guard to:
 - treat actuator output as zero only within the explicit numerical tolerance;
 - raise `ZERO-OUTPUT VIOLATION` if any gateway or PLC command/applied output
   becomes active or non-zero;
+- raise `ZERO-OUTPUT VIOLATION` if gateway or PLC `WatchdogHealthy` becomes
+  false at any observed sample;
 - resolve and read the mandatory B&R feedback nodes before observation;
 - expose an offline `--plan` mode;
 - reject invalid duration/sample parameters before observation;
