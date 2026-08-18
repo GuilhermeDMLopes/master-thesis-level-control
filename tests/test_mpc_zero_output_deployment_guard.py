@@ -308,7 +308,7 @@ def test_plan_documents_short_preflight_and_protected_deployment():
     output = result.stdout
 
     assert "short preflight" in output
-    assert "ResRealRawMPCV1" in output
+    assert "protected resource named by the current versioned runbook" in output
     assert "ENABLE_REQUEST" in output
     assert "MpcInitMerge.EI1" in output
 
@@ -370,3 +370,15 @@ def test_plan_does_not_create_raw_data_directory(tmp_path):
 
     assert result.returncode == 0, result.stderr
     assert not output_root.exists()
+
+def test_canonical_guard_does_not_hardcode_v1_or_v2_resource():
+    from pathlib import Path
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "mpc_zero_output_deployment_guard.py"
+    ).read_text(encoding="utf-8")
+    assert "ResRealRawMPCV1" not in source
+    assert "ResRealRawMPCV2" not in source
+    phrase = "the protected resource named by the current versioned runbook"
+    assert source.count(phrase) >= 2

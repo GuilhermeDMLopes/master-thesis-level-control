@@ -66,3 +66,11 @@ REAL MPC AUTHORIZED: **NO**
 Next physical milestone: run the validated MPC-capable FORTE, activate the guard
 first, deploy only `ResRealRawMPCV1` with `ENABLE_REQUEST = FALSE`, trigger
 `MpcInitMerge.EI1` once, and require continuous zero actuator output.
+## Canonical guard resource-name neutrality
+
+The canonical zero-output guard must not hardcode either the V1 or V2 resource
+name in operator-facing deployment instructions. The currently versioned
+laboratory runbook is authoritative for the protected resource target.
+
+This keeps the zero-output/watchdog guard reusable across validated MPC
+resource versions without changing its safety logic.

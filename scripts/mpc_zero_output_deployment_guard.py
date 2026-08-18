@@ -276,7 +276,7 @@ def print_plan(args: argparse.Namespace) -> int:
     print()
     print("For the short preflight: do NOT deploy anything; FORTE may remain stopped.")
     print("For the protected deployment run: start FORTE first, then deploy only")
-    print("ResRealRawMPCV1 while this guard is already monitoring zero output.")
+    print("Deploy only the protected resource named by the current versioned runbook while this guard is already monitoring zero output.")
     print("Do not change MpcController.ENABLE_REQUEST from FALSE.")
     print("After deployment, manually trigger MpcInitMerge.EI1 once.")
     print("Do not trigger or edit any other control input.")
@@ -351,7 +351,7 @@ async def observe(args: argparse.Namespace) -> int:
         print("Zero-output monitoring is active.")
         print("For a 10 s preflight: do not deploy anything.")
         print(
-            "For the protected deployment run: deploy ONLY ResRealRawMPCV1, "
+            "For the protected deployment run: deploy ONLY the protected resource named by the current versioned runbook, "
             "keep ENABLE_REQUEST=FALSE, then manually trigger MpcInitMerge.EI1 once."
         )
         print(
