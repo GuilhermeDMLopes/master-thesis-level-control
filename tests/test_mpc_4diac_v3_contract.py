@@ -156,6 +156,7 @@ def test_v3_internal_delay_queue_is_exactly_18_plus_18_scalars():
     assert prediction <= names
     assert "history_count" in names
     assert "record_history_internal" in names
+    assert "candidate_index" in names
 
     assert not any(
         name is not None and re.fullmatch(r"h\d\d", name) and name not in history
@@ -170,8 +171,14 @@ def test_v3_internal_delay_queue_is_exactly_18_plus_18_scalars():
 def test_v3_st_has_13_candidates_and_60_step_delay_aware_prediction():
     st = parse(V3).findtext("./BasicFB/Algorithm/ST") or ""
 
-    assert st.count("candidate_target :=") == 13
-    assert st.count("FOR prediction_index := 1 TO 60 DO") == 13
+    # Exporter-safe representation: one outer candidate loop and one
+    # nested prediction loop. The 13 candidate values are assigned by CASE.
+    assert st.count("FOR candidate_index := 0 TO 12 DO") == 1
+    assert st.count("FOR prediction_index := 1 TO 60 DO") == 1
+    assert "CASE candidate_index OF" in st
+
+    # 13 CASE candidates plus one defensive ELSE assignment.
+    assert st.count("candidate_target :=") == 14
 
     assert "delayed_u := q00;" in st
     assert "q00 := q01;" in st

@@ -99,3 +99,34 @@ authorize real MPC actuation.
 Next: open/refresh the project in Eclipse 4diac, validate the V3 parser and
 network manually, then checkpoint/export/build the V3 type for an isolated
 FORTE runtime before any protected real-plant commissioning.
+
+## FORTE exporter loop-scope compatibility
+
+The first V3 ST representation was mathematically valid but expanded the 13
+candidate evaluations into 13 separate `FOR prediction_index := 1 TO 60`
+statements.
+
+`FORTE 1.x NG` translated each separate IEC `FOR` statement into C++ loop-bound
+helper declarations named `by` and `to` in the same generated algorithm scope.
+MSVC therefore rejected the generated source with repeated
+`C2374` / `C2086` / `C2371` declarations.
+
+The V3 controller was refactored without changing the candidate set, model,
+weights, delay queue, horizon, actuator envelope, or safety policy:
+
+```text
+FOR candidate_index := 0 TO 12
+    CASE candidate_index OF
+        ... exact 13 V3 target candidates ...
+    END_CASE
+
+    FOR prediction_index := 1 TO 60
+        ... one shared delay-aware prediction body ...
+    END_FOR
+END_FOR
+```
+
+This follows the nested-loop structure already known to export successfully for
+the earlier MPC implementation. The generated C++ can therefore use distinct
+nested loop helpers (`by`/`to`, `by_0`/`to_0`) instead of redefining the same
+names for 13 sibling loops.
