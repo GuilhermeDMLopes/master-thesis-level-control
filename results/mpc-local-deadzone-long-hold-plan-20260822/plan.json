@@ -1,0 +1,52 @@
+﻿{
+    "classification":  "LONG_HOLD_LOCAL_DEADZONE_IDENTIFICATION_PREPARED",
+    "audit_commit":  "8a0c0bb",
+    "purpose":  "Identify local real input dead-zone/gain around 11500..12000 DAC.",
+    "model_basis":  {
+                        "transport_delay_s":  9,
+                        "tau_s":  4.75
+                    },
+    "timing":  {
+                   "sample_s":  0.1,
+                   "initial_zero_warmup_s":  20,
+                   "plateau_hold_s":  45,
+                   "post_delay_observation_s":  36,
+                   "post_delay_tau_multiple":  7.5789473684210522,
+                   "recovery_timeout_s":  180,
+                   "final_zero_confirm_s":  10
+               },
+    "dac_points":  [
+                       11600,
+                       11650,
+                       11700,
+                       11750,
+                       11800,
+                       11850,
+                       11900
+                   ],
+    "recovery":  {
+                     "strategy":  "zero output + return near measured session baseline + stable trend",
+                     "baseline_margin_raw":  30,
+                     "stable_window_s":  8,
+                     "maximum_abs_slope_raw_per_s":  5
+                 },
+    "safety":  {
+                   "instant_raw_abort":  1100,
+                   "rolling_median_abort":  1100,
+                   "positive_median_rate_abort_raw_per_s":  180,
+                   "maximum_dac":  12000,
+                   "physical_abort_cm":  5,
+                   "declared_operational_maximum_cm":  25,
+                   "watchdog_abort":  true
+               },
+    "operating_rules":  [
+                            "FORTE/PI/MPC remain stopped during open-loop identification.",
+                            "One DAC plateau at a time.",
+                            "Manual operator confirmation before every plateau.",
+                            "Force and verify zero output after every plateau.",
+                            "Do not proceed if zero recovery/stability is not re-established.",
+                            "Record maximum physical height after each plateau.",
+                            "Abort immediately for any physical concern."
+                        ],
+    "real_actuation_authorized":  false
+}
