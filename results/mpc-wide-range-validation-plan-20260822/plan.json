@@ -1,0 +1,72 @@
+﻿{
+    "classification":  "WIDE_RANGE_PHYSICAL_VALIDATION_STRATEGY_PREPARED",
+    "resume_executor_commit":  "2df3969",
+    "purpose":  "Extend final thesis validation beyond low-level commissioning without blindly increasing raw limits.",
+    "physical_geometry":  {
+                              "tank_overflow_height_cm":  40,
+                              "declared_operational_safe_max_cm":  25,
+                              "highest_physical_level_observed_so_far_cm":  1.5
+                          },
+    "current_interpretation":  {
+                                   "low_level_tests_sufficient_for_commissioning":  true,
+                                   "low_level_tests_sufficient_for_final_full_range_claim":  false,
+                                   "raw_to_cm_mapping_valid_over_wide_range":  false,
+                                   "raise_raw_limit_now":  false
+                               },
+    "stage_1_sensor_physical_calibration":  {
+                                                "nominal_physical_points_cm":  [
+                                                                                   0,
+                                                                                   2,
+                                                                                   5,
+                                                                                   10,
+                                                                                   15
+                                                                               ],
+                                                "optional_point_cm":  20,
+                                                "optional_point_requires_prior_review":  true,
+                                                "record":  [
+                                                               "physical height cm",
+                                                               "Nivel raw steady distribution",
+                                                               "Median9 raw",
+                                                               "zero-output baseline",
+                                                               "watchdog state",
+                                                               "hydraulic condition"
+                                                           ],
+                                                "output":  "empirical raw-to-cm calibration and uncertainty"
+                                            },
+    "stage_2_model_validation":  {
+                                     "require_stage_1_first":  true,
+                                     "validate_input_map_over_multiple_physical_levels":  true,
+                                     "refit_or_validate_hammerstein_map":  true,
+                                     "validate_delay_and_dynamic_gain_if_level_dependent":  true
+                                 },
+    "stage_3_control_validation":  {
+                                       "require_calibrated_physical_setpoints":  true,
+                                       "candidate_setpoint_levels_cm":  [
+                                                                            5,
+                                                                            10,
+                                                                            15
+                                                                        ],
+                                       "optional_high_level_setpoint_cm":  20,
+                                       "compare_controllers":  [
+                                                                   "PI",
+                                                                   "MPC"
+                                                               ],
+                                       "strict_ab_test_preferred":  true,
+                                       "metrics":  [
+                                                       "overshoot",
+                                                       "settling behavior",
+                                                       "MAE",
+                                                       "RMSE",
+                                                       "IAE",
+                                                       "actuator total variation",
+                                                       "maximum DAC",
+                                                       "physical safety margin"
+                                                   ]
+                                   },
+    "thesis_claim":  {
+                         "target":  "Controller validated over a physically measured operating range, not only at one low-level raw setpoint.",
+                         "current_claim_allowed":  "Low-level commissioning and local-model evidence only.",
+                         "full_range_claim_allowed_now":  false
+                     },
+    "real_actuation_authorized":  false
+}
