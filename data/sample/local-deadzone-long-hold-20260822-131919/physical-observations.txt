@@ -1,0 +1,14 @@
+﻿Long-hold local dead-zone identification - physical observations
+Timestamp: 2026-08-22 13:24:07
+Initial physical height: 0 cm
+
+Point 1: DAC 11600
+  completed full 45 s: True
+  stop reason: HOLD_COMPLETE
+  maximum physical height: 0.5 cm
+  recovery completed: False
+  recovery duration: 180.10900000017136 s
+
+Final zero verified: True
+Classification: BOUNDED_ABORT_OR_PARTIAL_LOCAL_IDENTIFICATION
+Stop reason: RECOVERY_TIMEOUT_AFTER_11600
