@@ -916,6 +916,81 @@
 			</DataConnections>
 			</SubAppNetwork>
 	</Application>
+	<Application Name="MPC_REAL_RAW_SAFE_V3E" Comment="Additive real-plant raw-count MPC V1. Disabled by default; historical PI and MPC artifacts remain unchanged.">
+			<SubAppNetwork>
+			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+			</FB>
+			<FB Name="MpcMedian9" Type="MPC_MEDIAN_FILTER_9" Comment="Match the rolling-median model coordinate used during identification" x="2000.0" y="800.0">
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="MpcAppliedDACRead" Type="SUBSCRIBE_1" Comment="Read PLC-confirmed AppliedDAC from the local gateway" x="800.0" y="2400.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=AppliedDAC]&quot;"/>
+			</FB>
+			<FB Name="MpcAppliedDACType" Type="F_INT_TO_LREAL" Comment="Convert AppliedDAC Int16 feedback to LREAL" x="2000.0" y="2400.0">
+			</FB>
+			<FB Name="MpcWatchdogRead" Type="SUBSCRIBE_1" Comment="Read PLC watchdog health from the local gateway" x="800.0" y="3600.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=WatchdogHealthy]&quot;"/>
+			</FB>
+			<FB Name="MpcController" Type="MPC_MOVE_BLOCKED_NMPC_V3E" Comment="First commissioning-stage nonlinear MPC; disabled by default" x="3600.0" y="1400.0">
+				<Parameter Name="ENABLE_REQUEST" Value="FALSE"/>
+				<Parameter Name="RESET_REQUEST" Value="FALSE"/>
+				<Parameter Name="SP_RAW" Value="LREAL#450.0"/>
+			</FB>
+			<FB Name="MpcSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Defense-in-depth DAC clamp and symmetric rate limiter" x="5200.0" y="1400.0">
+				<Parameter Name="MAX_DELTA_DAC" Value="LREAL#750.0"/>
+				<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+				<Parameter Name="DAC_MAX" Value="LREAL#12000.0"/>
+				<Parameter Name="INITIAL_DAC" Value="LREAL#0.0"/>
+				<Parameter Name="RESET" Value="FALSE"/>
+			</FB>
+			<FB Name="MpcDACType" Type="F_LREAL_TO_INT" Comment="Convert safe LREAL DAC command to gateway Int16" x="6600.0" y="1400.0">
+			</FB>
+			<FB Name="MpcDACWrite" Type="CLIENT_1_0" Comment="Write DAC command to the local gateway" x="8000.0" y="1200.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+			</FB>
+			<FB Name="MpcEnableWrite" Type="CLIENT_1_0" Comment="Write fail-closed Enable command to the local gateway" x="8000.0" y="2600.0">
+				<Parameter Name="QI" Value="TRUE"/>
+				<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+			</FB>
+			<FB Name="MpcCycle" Type="E_CYCLE" Comment="Deterministic 500 ms MPC V3 execution clock" x="1600.0" y="5200.0">
+				<Parameter Name="DT" Value="T#500ms"/>
+			</FB>
+			<FB Name="MpcInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; no START.COLD/WARM connection" x="400.0" y="5200.0">
+			</FB>
+			<EventConnections>
+				<Connection Source="MpcCycle.EO" Destination="MpcMedian9.REQ" Comment=""/>
+				<Connection Source="MpcMedian9.CNF" Destination="MpcController.REQ" Comment=""/>
+				<Connection Source="MpcAppliedDACRead.IND" Destination="MpcAppliedDACType.REQ" Comment=""/>
+				<Connection Source="MpcController.CNF" Destination="MpcSafeDACLimiter.REQ" Comment=""/>
+				<Connection Source="MpcSafeDACLimiter.CNF" Destination="MpcDACType.REQ" Comment=""/>
+				<Connection Source="MpcDACType.CNF" Destination="MpcDACWrite.REQ" Comment=""/>
+				<Connection Source="MpcDACWrite.CNF" Destination="MpcEnableWrite.REQ" Comment=""/>
+				<Connection Source="MpcInitMerge.EO" Destination="MpcEnableWrite.INIT" Comment=""/>
+				<Connection Source="MpcEnableWrite.INITO" Destination="MpcDACWrite.INIT" Comment=""/>
+				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
+				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
+				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
+			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+			</EventConnections>
+			<DataConnections>
+				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
+				<Connection Source="MpcLevelRead.RD_1" Destination="MpcController.PV_RAW" Comment=""/>
+				<Connection Source="MpcMedian9.PV_MEDIAN" Destination="MpcController.PV_MODEL" Comment=""/>
+				<Connection Source="MpcAppliedDACRead.RD_1" Destination="MpcAppliedDACType.IN" Comment=""/>
+				<Connection Source="MpcAppliedDACType.OUT" Destination="MpcController.APPLIED_DAC" Comment=""/>
+				<Connection Source="MpcWatchdogRead.RD_1" Destination="MpcController.EXTERNAL_HEALTHY" Comment=""/>
+				<Connection Source="MpcController.COMMAND_DAC" Destination="MpcSafeDACLimiter.DAC_IN" Comment=""/>
+				<Connection Source="MpcSafeDACLimiter.DAC_OUT" Destination="MpcDACType.IN" Comment=""/>
+				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
+				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
+			</DataConnections>
+			</SubAppNetwork>
+	</Application>
 	<Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="3000.0" y="1173.3333333333335">
 		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
 		<Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" Comment="device profile"/>
@@ -1543,6 +1618,81 @@
 				</DataConnections>
 			</FBNetwork>
 		</Resource>
+		<Resource Name="ResRealRawMPCV3E" Type="EMB_RES" Comment="Manual-start resource for MPC_REAL_RAW_SAFE_V1; no automatic START connection." x="0.0" y="0.0">
+			<FBNetwork>
+				<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
+				</FB>
+				<FB Name="MpcMedian9" Type="MPC_MEDIAN_FILTER_9" Comment="Match the rolling-median model coordinate used during identification" x="2000.0" y="800.0">
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="MpcAppliedDACRead" Type="SUBSCRIBE_1" Comment="Read PLC-confirmed AppliedDAC from the local gateway" x="800.0" y="2400.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=AppliedDAC]&quot;"/>
+				</FB>
+				<FB Name="MpcAppliedDACType" Type="F_INT_TO_LREAL" Comment="Convert AppliedDAC Int16 feedback to LREAL" x="2000.0" y="2400.0">
+				</FB>
+				<FB Name="MpcWatchdogRead" Type="SUBSCRIBE_1" Comment="Read PLC watchdog health from the local gateway" x="800.0" y="3600.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=WatchdogHealthy]&quot;"/>
+				</FB>
+				<FB Name="MpcController" Type="MPC_MOVE_BLOCKED_NMPC_V3E" Comment="First commissioning-stage nonlinear MPC; disabled by default" x="3600.0" y="1400.0">
+					<Parameter Name="ENABLE_REQUEST" Value="FALSE"/>
+					<Parameter Name="RESET_REQUEST" Value="FALSE"/>
+					<Parameter Name="SP_RAW" Value="LREAL#450.0"/>
+				</FB>
+				<FB Name="MpcSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Defense-in-depth DAC clamp and symmetric rate limiter" x="5200.0" y="1400.0">
+					<Parameter Name="MAX_DELTA_DAC" Value="LREAL#750.0"/>
+					<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
+					<Parameter Name="DAC_MAX" Value="LREAL#12000.0"/>
+					<Parameter Name="INITIAL_DAC" Value="LREAL#0.0"/>
+					<Parameter Name="RESET" Value="FALSE"/>
+				</FB>
+				<FB Name="MpcDACType" Type="F_LREAL_TO_INT" Comment="Convert safe LREAL DAC command to gateway Int16" x="6600.0" y="1400.0">
+				</FB>
+				<FB Name="MpcDACWrite" Type="CLIENT_1_0" Comment="Write DAC command to the local gateway" x="8000.0" y="1200.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=DAC]&quot;"/>
+				</FB>
+				<FB Name="MpcEnableWrite" Type="CLIENT_1_0" Comment="Write fail-closed Enable command to the local gateway" x="8000.0" y="2600.0">
+					<Parameter Name="QI" Value="TRUE"/>
+					<Parameter Name="ID" Value="&quot;opc_ua[WRITE;opc.tcp://127.0.0.1:4841#;,2:s=Enable]&quot;"/>
+				</FB>
+				<FB Name="MpcCycle" Type="E_CYCLE" Comment="Deterministic 500 ms MPC V3 execution clock" x="1600.0" y="5200.0">
+					<Parameter Name="DT" Value="T#500ms"/>
+				</FB>
+				<FB Name="MpcInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; no START.COLD/WARM connection" x="400.0" y="5200.0">
+				</FB>
+				<EventConnections>
+					<Connection Source="MpcCycle.EO" Destination="MpcMedian9.REQ" Comment=""/>
+					<Connection Source="MpcMedian9.CNF" Destination="MpcController.REQ" Comment=""/>
+					<Connection Source="MpcAppliedDACRead.IND" Destination="MpcAppliedDACType.REQ" Comment=""/>
+					<Connection Source="MpcController.CNF" Destination="MpcSafeDACLimiter.REQ" Comment=""/>
+					<Connection Source="MpcSafeDACLimiter.CNF" Destination="MpcDACType.REQ" Comment=""/>
+					<Connection Source="MpcDACType.CNF" Destination="MpcDACWrite.REQ" Comment=""/>
+					<Connection Source="MpcDACWrite.CNF" Destination="MpcEnableWrite.REQ" Comment=""/>
+					<Connection Source="MpcInitMerge.EO" Destination="MpcEnableWrite.INIT" Comment=""/>
+					<Connection Source="MpcEnableWrite.INITO" Destination="MpcDACWrite.INIT" Comment=""/>
+					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
+					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
+					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				</EventConnections>
+				<DataConnections>
+					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
+					<Connection Source="MpcLevelRead.RD_1" Destination="MpcController.PV_RAW" Comment=""/>
+					<Connection Source="MpcMedian9.PV_MEDIAN" Destination="MpcController.PV_MODEL" Comment=""/>
+					<Connection Source="MpcAppliedDACRead.RD_1" Destination="MpcAppliedDACType.IN" Comment=""/>
+					<Connection Source="MpcAppliedDACType.OUT" Destination="MpcController.APPLIED_DAC" Comment=""/>
+					<Connection Source="MpcWatchdogRead.RD_1" Destination="MpcController.EXTERNAL_HEALTHY" Comment=""/>
+					<Connection Source="MpcController.COMMAND_DAC" Destination="MpcSafeDACLimiter.DAC_IN" Comment=""/>
+					<Connection Source="MpcSafeDACLimiter.DAC_OUT" Destination="MpcDACType.IN" Comment=""/>
+					<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
+					<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
+				</DataConnections>
+			</FBNetwork>
+		</Resource>
 	</Device>
 	<Mapping From="OPAS_Tank_SystemApp.MVScaleDiv" To="FORTE_PC.Res0.MVScaleDiv"/>
 	<Mapping From="OPAS_Tank_SystemApp.InitSplitPID_1" To="FORTE_PC.Res0.InitSplitPID_1"/>
@@ -1645,4 +1795,16 @@
 	<Mapping From="MPC_REAL_RAW_SAFE_V3.MpcDACWrite" To="FORTE_PC.ResRealRawMPCV3.MpcDACWrite"/>
 	<Mapping From="MPC_REAL_RAW_SAFE_V3.MpcEnableWrite" To="FORTE_PC.ResRealRawMPCV3.MpcEnableWrite"/>
 	<Mapping From="MPC_REAL_RAW_SAFE_V3.MpcInitMerge" To="FORTE_PC.ResRealRawMPCV3.MpcInitMerge"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcLevelRead" To="FORTE_PC.ResRealRawMPCV3E.MpcLevelRead"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcCycle" To="FORTE_PC.ResRealRawMPCV3E.MpcCycle"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcMedian9" To="FORTE_PC.ResRealRawMPCV3E.MpcMedian9"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcAppliedDACRead" To="FORTE_PC.ResRealRawMPCV3E.MpcAppliedDACRead"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcAppliedDACType" To="FORTE_PC.ResRealRawMPCV3E.MpcAppliedDACType"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcWatchdogRead" To="FORTE_PC.ResRealRawMPCV3E.MpcWatchdogRead"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcController" To="FORTE_PC.ResRealRawMPCV3E.MpcController"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcSafeDACLimiter" To="FORTE_PC.ResRealRawMPCV3E.MpcSafeDACLimiter"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcDACType" To="FORTE_PC.ResRealRawMPCV3E.MpcDACType"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcDACWrite" To="FORTE_PC.ResRealRawMPCV3E.MpcDACWrite"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcEnableWrite" To="FORTE_PC.ResRealRawMPCV3E.MpcEnableWrite"/>
+	<Mapping From="MPC_REAL_RAW_SAFE_V3E.MpcInitMerge" To="FORTE_PC.ResRealRawMPCV3E.MpcInitMerge"/>
 </System>
