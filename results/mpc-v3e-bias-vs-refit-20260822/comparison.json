@@ -1,0 +1,84 @@
+{
+  "best_bias": {
+    "alpha": 0.1,
+    "final_bias": 41.89437406665584,
+    "validation_mae": 15.246509898385563,
+    "validation_rmse": 23.58621919106149
+  },
+  "bias_candidates": [
+    {
+      "alpha": 0.02,
+      "final_bias": 26.599016768862747,
+      "validation_mae": 21.403424274283505,
+      "validation_rmse": 28.147485244005274
+    },
+    {
+      "alpha": 0.05,
+      "final_bias": 37.279345074001334,
+      "validation_mae": 16.610607535966803,
+      "validation_rmse": 24.101390524861777
+    },
+    {
+      "alpha": 0.1,
+      "final_bias": 41.89437406665584,
+      "validation_mae": 15.246509898385563,
+      "validation_rmse": 23.58621919106149
+    },
+    {
+      "alpha": 0.2,
+      "final_bias": 43.516323143164556,
+      "validation_mae": 16.687200756972864,
+      "validation_rmse": 23.781712268305437
+    },
+    {
+      "alpha": 0.35,
+      "final_bias": 42.70133776047771,
+      "validation_mae": 18.371502473838195,
+      "validation_rmse": 24.52610061435135
+    },
+    {
+      "alpha": 0.5,
+      "final_bias": 42.57526029187066,
+      "validation_mae": 19.466139858299602,
+      "validation_rmse": 25.614611737291778
+    }
+  ],
+  "bias_competitive_with_refit": true,
+  "bias_validation_improvement_fraction": 0.44395174368114787,
+  "canonical_one_step_mae_all": 28.784298683838866,
+  "canonical_one_step_rmse_all": 37.064841952389806,
+  "canonical_residual_mean_all": 22.34984310654431,
+  "canonical_residual_median_all": 22.313639111542614,
+  "canonical_validation_mae": 36.70580205789195,
+  "canonical_validation_rmse": 42.41757603415009,
+  "classification": "OUTPUT_BIAS_CORRECTION_PREFERRED_AS_MINIMAL_ADDITIVE_FIX",
+  "local_affine_refit": {
+    "a": 0.9368962783411405,
+    "b": 0.15959283318842737,
+    "c": 18.06077443477427,
+    "condition_number": 1239.2110841773872,
+    "high_dac_fraction_train": 0.6065573770491803,
+    "identifiability_weak": false,
+    "input_dac_span_train": 11850.0,
+    "phi_span_train": 170.9307253521465,
+    "rank": 3,
+    "validation_improvement_fraction": 0.442492529742773,
+    "validation_mae": 16.166096803055403,
+    "validation_rmse": 23.648115509242594
+  },
+  "recommendation": {
+    "change_raw_ceiling": false,
+    "keep_initially": [
+      "Ts 500 ms",
+      "delay 9 s / 18 samples",
+      "tau 4.75 s",
+      "V3E 1100/1400/1500 safety envelope",
+      "DAC 0..12000",
+      "max move 750",
+      "SP_RAW 450"
+    ],
+    "new_real_run_now": false,
+    "next_controller_variant": "additive V3G with causal output-bias/disturbance correction",
+    "overwrite_v3_or_v3e": false
+  }
+}
