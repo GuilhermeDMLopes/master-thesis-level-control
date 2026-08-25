@@ -1,0 +1,189 @@
+MPC LOCAL DEAD-ZONE EXISTING EVIDENCE INVENTORY
+==============================================
+
+delay: 9.00 s
+tau: 4.75 s
+minimum total hold: 18.50 s
+preferred total hold: 23.25 s
+local DAC interval: 11500..12000
+
+data/raw/local-identification-20260808-120916/local-identification.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=129 | local levels50=[11550.0, 11700.0, 12000.0]
+  DAC~11700.0 | 10.61..10.73s | duration=0.12s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 10.88..27.06s | duration=16.19s | post-delay=7.17s | post-slope=22.874704628850694 | minHold=False | preferred=False
+  DAC~12000.0 | 32.69..32.97s | duration=0.28s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/local-identification-v3-20260808-121546/local-identification.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=355 | local levels50=[11550.0, 11600.0, 11700.0, 11850.0, 12000.0]
+  DAC~12000.0 | 11.08..23.25s | duration=12.17s | post-delay=3.16s | post-slope=43.33743143543825 | minHold=False | preferred=False
+  DAC~11850.0 | 23.39..23.53s | duration=0.14s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11600.0 | 23.81..58.70s | duration=34.89s | post-delay=25.84s | post-slope=-2.4779900243020183 | minHold=True | preferred=True
+data/raw/mpc-v3-clean-active-20260822-085254/clean-active-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=73 | local levels50=[11550.0, 11700.0, 11850.0]
+  DAC~11846.0 | 11.72..27.30s | duration=15.58s | post-delay=6.47s | post-slope=61.39806565248885 | minHold=False | preferred=False
+data/raw/mpc-v3-extended-active-20260822-091514/extended-active-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=220 | local levels50=[11850.0]
+  DAC~11846.0 | 11.47..60.06s | duration=48.59s | post-delay=39.45s | post-slope=2.3948125167628342 | minHold=True | preferred=True
+data/raw/mpc-v3-extended-active-20260822-091942/extended-active-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=102 | local levels50=[11550.0, 11700.0, 11850.0]
+  DAC~11846.0 | 12.03..33.92s | duration=21.89s | post-delay=12.81s | post-slope=21.066973722907036 | minHold=True | preferred=False
+data/raw/mpc-v3e-expanded-active-20260822-103807/expanded-active-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=220 | local levels50=[11550.0, 11850.0]
+  DAC~11846.0 | 11.78..60.05s | duration=48.27s | post-delay=39.14s | post-slope=9.278517921325998 | minHold=True | preferred=True
+data/raw/mpc-v3h-first-active-20260822-124042/v3h-first-active-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=390 | local levels50=[11550.0, 11700.0, 11750.0, 11800.0, 11850.0, 11900.0, 11950.0, 12000.0]
+  DAC~11700.0 | 11.27..11.53s | duration=0.27s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 11.78..29.00s | duration=17.22s | post-delay=8.17s | post-slope=46.102346841783216 | minHold=False | preferred=False
+  DAC~11950.0 | 29.12..30.42s | duration=1.30s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11900.0 | 30.53..39.50s | duration=8.97s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11846.0 | 39.62..41.00s | duration=1.38s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11800.0 | 41.12..41.98s | duration=0.86s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11750.0 | 42.11..44.50s | duration=2.39s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11800.0 | 44.62..44.98s | duration=0.36s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11846.0 | 45.11..48.45s | duration=3.34s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11800.0 | 48.58..51.48s | duration=2.91s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11750.0 | 51.61..60.03s | duration=8.42s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/mpc-v3h-first-active-20260822-124503/v3h-first-active-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=376 | local levels50=[11550.0, 11700.0, 11750.0, 11800.0, 11850.0]
+  DAC~11550.0 | 13.27..13.39s | duration=0.12s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11850.0 | 13.64..17.89s | duration=4.25s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11800.0 | 18.02..26.89s | duration=8.88s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11750.0 | 27.03..60.03s | duration=33.00s | post-delay=24.00s | post-slope=-2.289572202879837 | minHold=True | preferred=True
+data/raw/open-loop-identification-20260729-142246/open-loop-identification.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=150 | local levels50=[11550.0, 11700.0, 12000.0]
+  DAC~12000.0 | 21.59..41.73s | duration=20.14s | post-delay=11.05s | post-slope=48.04063803694181 | minHold=True | preferred=False
+data/raw/pi-tuned-test-20260731-151307/pi-tuned-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=81 | local levels50=[11550.0, 11700.0, 12000.0]
+  DAC~11700.0 | 68.73..68.91s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 69.09..82.62s | duration=13.53s | post-delay=4.53s | post-slope=3.776233449100293 | minHold=False | preferred=False
+data/raw/pi-tuned-test-20260731-152327/pi-tuned-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=497 | local levels50=[11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11800.0, 11850.0, 11900.0, 11950.0, 12000.0]
+  DAC~12000.0 | 78.19..96.36s | duration=18.17s | post-delay=9.16s | post-slope=1.5924013754271606 | minHold=False | preferred=False
+  DAC~11700.0 | 96.70..103.23s | duration=6.53s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11720.0 | 103.42..103.59s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11735.0 | 103.95..104.84s | duration=0.89s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11746.0 | 105.03..105.39s | duration=0.36s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11713.0 | 106.66..106.83s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11679.0 | 107.03..107.39s | duration=0.36s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11565.0 | 108.06..108.25s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11723.0 | 116.23..116.42s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11807.0 | 116.78..116.95s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11989.0 | 118.27..118.45s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 118.62..123.92s | duration=5.30s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11933.0 | 124.11..124.28s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11745.0 | 125.19..125.38s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11681.0 | 125.72..125.89s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11626.0 | 126.25..126.42s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11523.0 | 126.77..126.94s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11628.0 | 136.59..136.78s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11828.0 | 137.89..138.08s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11904.5 | 138.59..138.78s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11943.0 | 138.95..139.14s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 139.66..141.59s | duration=1.94s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11972.5 | 141.94..142.11s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11932.0 | 142.47..142.64s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11896.0 | 142.99..143.16s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11789.5 | 144.24..144.41s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11716.0 | 144.77..144.95s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11616.0 | 154.97..155.16s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11768.0 | 155.70..155.88s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 156.58..165.17s | duration=8.59s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11950.0 | 165.52..165.69s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11875.0 | 166.05..166.20s | duration=0.16s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11801.0 | 166.56..166.74s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11562.0 | 167.77..167.94s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11570.0 | 175.36..175.53s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11632.0 | 175.89..176.06s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11697.0 | 176.59..177.30s | duration=0.70s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11723.0 | 177.47..177.66s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11756.0 | 178.02..178.19s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11762.0 | 178.38..178.92s | duration=0.55s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11791.0 | 179.25..179.95s | duration=0.70s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11817.5 | 180.14..180.31s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11831.0 | 180.50..181.03s | duration=0.53s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11828.0 | 181.22..181.95s | duration=0.73s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11812.0 | 182.12..182.30s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11796.0 | 182.49..183.03s | duration=0.55s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11659.0 | 184.27..184.45s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11590.0 | 193.66..193.86s | duration=0.20s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11648.0 | 194.24..194.41s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11788.0 | 194.77..194.99s | duration=0.22s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11977.0 | 195.38..195.53s | duration=0.16s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 195.72..202.69s | duration=6.97s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11981.0 | 202.84..203.03s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11596.0 | 204.81..204.99s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/pi-tuned-test-20260731-154406/pi-tuned-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=194 | local levels50=[11550.0, 11600.0, 11650.0, 11700.0, 11850.0, 12000.0]
+  DAC~11850.0 | 21.83..22.02s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 22.19..32.98s | duration=10.80s | post-delay=1.64s | post-slope=20.111342287135127 | minHold=False | preferred=False
+  DAC~11700.0 | 33.33..43.11s | duration=9.78s | post-delay=0.72s | post-slope=28.18442623450535 | minHold=False | preferred=False
+  DAC~11687.5 | 43.28..43.44s | duration=0.16s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11612.0 | 44.48..44.67s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11585.0 | 45.20..45.94s | duration=0.73s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11596.0 | 46.11..46.27s | duration=0.16s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11602.0 | 46.44..46.61s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11610.0 | 46.80..46.98s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11627.0 | 47.16..47.67s | duration=0.52s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11638.5 | 47.86..50.17s | duration=2.31s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11674.0 | 50.52..51.09s | duration=0.58s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11670.5 | 51.45..51.64s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11694.0 | 52.00..52.20s | duration=0.20s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11695.0 | 52.39..53.47s | duration=1.08s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11645.0 | 54.16..54.31s | duration=0.16s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11619.0 | 54.48..54.67s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11598.0 | 54.86..55.03s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11579.0 | 55.41..55.59s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11536.0 | 55.77..55.94s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/pi-tuned-test-20260731-155856/pi-tuned-monitor.csv | class=CLOSED_LOOP_NAMED | local samples=168 | local levels50=[11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11850.0, 12000.0]
+  DAC~12000.0 | 26.66..32.84s | duration=6.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11700.0 | 33.19..38.59s | duration=5.41s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11679.5 | 38.94..39.12s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11650.0 | 39.30..39.50s | duration=0.20s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11583.0 | 40.20..40.38s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11533.0 | 40.73..40.92s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11510.0 | 41.11..41.12s | duration=0.02s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11556.0 | 57.19..57.38s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11580.0 | 57.56..59.11s | duration=1.55s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11587.0 | 59.28..59.64s | duration=0.36s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11602.5 | 59.84..60.02s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11617.0 | 60.19..60.89s | duration=0.70s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11630.5 | 61.27..61.78s | duration=0.52s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11640.0 | 62.31..62.48s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11626.0 | 62.84..63.02s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11610.0 | 63.22..63.39s | duration=0.17s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11597.0 | 63.58..64.11s | duration=0.53s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11578.0 | 64.66..65.38s | duration=0.72s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11585.0 | 65.55..65.73s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11593.0 | 65.92..66.62s | duration=0.70s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11607.0 | 66.80..67.05s | duration=0.25s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11634.0 | 67.41..67.75s | duration=0.34s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11677.0 | 68.50..68.69s | duration=0.19s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11709.0 | 69.03..69.23s | duration=0.20s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~11721.5 | 69.42..71.02s | duration=1.59s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/positive-dac-manual-stop-20260729-134727/positive-dac-monitor.csv | class=DYNAMIC_CONTROL_OR_UNKNOWN | local samples=12 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~12000.0 | 13.25..14.28s | duration=1.03s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/steady-calibration-20260808-103415/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=84 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~12000.0 | 10.69..20.66s | duration=9.97s | post-delay=0.95s | post-slope=23.637050656418197 | minHold=False | preferred=False
+data/raw/steady-calibration-20260808-103827/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=158 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~12000.0 | 11.17..31.12s | duration=19.95s | post-delay=10.92s | post-slope=16.87319914949035 | minHold=True | preferred=False
+data/raw/steady-calibration-20260808-104108/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=161 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~11700.0 | 10.81..10.95s | duration=0.14s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 11.20..31.20s | duration=20.00s | post-delay=10.97s | post-slope=34.51196711974078 | minHold=True | preferred=False
+data/raw/steady-calibration-20260808-113116/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=43 | local levels50=[11700.0, 11850.0, 12000.0]
+  DAC~11700.0 | 10.59..10.72s | duration=0.12s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 10.98..15.89s | duration=4.91s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/steady-calibration-20260808-113159/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=42 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~12000.0 | 11.17..16.08s | duration=4.91s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+data/raw/steady-calibration-20260808-113516/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=158 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~11700.0 | 11.03..11.16s | duration=0.12s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 11.42..31.31s | duration=19.89s | post-delay=10.78s | post-slope=28.818144258291145 | minHold=True | preferred=False
+data/raw/steady-calibration-20260808-113623/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=119 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~11550.0 | 10.61..10.73s | duration=0.12s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 11.12..25.73s | duration=14.61s | post-delay=5.55s | post-slope=30.879357461547954 | minHold=False | preferred=False
+data/raw/steady-calibration-20260808-113720/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=93 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~11700.0 | 10.94..11.05s | duration=0.11s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+  DAC~12000.0 | 11.31..22.77s | duration=11.45s | post-delay=2.33s | post-slope=68.24009477944755 | minHold=False | preferred=False
+data/raw/steady-calibration-dac13000-20260808-114728/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=4 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+data/raw/steady-calibration-dac14000-20260808-114400/samples.csv | class=IDENTIFICATION_OR_CALIBRATION_NAMED | local samples=5 | local levels50=[11550.0, 11700.0, 11850.0, 12000.0]
+  DAC~11850.0 | 10.97..11.09s | duration=0.12s | post-delay=0.00s | post-slope=None | minHold=False | preferred=False
+
+QUALIFICATION
+-------------
+identification-like minimum qualifying levels: [11600.0, 12000.0]
+identification-like preferred levels: [11600.0]
+low side <=11600: True
+boundary 11650..11800: False
+high side >=11900: True
+minimum structure: False
+preferred depth: False
+sufficient: False
+
+classification: EXISTING_EVIDENCE_INSUFFICIENT_FOR_STATIC_LOCAL_DEADZONE_IDENTIFICATION__NEW_SMALL_BOUNDED_LOCAL_IDENTIFICATION_RECOMMENDED
+next: prepare a separate bounded open-loop/local-input identification experiment around 11500..12000 DAC; do not repeat the 60 s closed-loop V3H run

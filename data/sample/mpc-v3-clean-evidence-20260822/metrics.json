@@ -1,0 +1,46 @@
+{
+  "classification": "BOUNDED_SAFETY_ABORT",
+  "steady_state_regulation_validated": false,
+  "safety_shutdown_reason": "MAXIMUM_MEDIAN_RAW_EXCEEDED",
+  "sp_raw": 450.0,
+  "active_rows": 124,
+  "armed_rows": 30,
+  "active_duration_observed_s": 27.297,
+  "raw_min": 115.0,
+  "raw_max": 573.0,
+  "median9_min": 166.0,
+  "median9_max": 553.0,
+  "median9_overshoot_raw": 103.0,
+  "median9_overshoot_percent_of_sp": 22.88888888888889,
+  "max_positive_median_rate_raw_per_s": 95.980312,
+  "max_command_or_applied_dac": 11850.0,
+  "equilibrium_dac_reference": 11845.626677302696,
+  "first_near_equilibrium_dac_s": 11.719,
+  "near_equilibrium_dac_duration_s": 15.578000000000001,
+  "first_raw_ge_sp_s": 23.297,
+  "first_median9_target_band_440_460_s": 24.391,
+  "first_median9_ge_sp_s": 24.391,
+  "first_median9_ge_500_s": 26.406,
+  "first_median9_gt_550_s": 27.297,
+  "watchdog_healthy_all_logged_rows": true,
+  "watchdog_tripped_any_logged_rows": false,
+  "supervisor_limits": {
+    "median9_raw": 550.0,
+    "instant_raw": 700.0,
+    "positive_median_rate_raw_per_s": 180.0,
+    "dac": 12000.0
+  },
+  "warmup": {
+    "rows": 93,
+    "nivel_raw_min": 298.0,
+    "nivel_raw_max": 318.0,
+    "nivel_raw_median": 308.0,
+    "distinct_heartbeat_values": 47,
+    "zero_output_all_rows": true,
+    "watchdog_healthy_all_rows": true
+  },
+  "sha256": {
+    "clean_active_monitor_csv": "1704E2CB6C34DBA0EE51252529FBE2B6D6F96697C6731CD1033BADD06A17AA97",
+    "warmup_monitor_csv": "69BD80F861ADA592DB53039EA67D07B6746AB4C4E62560C1C0ABDF999287AEFB"
+  }
+}

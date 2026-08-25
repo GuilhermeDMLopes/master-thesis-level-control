@@ -1,0 +1,125 @@
+﻿{
+    "schema_version":  1,
+    "stage":  "ETAPA_7_6C",
+    "date":  "2026-08-25",
+    "m3_status":  "CLOSED_WITH_DYNAMIC_CAPTURE_LIMITATION",
+    "recorded_range_cm":  {
+                              "minimum":  0,
+                              "maximum":  13
+                          },
+    "recorded_grid_cm":  [
+                             0,
+                             3,
+                             5,
+                             8.5,
+                             13
+                         ],
+    "existing_scale":  "level_cm = raw / 1000",
+    "existing_scale_rmse_all_cm":  0.703724,
+    "existing_scale_rmse_5_to_13_cm":  0.551336,
+    "controller_scale_changed":  false,
+    "executor_hold_limit_before_s":  20,
+    "executor_hold_limit_after_s":  90,
+    "stage_dac_ceiling":  16000,
+    "final_zero_output":  true,
+    "real_actuation_complete":  true,
+    "limitation":  "Positive calibration points were captured while level was rising against the permanent bottom drain; they are operational dynamic captures, not static equilibria.",
+    "points":  [
+                   {
+                       "physical_height_cm":  0,
+                       "raw_median":  257,
+                       "raw_mean":  259.429,
+                       "dac":  0,
+                       "nominal_cm_raw_div_1000":  0.257,
+                       "nominal_error_cm":  0.257
+                   },
+                   {
+                       "physical_height_cm":  3,
+                       "raw_median":  1776,
+                       "raw_mean":  1747.667,
+                       "dac":  16000,
+                       "nominal_cm_raw_div_1000":  1.776,
+                       "nominal_error_cm":  -1.224
+                   },
+                   {
+                       "physical_height_cm":  5,
+                       "raw_median":  4465,
+                       "raw_mean":  4399.846,
+                       "dac":  16000,
+                       "nominal_cm_raw_div_1000":  4.465,
+                       "nominal_error_cm":  -0.535
+                   },
+                   {
+                       "physical_height_cm":  8.5,
+                       "raw_median":  8503,
+                       "raw_mean":  8506.605,
+                       "dac":  16000,
+                       "nominal_cm_raw_div_1000":  8.503,
+                       "nominal_error_cm":  0.003
+                   },
+                   {
+                       "physical_height_cm":  13,
+                       "raw_median":  13791,
+                       "raw_mean":  13720.763,
+                       "dac":  16000,
+                       "nominal_cm_raw_div_1000":  13.791,
+                       "nominal_error_cm":  0.791
+                   }
+               ],
+    "evidence":  [
+                     {
+                         "kind":  "zero_observation",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-00cm-observation.csv",
+                         "source_file":  "data/raw/plant-observation-m3-calibration-0cm-20260825-20260825-190351/plant-observation.csv",
+                         "sha256":  "447390EECEE873DAFE1856A0CD65A57DB9EDF46485322A2FA647283D6BB41642"
+                     },
+                     {
+                         "kind":  "plateau_samples",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-03cm-samples.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-192404/samples.csv",
+                         "sha256":  "1CE5F2FB8C75EA83CCD72D606D85F3A922989CBD6F2A4A052E9A9F17CB80B75B"
+                     },
+                     {
+                         "kind":  "calibration_point",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-03cm.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-192404/calibration-point.csv",
+                         "sha256":  "71F0BAAD682A5D5EDE7498B5FF1F3070EB30686E57FCECC709EF568FD5ACA626"
+                     },
+                     {
+                         "kind":  "plateau_samples",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-05cm-samples.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-192622/samples.csv",
+                         "sha256":  "500B70908103BD649F8F49DAF482A4368DD96E86888FE1CCC6E86840C4971578"
+                     },
+                     {
+                         "kind":  "calibration_point",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-05cm.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-192622/calibration-point.csv",
+                         "sha256":  "5154DF6FF717D695835BBC5F0C1E2E31D1C8D8F98ACBD9B35CFEF0C9AA154618"
+                     },
+                     {
+                         "kind":  "plateau_samples",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-08_5cm-samples.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-192942/samples.csv",
+                         "sha256":  "33DA513D2A409193FCE5DFB853F1754C0F7D55AB8D83B71BE063C935DECBF066"
+                     },
+                     {
+                         "kind":  "calibration_point",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-08_5cm.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-192942/calibration-point.csv",
+                         "sha256":  "9E42EBBF5BBAB5A1DF08D2829A4F9C9754BBA9725588843187EE3BC6F0F6FFD7"
+                     },
+                     {
+                         "kind":  "plateau_samples",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-13cm-samples.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-193224/samples.csv",
+                         "sha256":  "1D020534DF896F00DF8370F590CCB78450A447943F7EC4CEFAF0DC23DADF67A9"
+                     },
+                     {
+                         "kind":  "calibration_point",
+                         "preserved_file":  "data/sample/m3-level-calibration-20260825/point-13cm.csv",
+                         "source_file":  "data/raw/steady-calibration-dac16000-20260825-193224/calibration-point.csv",
+                         "sha256":  "3D3A1D2F31905D012EFC1E9832E91F32E070167062F2525E8C7B106CD439BEE4"
+                     }
+                 ]
+}

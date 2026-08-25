@@ -1,0 +1,31 @@
+﻿{
+    "schema_version":  1,
+    "stage":  "ETAPA_7_5BH",
+    "date":  "2026-08-25",
+    "m2_status":  "CLOSED_WITH_DOCUMENTED_LIMITATION",
+    "replay_11550_accepted":  false,
+    "correction_11550_implemented":  false,
+    "exact_physical_deadzone_identified":  false,
+    "canonical_deadzone_dac":  11750,
+    "canonical_deadzone_status":  "PROVISIONAL_CONSERVATIVE_MODEL_ASSUMPTION",
+    "another_candidate_authorized":  false,
+    "controller_source_modified":  false,
+    "fourdiac_modified":  false,
+    "real_actuation":  false,
+    "next_milestone":  "M3",
+    "replay_metrics":  {
+                           "late_records":  48,
+                           "command_reduction_ge_50_dac_percent":  85.4,
+                           "command_reduction_ge_150_dac_percent":  18.8,
+                           "median_command_reduction_dac":  75,
+                           "premature_le_11550_with_pv_le_400_percent":  31.6,
+                           "candidate_hard_limit_violation_percent":  0
+                       },
+    "evidence":  {
+                     "report":  "docs/mpc/mpc-v3h-deadzone-11550-replay-20260825.md",
+                     "report_sha256":  "6FC6937882FCCB51D8E900D014689B74AAB568EAFFE3E6A27DEC15F6BD648642",
+                     "replay_json":  "results/mpc-v3h-deadzone-11550-replay-20260825/replay.json",
+                     "replay_json_sha256":  "FCE44CA0DB952DC4529518891803A4F212511C1046D4B9BE9A5896C8D481CE2B",
+                     "pre_closure_commit":  "2b6e543"
+                 }
+}

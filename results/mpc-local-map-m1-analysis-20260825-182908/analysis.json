@@ -1,0 +1,118 @@
+{
+  "classification": "M1_LOCAL_MAP_EVIDENCE_SUFFICIENT__MODEL_11750_DEADZONE_NOT_SUPPORTED__STOP_UPWARD_EXCITATION_AFTER_11800_RATE_ABORT",
+  "source_run": "local-deadzone-resume-20260825-182908",
+  "console_abort_reason": "POSITIVE_MEDIAN_RATE_ABORT",
+  "completed_targets": [
+    11650,
+    11700,
+    11750
+  ],
+  "partial_targets": [
+    11800
+  ],
+  "not_attempted_targets": [
+    11850,
+    11900
+  ],
+  "prior_11600_material_response_raw": 204.0,
+  "prior_11600_physical_max_cm": 0.5,
+  "points": [
+    {
+      "target_dac": 11650,
+      "status": "COMPLETED",
+      "acquire_samples": 92,
+      "hold_samples": 351,
+      "hold_duration_s": 44.953,
+      "local_baseline_raw": 267.0,
+      "applied_dac_median": 11650.0,
+      "median9_min_raw": 136.0,
+      "median9_max_raw": 726.0,
+      "raw_max": 787.0,
+      "delta_min_raw": -131.0,
+      "delta_max_raw": 459.0,
+      "post_delay_duration_s": 35.953,
+      "post_delay_mean_delta_raw": 75.01785714285714,
+      "post_delay_median_delta_raw": 31.0,
+      "final_10s_mean_delta_raw": 245.76923076923077,
+      "max_logged_positive_rate_raw_per_s": 156.774,
+      "console_reported_max_physical_cm": 0.8
+    },
+    {
+      "target_dac": 11700,
+      "status": "COMPLETED",
+      "acquire_samples": 92,
+      "hold_samples": 350,
+      "hold_duration_s": 44.89099999999999,
+      "local_baseline_raw": 451.0,
+      "applied_dac_median": 11700.0,
+      "median9_min_raw": 298.0,
+      "median9_max_raw": 828.0,
+      "raw_max": 900.0,
+      "delta_min_raw": -153.0,
+      "delta_max_raw": 377.0,
+      "post_delay_duration_s": 35.89099999999999,
+      "post_delay_mean_delta_raw": 168.575,
+      "post_delay_median_delta_raw": 224.0,
+      "final_10s_mean_delta_raw": 251.12820512820514,
+      "max_logged_positive_rate_raw_per_s": 125.834,
+      "console_reported_max_physical_cm": 1.0
+    },
+    {
+      "target_dac": 11750,
+      "status": "COMPLETED",
+      "acquire_samples": 90,
+      "hold_samples": 356,
+      "hold_duration_s": 44.89099999999996,
+      "local_baseline_raw": 370.0,
+      "applied_dac_median": 11750.0,
+      "median9_min_raw": 207.0,
+      "median9_max_raw": 950.0,
+      "raw_max": 1022.0,
+      "delta_min_raw": -163.0,
+      "delta_max_raw": 580.0,
+      "post_delay_duration_s": 35.89099999999996,
+      "post_delay_mean_delta_raw": 277.91901408450707,
+      "post_delay_median_delta_raw": 275.0,
+      "final_10s_mean_delta_raw": 441.5925925925926,
+      "max_logged_positive_rate_raw_per_s": 140.384,
+      "console_reported_max_physical_cm": 1.2
+    },
+    {
+      "target_dac": 11800,
+      "status": "PARTIAL_SAFETY_ABORT",
+      "acquire_samples": 92,
+      "hold_samples": 183,
+      "hold_duration_s": 23.295999999999992,
+      "local_baseline_raw": 370.0,
+      "applied_dac_median": 11800.0,
+      "median9_min_raw": 298.0,
+      "median9_max_raw": 797.0,
+      "raw_max": 858.0,
+      "delta_min_raw": -72.0,
+      "delta_max_raw": 427.0,
+      "post_delay_duration_s": 14.295999999999992,
+      "post_delay_mean_delta_raw": 199.91071428571428,
+      "post_delay_median_delta_raw": 223.0,
+      "final_10s_mean_delta_raw": 271.2151898734177,
+      "max_logged_positive_rate_raw_per_s": 164.516,
+      "console_reported_max_physical_cm": null
+    },
+    {
+      "target_dac": 11850,
+      "status": "NOT_ATTEMPTED"
+    },
+    {
+      "target_dac": 11900,
+      "status": "NOT_ATTEMPTED"
+    }
+  ],
+  "decision": {
+    "retry_11800_now": false,
+    "run_11850_now": false,
+    "run_11900_now": false,
+    "increase_raw_ceiling": false,
+    "change_controller_now": false,
+    "m1_sufficient_to_enter_m2_offline": true,
+    "next": "M2: fit/evaluate one final local input-map correction using 11600, 11650, 11700, 11750 and partial 11800 evidence."
+  }
+}

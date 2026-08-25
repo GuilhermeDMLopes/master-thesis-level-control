@@ -1,0 +1,73 @@
+﻿{
+    "classification":  "REVISED_LOCAL_DEADZONE_EXECUTION_SEMANTICS_PREPARED",
+    "source_evidence_commit":  "e8cd981",
+    "completed_existing_point":  {
+                                     "target_dac":  11600,
+                                     "repeat_required":  false,
+                                     "constant_target_duration_s":  33.766,
+                                     "post_delay_duration_s":  24.656999999999996,
+                                     "post_delay_tau_multiple":  5.1909473684210523,
+                                     "use":  "local dynamic evidence; normalize to its own zero baseline; no exact dead-zone claim"
+                                 },
+    "remaining_dac_points":  [
+                                 11650,
+                                 11700,
+                                 11750,
+                                 11800,
+                                 11850,
+                                 11900
+                             ],
+    "sampling":  {
+                     "sample_s":  0.1
+                 },
+    "target_acquisition_gate":  {
+                                    "start_hold_clock_before_gate":  false,
+                                    "applied_dac_tolerance":  5,
+                                    "consecutive_samples_required":  5,
+                                    "timeout_s":  30,
+                                    "safety_monitoring_active_during_ramp":  true
+                                },
+    "target_hold":  {
+                        "duration_s":  45,
+                        "starts_only_after_applied_target_gate":  true,
+                        "transport_delay_s":  9,
+                        "tau_s":  4.75,
+                        "post_delay_data_if_full_hold_s":  36,
+                        "post_delay_tau_multiple_if_full_hold":  7.5789473684210522
+                    },
+    "recovery_rebaseline_gate":  {
+                                     "force_commanded_and_applied_zero":  true,
+                                     "minimum_zero_output_recovery_s":  30,
+                                     "stable_window_s":  20,
+                                     "maximum_abs_slope_raw_per_s":  1,
+                                     "maximum_median9_range_raw":  30,
+                                     "local_baseline":  "median Median9 over accepted stable zero-output window",
+                                     "next_point_response_normalization":  "Median9 - local_baseline",
+                                     "require_manual_physical_height":  true,
+                                     "maximum_physical_height_before_next_point_cm":  1,
+                                     "require_return_to_first_numeric_baseline":  false
+                                 },
+    "safety":  {
+                   "instant_raw_abort":  1100,
+                   "rolling_median_abort":  1100,
+                   "positive_median_rate_abort_raw_per_s":  180,
+                   "maximum_dac":  12000,
+                   "physical_abort_cm":  5,
+                   "watchdog_abort":  true,
+                   "communication_abort":  true
+               },
+    "operating_rules":  [
+                            "FORTE/PI/MPC remain stopped.",
+                            "Manual authorization before every DAC point.",
+                            "AppliedDAC ramp is evidence but is not counted as the constant-target hold.",
+                            "Hold clock starts only after AppliedDAC reaches target +/-5 for 5 consecutive samples.",
+                            "Zero output is forced and verified after every point.",
+                            "Wait at least 30 s at zero before evaluating recovery stability.",
+                            "Accept a new local zero baseline only after a 20 s stable window with |slope| \u003c=1 raw/s and Median9 range \u003c=30 raw.",
+                            "Measure physical level before authorizing the next point; require \u003c=1 cm.",
+                            "Normalize each point response to its own local zero-output baseline.",
+                            "Do not repeat the already captured 11600 point automatically.",
+                            "Any safety abort ends the entire experiment."
+                        ],
+    "real_actuation_authorized":  false
+}

@@ -1,0 +1,51 @@
+{
+  "classification": "11750_BOUNDARY_REACHED__REAL_RESPONSE_REMAINS_DYNAMIC__STATIC_DEADZONE_NOT_IDENTIFIABLE_FROM_SINGLE_CLOSED_LOOP_HOLD",
+  "evidence_commit": "d3febed",
+  "plateau_dac": 11750.0,
+  "first_at_or_below_11750_after_high_s": 27.031,
+  "final_11750_hold_start_s": 27.031,
+  "final_11750_hold_duration_s": 33.0,
+  "plateau_samples": 266,
+  "plateau_start_median9_raw": 593.0,
+  "plateau_end_median9_raw": 675.0,
+  "plateau_minimum_median9_raw": 451.0,
+  "plateau_maximum_median9_raw": 767.0,
+  "plateau_excursion_raw": 316.0,
+  "plateau_mean_median9_raw": 623.0488721804511,
+  "plateau_linear_slope_raw_per_s": -0.09025889470511998,
+  "plateau_above_sp_fraction": 1.0,
+  "plateau_below_sp_fraction": 0.0,
+  "segment_diagnostics": [
+    {
+      "segment": 1,
+      "start_s": 27.031,
+      "end_s": 38.047,
+      "mean_median9_raw": 613.3483146067416,
+      "slope_raw_per_s": 8.098670449365324,
+      "minimum_median9_raw": 492.0,
+      "maximum_median9_raw": 686.0
+    },
+    {
+      "segment": 2,
+      "start_s": 38.187,
+      "end_s": 49.031,
+      "mean_median9_raw": 657.7272727272727,
+      "slope_raw_per_s": -19.654048850991067,
+      "minimum_median9_raw": 543.0,
+      "maximum_median9_raw": 757.0
+    },
+    {
+      "segment": 3,
+      "start_s": 49.156,
+      "end_s": 60.031,
+      "mean_median9_raw": 598.4606741573034,
+      "slope_raw_per_s": 24.747553280881878,
+      "minimum_median9_raw": 451.0,
+      "maximum_median9_raw": 767.0
+    }
+  ],
+  "static_deadzone_identifiable_from_this_run": false,
+  "controller_change_authorized": false,
+  "new_real_run_authorized": false,
+  "recommended_next_offline_focus": "replay the V3H disturbance estimate/prediction at plateau snapshots and separate model-state/delay effects from the assumed Hammerstein dead-zone"
+}

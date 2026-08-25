@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FBType Name="MPC_MOVE_BLOCKED_NMPC_V2" Comment="Fail-closed move-blocked nonlinear MPC V2 with 500 ms compute period and 20 s prediction horizon">
+	<Identification Standard="61499-2">
+	</Identification>
+	<VersionInfo Version="2.0" Author="Guilherme" Date="2026-08-15">
+	</VersionInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="REQ" Type="Event" Comment="Execute one 500 ms MPC cycle">
+				<With Var="PV_RAW"/>
+				<With Var="PV_MODEL"/>
+				<With Var="APPLIED_DAC"/>
+				<With Var="ENABLE_REQUEST"/>
+				<With Var="EXTERNAL_HEALTHY"/>
+				<With Var="RESET_REQUEST"/>
+				<With Var="SP_RAW"/>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="CNF" Type="Event" Comment="MPC cycle completed">
+				<With Var="COMMAND_ENABLE"/>
+				<With Var="COMMAND_DAC"/>
+				<With Var="TRIPPED"/>
+				<With Var="TRIP_CODE"/>
+				<With Var="SELECTED_TARGET_DAC"/>
+				<With Var="INPUT_BIAS_ESTIMATE_DAC"/>
+				<With Var="PREDICTED_MAX_RAW"/>
+				<With Var="PREDICTED_FINAL_RAW"/>
+				<With Var="CONFIGURATION_VALID"/>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PV_RAW" Type="LREAL" Comment="Unfiltered raw level used by the measured hard trip"/>
+			<VarDeclaration Name="PV_MODEL" Type="LREAL" Comment="9-sample rolling-median raw level used by the identified model"/>
+			<VarDeclaration Name="APPLIED_DAC" Type="LREAL" Comment="PLC-confirmed DAC used as the move-constraint reference"/>
+			<VarDeclaration Name="ENABLE_REQUEST" Type="BOOL" Comment="Explicit operator/commissioning enable; FALSE is normal zero-output mode"/>
+			<VarDeclaration Name="EXTERNAL_HEALTHY" Type="BOOL" Comment="PLC/gateway watchdog healthy input"/>
+			<VarDeclaration Name="RESET_REQUEST" Type="BOOL" Comment="Explicitly clear the latched MPC trip and internal estimator state"/>
+			<VarDeclaration Name="SP_RAW" Type="LREAL" Comment="Raw-count setpoint; first commissioning value is 450"/>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="COMMAND_ENABLE" Type="BOOL" Comment="Fail-closed actuator enable request"/>
+			<VarDeclaration Name="COMMAND_DAC" Type="LREAL" Comment="MPC DAC request before downstream defense-in-depth limiting"/>
+			<VarDeclaration Name="TRIPPED" Type="BOOL" Comment="Latched MPC trip state"/>
+			<VarDeclaration Name="TRIP_CODE" Type="INT" Comment="0=none,1=health,2=PV invalid,3=measured high,4=AppliedDAC,5=setpoint,6=no feasible prediction"/>
+			<VarDeclaration Name="SELECTED_TARGET_DAC" Type="LREAL" Comment="Move-blocked target selected by the current horizon search"/>
+			<VarDeclaration Name="INPUT_BIAS_ESTIMATE_DAC" Type="LREAL" Comment="Bounded offset-compensation estimate"/>
+			<VarDeclaration Name="PREDICTED_MAX_RAW" Type="LREAL" Comment="Maximum predicted model level for the selected candidate"/>
+			<VarDeclaration Name="PREDICTED_FINAL_RAW" Type="LREAL" Comment="Final horizon model level for the selected candidate"/>
+			<VarDeclaration Name="CONFIGURATION_VALID" Type="BOOL" Comment="Frozen V1 commissioning configuration is internally valid"/>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="trip_latched_internal" Type="BOOL" InitialValue="FALSE"/>
+			<VarDeclaration Name="trip_code_internal" Type="INT" InitialValue="0"/>
+			<VarDeclaration Name="input_bias_internal" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="previous_prediction_internal" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="previous_applied_internal" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="previous_valid_internal" Type="BOOL" InitialValue="FALSE"/>
+			<VarDeclaration Name="residual" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="effective_input" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="effective_model_u" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="phi_value" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="phi_slope" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="sensitivity" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="bias_update" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="best_found" Type="BOOL" InitialValue="FALSE"/>
+			<VarDeclaration Name="best_cost" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="best_target" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="best_predicted_max" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="best_predicted_final" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_target" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="predicted_y" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="predicted_u" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="previous_u" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_cost" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_predicted_max" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_feasible" Type="BOOL" InitialValue="FALSE"/>
+			<VarDeclaration Name="delta_u" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="tracking_error" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="move_value" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="soft_excess" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="terminal_error" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="command_candidate" Type="LREAL" InitialValue="0.0"/>
+			<VarDeclaration Name="candidate_index" Type="DINT" InitialValue="0"/>
+			<VarDeclaration Name="prediction_index" Type="DINT" InitialValue="0"/>
+		</InternalVars>
+		<ECC>
+			<ECState Name="START" x="120.0" y="120.0">
+			</ECState>
+			<ECState Name="EXEC" x="520.0" y="120.0">
+				<ECAction Algorithm="ALG_NMPC" Output="CNF"/>
+			</ECState>
+			<ECTransition Source="START" Destination="EXEC" Condition="REQ" x="300.0" y="100.0"/>
+			<ECTransition Source="EXEC" Destination="START" Condition="1" x="300.0" y="220.0"/>
+		</ECC>
+		<Algorithm Name="ALG_NMPC" Comment="Frozen move-blocked NMPC V1 with model constraints, trip latch, offset compensation, and piecewise-linear x^1.2 model input">
+			<ST><![CDATA[(* Frozen commissioning-stage constants from offline-nmpc-v1. *)
+CONFIGURATION_VALID := TRUE;
+
+IF RESET_REQUEST THEN
+    trip_latched_internal := FALSE;
+    trip_code_internal := 0;
+    input_bias_internal := LREAL#0.0;
+    previous_prediction_internal := LREAL#0.0;
+    previous_applied_internal := LREAL#0.0;
+    previous_valid_internal := FALSE;
+END_IF;
+
+IF trip_latched_internal THEN
+    COMMAND_ENABLE := FALSE;
+    COMMAND_DAC := LREAL#0.0;
+    SELECTED_TARGET_DAC := LREAL#0.0;
+    TRIPPED := TRUE;
+    TRIP_CODE := trip_code_internal;
+    INPUT_BIAS_ESTIMATE_DAC := input_bias_internal;
+    PREDICTED_MAX_RAW := LREAL#-1.0;
+    PREDICTED_FINAL_RAW := LREAL#-1.0;
+
+ELSIF NOT ENABLE_REQUEST THEN
+    input_bias_internal := LREAL#0.0;
+    previous_prediction_internal := LREAL#0.0;
+    previous_applied_internal := LREAL#0.0;
+    previous_valid_internal := FALSE;
+
+    COMMAND_ENABLE := FALSE;
+    COMMAND_DAC := LREAL#0.0;
+    SELECTED_TARGET_DAC := LREAL#0.0;
+    TRIPPED := FALSE;
+    TRIP_CODE := 0;
+    INPUT_BIAS_ESTIMATE_DAC := LREAL#0.0;
+    PREDICTED_MAX_RAW := LREAL#-1.0;
+    PREDICTED_FINAL_RAW := LREAL#-1.0;
+
+ELSE
+    (* Fail-closed runtime checks. NaN fails self-equality; infinities fail bounds. *)
+    IF NOT EXTERNAL_HEALTHY THEN
+        trip_latched_internal := TRUE;
+        trip_code_internal := 1;
+
+    ELSIF NOT ((PV_RAW = PV_RAW) AND (PV_RAW >= LREAL#0.0) AND (PV_RAW < LREAL#1000000.0)
+        AND (PV_MODEL = PV_MODEL) AND (PV_MODEL >= LREAL#0.0) AND (PV_MODEL < LREAL#1000000.0)) THEN
+        trip_latched_internal := TRUE;
+        trip_code_internal := 2;
+
+    ELSIF PV_RAW >= LREAL#800.0 THEN
+        trip_latched_internal := TRUE;
+        trip_code_internal := 3;
+
+    ELSIF NOT ((APPLIED_DAC = APPLIED_DAC)
+        AND (APPLIED_DAC >= LREAL#0.0)
+        AND (APPLIED_DAC <= LREAL#12000.0)) THEN
+        trip_latched_internal := TRUE;
+        trip_code_internal := 4;
+
+    ELSIF NOT ((SP_RAW = SP_RAW)
+        AND (SP_RAW >= LREAL#0.0)
+        AND (SP_RAW < LREAL#800.0)) THEN
+        trip_latched_internal := TRUE;
+        trip_code_internal := 5;
+    END_IF;
+
+    IF trip_latched_internal THEN
+        COMMAND_ENABLE := FALSE;
+        COMMAND_DAC := LREAL#0.0;
+        SELECTED_TARGET_DAC := LREAL#0.0;
+        TRIPPED := TRUE;
+        TRIP_CODE := trip_code_internal;
+        INPUT_BIAS_ESTIMATE_DAC := input_bias_internal;
+        PREDICTED_MAX_RAW := LREAL#-1.0;
+        PREDICTED_FINAL_RAW := LREAL#-1.0;
+
+    ELSE
+        (* Bounded offset compensation based on the previous one-step model residual. *)
+        IF previous_valid_internal THEN
+            residual := PV_MODEL - previous_prediction_internal;
+            effective_input := previous_applied_internal + input_bias_internal - LREAL#11750.0;
+
+            IF effective_input < LREAL#0.0 THEN
+                effective_input := LREAL#0.0;
+            ELSIF effective_input > LREAL#500.0 THEN
+                effective_input := LREAL#500.0;
+            END_IF;
+
+            IF effective_input <= LREAL#0.0 THEN
+                phi_value := LREAL#0.0;
+                phi_slope := LREAL#0.0;
+            ELSIF effective_input <= LREAL#50.0 THEN
+                phi_value := LREAL#0.0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
+                phi_slope := LREAL#2.18672414788656;
+            ELSIF effective_input <= LREAL#100.0 THEN
+                phi_value := LREAL#109.336207394328 + LREAL#2.8370487151326 * (effective_input - LREAL#50.0);
+                phi_slope := LREAL#2.8370487151326;
+            ELSIF effective_input <= LREAL#150.0 THEN
+                phi_value := LREAL#251.188643150958 + LREAL#3.14843691926082 * (effective_input - LREAL#100.0);
+                phi_slope := LREAL#3.14843691926082;
+            ELSIF effective_input <= LREAL#200.0 THEN
+                phi_value := LREAL#408.610489113999 + LREAL#3.36938946497773 * (effective_input - LREAL#150.0);
+                phi_slope := LREAL#3.36938946497773;
+            ELSIF effective_input <= LREAL#250.0 THEN
+                phi_value := LREAL#577.079962362885 + LREAL#3.5438415941052 * (effective_input - LREAL#200.0);
+                phi_slope := LREAL#3.5438415941052;
+            ELSIF effective_input <= LREAL#300.0 THEN
+                phi_value := LREAL#754.272042068145 + LREAL#3.68936702582848 * (effective_input - LREAL#250.0);
+                phi_slope := LREAL#3.68936702582848;
+            ELSIF effective_input <= LREAL#350.0 THEN
+                phi_value := LREAL#938.740393359569 + LREAL#3.81495379764048 * (effective_input - LREAL#300.0);
+                phi_slope := LREAL#3.81495379764048;
+            ELSIF effective_input <= LREAL#400.0 THEN
+                phi_value := LREAL#1129.48808324159 + LREAL#3.92587047388803 * (effective_input - LREAL#350.0);
+                phi_slope := LREAL#3.92587047388803;
+            ELSIF effective_input <= LREAL#450.0 THEN
+                phi_value := LREAL#1325.78160693599 + LREAL#4.0254915737244 * (effective_input - LREAL#400.0);
+                phi_slope := LREAL#4.0254915737244;
+            ELSIF effective_input <= LREAL#500.0 THEN
+                phi_value := LREAL#1527.05618562221 + LREAL#4.11611844531302 * (effective_input - LREAL#450.0);
+                phi_slope := LREAL#4.11611844531302;
+            ELSE
+                phi_value := LREAL#1732.86210788787;
+                phi_slope := LREAL#4.11611844531302;
+            END_IF;
+
+            sensitivity := LREAL#0.010549980424939 * phi_slope;
+
+            IF sensitivity > LREAL#0.000001 THEN
+                bias_update := LREAL#0.01 * residual / sensitivity;
+
+                IF bias_update > LREAL#5.0 THEN
+                    bias_update := LREAL#5.0;
+                ELSIF bias_update < LREAL#-5.0 THEN
+                    bias_update := LREAL#-5.0;
+                END_IF;
+
+                input_bias_internal := input_bias_internal + bias_update;
+
+                IF input_bias_internal > LREAL#250.0 THEN
+                    input_bias_internal := LREAL#250.0;
+                ELSIF input_bias_internal < LREAL#-250.0 THEN
+                    input_bias_internal := LREAL#-250.0;
+                END_IF;
+            END_IF;
+        END_IF;
+
+        best_found := FALSE;
+        best_cost := LREAL#1000000000.0;
+        best_target := LREAL#0.0;
+        best_predicted_max := LREAL#-1.0;
+        best_predicted_final := LREAL#-1.0;
+
+        FOR candidate_index := 0 TO 12 DO
+CASE candidate_index OF
+    0: candidate_target := LREAL#0.0;
+    1: candidate_target := LREAL#11540.6816771227;
+    2: candidate_target := LREAL#11590.6816771227;
+    3: candidate_target := LREAL#11640.6816771227;
+    4: candidate_target := LREAL#11690.6816771227;
+    5: candidate_target := LREAL#11740.6816771227;
+    6: candidate_target := LREAL#11790.6816771227;
+    7: candidate_target := LREAL#11840.6816771227;
+    8: candidate_target := LREAL#11890.6816771227;
+    9: candidate_target := LREAL#11940.6816771227;
+    10: candidate_target := LREAL#11990.6816771227;
+    11: candidate_target := LREAL#11750.0;
+    12: candidate_target := LREAL#12000.0;
+ELSE
+    candidate_target := LREAL#0.0;
+END_CASE;
+
+            predicted_y := PV_MODEL;
+            predicted_u := APPLIED_DAC;
+            previous_u := APPLIED_DAC;
+            candidate_cost := LREAL#0.0;
+            candidate_predicted_max := predicted_y;
+            candidate_feasible := TRUE;
+
+            FOR prediction_index := 1 TO 40 DO
+                IF candidate_feasible THEN
+                    delta_u := candidate_target - predicted_u;
+
+                    IF delta_u > LREAL#750.0 THEN
+                        delta_u := LREAL#750.0;
+                    ELSIF delta_u < LREAL#-750.0 THEN
+                        delta_u := LREAL#-750.0;
+                    END_IF;
+
+                    predicted_u := predicted_u + delta_u;
+
+                    IF predicted_u > LREAL#12000.0 THEN
+                        predicted_u := LREAL#12000.0;
+                    ELSIF predicted_u < LREAL#0.0 THEN
+                        predicted_u := LREAL#0.0;
+                    END_IF;
+
+                    effective_model_u := predicted_u + input_bias_internal;
+
+                    IF effective_model_u > LREAL#12250.0 THEN
+                        effective_model_u := LREAL#12250.0;
+                    ELSIF effective_model_u < LREAL#0.0 THEN
+                        effective_model_u := LREAL#0.0;
+                    END_IF;
+
+                    effective_input := effective_model_u - LREAL#11750.0;
+
+                    IF effective_input < LREAL#0.0 THEN
+                        effective_input := LREAL#0.0;
+                    ELSIF effective_input > LREAL#500.0 THEN
+                        effective_input := LREAL#500.0;
+                    END_IF;
+
+                    IF effective_input <= LREAL#0.0 THEN
+                        phi_value := LREAL#0.0;
+                        phi_slope := LREAL#0.0;
+                    ELSIF effective_input <= LREAL#50.0 THEN
+                        phi_value := LREAL#0.0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
+                        phi_slope := LREAL#2.18672414788656;
+                    ELSIF effective_input <= LREAL#100.0 THEN
+                        phi_value := LREAL#109.336207394328 + LREAL#2.8370487151326 * (effective_input - LREAL#50.0);
+                        phi_slope := LREAL#2.8370487151326;
+                    ELSIF effective_input <= LREAL#150.0 THEN
+                        phi_value := LREAL#251.188643150958 + LREAL#3.14843691926082 * (effective_input - LREAL#100.0);
+                        phi_slope := LREAL#3.14843691926082;
+                    ELSIF effective_input <= LREAL#200.0 THEN
+                        phi_value := LREAL#408.610489113999 + LREAL#3.36938946497773 * (effective_input - LREAL#150.0);
+                        phi_slope := LREAL#3.36938946497773;
+                    ELSIF effective_input <= LREAL#250.0 THEN
+                        phi_value := LREAL#577.079962362885 + LREAL#3.5438415941052 * (effective_input - LREAL#200.0);
+                        phi_slope := LREAL#3.5438415941052;
+                    ELSIF effective_input <= LREAL#300.0 THEN
+                        phi_value := LREAL#754.272042068145 + LREAL#3.68936702582848 * (effective_input - LREAL#250.0);
+                        phi_slope := LREAL#3.68936702582848;
+                    ELSIF effective_input <= LREAL#350.0 THEN
+                        phi_value := LREAL#938.740393359569 + LREAL#3.81495379764048 * (effective_input - LREAL#300.0);
+                        phi_slope := LREAL#3.81495379764048;
+                    ELSIF effective_input <= LREAL#400.0 THEN
+                        phi_value := LREAL#1129.48808324159 + LREAL#3.92587047388803 * (effective_input - LREAL#350.0);
+                        phi_slope := LREAL#3.92587047388803;
+                    ELSIF effective_input <= LREAL#450.0 THEN
+                        phi_value := LREAL#1325.78160693599 + LREAL#4.0254915737244 * (effective_input - LREAL#400.0);
+                        phi_slope := LREAL#4.0254915737244;
+                    ELSIF effective_input <= LREAL#500.0 THEN
+                        phi_value := LREAL#1527.05618562221 + LREAL#4.11611844531302 * (effective_input - LREAL#450.0);
+                        phi_slope := LREAL#4.11611844531302;
+                    ELSE
+                        phi_value := LREAL#1732.86210788787;
+                        phi_slope := LREAL#4.11611844531302;
+                    END_IF;
+
+                    predicted_y := LREAL#298.0
+                        + LREAL#0.984496437005408 * (predicted_y - LREAL#298.0)
+                        + LREAL#0.010549980424939 * phi_value;
+
+                    IF predicted_y > candidate_predicted_max THEN
+                        candidate_predicted_max := predicted_y;
+                    END_IF;
+
+                    IF NOT ((predicted_y = predicted_y) AND (predicted_y <= LREAL#750.0)) THEN
+                        candidate_feasible := FALSE;
+                    ELSE
+                        tracking_error := predicted_y - SP_RAW;
+                        move_value := predicted_u - previous_u;
+
+                        candidate_cost := candidate_cost
+                        + LREAL#5.0 * tracking_error * tracking_error
+                        + LREAL#0.00004 * move_value * move_value;
+
+                        IF predicted_y > LREAL#650.0 THEN
+                            soft_excess := predicted_y - LREAL#650.0;
+                            candidate_cost := candidate_cost
+                                + LREAL#100.0 * soft_excess * soft_excess;
+                        END_IF;
+
+                        previous_u := predicted_u;
+                    END_IF;
+                END_IF;
+            END_FOR;
+
+            IF candidate_feasible THEN
+                terminal_error := predicted_y - SP_RAW;
+                candidate_cost := candidate_cost
+                    + LREAL#10.0 * terminal_error * terminal_error;
+
+                IF (NOT best_found) OR (candidate_cost < best_cost) THEN
+                    best_found := TRUE;
+                    best_cost := candidate_cost;
+                    best_target := candidate_target;
+                    best_predicted_max := candidate_predicted_max;
+                    best_predicted_final := predicted_y;
+                END_IF;
+            END_IF;
+        END_FOR;
+
+        IF NOT best_found THEN
+            trip_latched_internal := TRUE;
+            trip_code_internal := 6;
+
+            COMMAND_ENABLE := FALSE;
+            COMMAND_DAC := LREAL#0.0;
+            SELECTED_TARGET_DAC := LREAL#0.0;
+            TRIPPED := TRUE;
+            TRIP_CODE := trip_code_internal;
+            INPUT_BIAS_ESTIMATE_DAC := input_bias_internal;
+            PREDICTED_MAX_RAW := LREAL#-1.0;
+            PREDICTED_FINAL_RAW := LREAL#-1.0;
+
+        ELSE
+            delta_u := best_target - APPLIED_DAC;
+
+            IF delta_u > LREAL#750.0 THEN
+                delta_u := LREAL#750.0;
+            ELSIF delta_u < LREAL#-750.0 THEN
+                delta_u := LREAL#-750.0;
+            END_IF;
+
+            command_candidate := APPLIED_DAC + delta_u;
+
+            IF command_candidate > LREAL#12000.0 THEN
+                command_candidate := LREAL#12000.0;
+            ELSIF command_candidate < LREAL#0.0 THEN
+                command_candidate := LREAL#0.0;
+            END_IF;
+
+            COMMAND_ENABLE := TRUE;
+            COMMAND_DAC := command_candidate;
+            SELECTED_TARGET_DAC := best_target;
+            TRIPPED := FALSE;
+            TRIP_CODE := 0;
+            INPUT_BIAS_ESTIMATE_DAC := input_bias_internal;
+            PREDICTED_MAX_RAW := best_predicted_max;
+            PREDICTED_FINAL_RAW := best_predicted_final;
+
+            (* Store a one-step prediction for the next offset-compensation update. *)
+            effective_model_u := command_candidate + input_bias_internal;
+
+            IF effective_model_u > LREAL#12250.0 THEN
+                effective_model_u := LREAL#12250.0;
+            ELSIF effective_model_u < LREAL#0.0 THEN
+                effective_model_u := LREAL#0.0;
+            END_IF;
+
+            effective_input := effective_model_u - LREAL#11750.0;
+
+            IF effective_input < LREAL#0.0 THEN
+                effective_input := LREAL#0.0;
+            ELSIF effective_input > LREAL#500.0 THEN
+                effective_input := LREAL#500.0;
+            END_IF;
+
+            IF effective_input <= LREAL#0.0 THEN
+                phi_value := LREAL#0.0;
+                phi_slope := LREAL#0.0;
+            ELSIF effective_input <= LREAL#50.0 THEN
+                phi_value := LREAL#0.0 + LREAL#2.18672414788656 * (effective_input - LREAL#0.0);
+                phi_slope := LREAL#2.18672414788656;
+            ELSIF effective_input <= LREAL#100.0 THEN
+                phi_value := LREAL#109.336207394328 + LREAL#2.8370487151326 * (effective_input - LREAL#50.0);
+                phi_slope := LREAL#2.8370487151326;
+            ELSIF effective_input <= LREAL#150.0 THEN
+                phi_value := LREAL#251.188643150958 + LREAL#3.14843691926082 * (effective_input - LREAL#100.0);
+                phi_slope := LREAL#3.14843691926082;
+            ELSIF effective_input <= LREAL#200.0 THEN
+                phi_value := LREAL#408.610489113999 + LREAL#3.36938946497773 * (effective_input - LREAL#150.0);
+                phi_slope := LREAL#3.36938946497773;
+            ELSIF effective_input <= LREAL#250.0 THEN
+                phi_value := LREAL#577.079962362885 + LREAL#3.5438415941052 * (effective_input - LREAL#200.0);
+                phi_slope := LREAL#3.5438415941052;
+            ELSIF effective_input <= LREAL#300.0 THEN
+                phi_value := LREAL#754.272042068145 + LREAL#3.68936702582848 * (effective_input - LREAL#250.0);
+                phi_slope := LREAL#3.68936702582848;
+            ELSIF effective_input <= LREAL#350.0 THEN
+                phi_value := LREAL#938.740393359569 + LREAL#3.81495379764048 * (effective_input - LREAL#300.0);
+                phi_slope := LREAL#3.81495379764048;
+            ELSIF effective_input <= LREAL#400.0 THEN
+                phi_value := LREAL#1129.48808324159 + LREAL#3.92587047388803 * (effective_input - LREAL#350.0);
+                phi_slope := LREAL#3.92587047388803;
+            ELSIF effective_input <= LREAL#450.0 THEN
+                phi_value := LREAL#1325.78160693599 + LREAL#4.0254915737244 * (effective_input - LREAL#400.0);
+                phi_slope := LREAL#4.0254915737244;
+            ELSIF effective_input <= LREAL#500.0 THEN
+                phi_value := LREAL#1527.05618562221 + LREAL#4.11611844531302 * (effective_input - LREAL#450.0);
+                phi_slope := LREAL#4.11611844531302;
+            ELSE
+                phi_value := LREAL#1732.86210788787;
+                phi_slope := LREAL#4.11611844531302;
+            END_IF;
+
+            previous_prediction_internal := LREAL#298.0
+                + LREAL#0.984496437005408 * (PV_MODEL - LREAL#298.0)
+                + LREAL#0.010549980424939 * phi_value;
+            previous_applied_internal := command_candidate;
+            previous_valid_internal := TRUE;
+        END_IF;
+    END_IF;
+END_IF;]]></ST>
+		</Algorithm>
+	</BasicFB>
+</FBType>

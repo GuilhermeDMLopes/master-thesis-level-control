@@ -1,0 +1,13 @@
+﻿MPC V3H first bounded active run - physical observation
+Timestamp: 2026-08-22 12:46:31
+Initial physical water height: 0 cm
+Maximum observed physical water height: 1.2 cm
+Operator physical abort threshold: 5 cm
+Declared operational safe maximum: 25 cm
+MPC sample time: 500 ms
+Active duration limit: 60 s
+Supervisor raw stop: 1100 raw
+Supervisor median stop: 1100 raw
+Positive median-rate stop: 180 raw/s
+DAC limit: 12000
+Evidence CSV: C:\Projetos\master-thesis-level-control\data\raw\mpc-v3h-first-active-20260822-124503\v3h-first-active-monitor.csv

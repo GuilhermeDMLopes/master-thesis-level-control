@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio FileVersion="4.9"?>
+<OpcUaSource FileVersion="7" ArVersion="B4.91">
+  <Aliases>
+    <ACLAliases />
+    <EURangeViolationAliases />
+    <EURangesAliases>
+      <EURanges Id="2" AclInherit="0" />
+    </EURangesAliases>
+    <EngineeringUnitAliases>
+      <EngineeringUnit Id="2" UnitId="0" AclInherit="0" />
+    </EngineeringUnitAliases>
+  </Aliases>
+  <DefaultView>
+    <Module Name="&lt;Default&gt;">
+      <Task Name="Program">
+        <Variable Name="Nivel" />
+        <Variable Name="DAC" />
+        <Variable Name="Enable" />
+        <Variable Name="Heartbeat" />
+        <Variable Name="SafetyReset" />
+        <Variable Name="WatchdogHealthy" />
+        <Variable Name="WatchdogTripped" />
+        <Variable Name="AppliedEnable" />
+        <Variable Name="AppliedDAC" />
+      </Task>
+    </Module>
+  </DefaultView>
+</OpcUaSource>

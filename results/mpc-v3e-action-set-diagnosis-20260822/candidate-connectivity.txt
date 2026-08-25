@@ -1,0 +1,12 @@
+MPC V3/V3E CANDIDATE ACTION CONNECTIVITY
+=======================================
+
+Classification: DISCONNECTED_CANDIDATE_ACTION_GRAPH_CONFIRMED
+Candidates: [0.0, 11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11800.0, 11845.626677302696, 11850.0, 11900.0, 11950.0, 12000.0]
+Max move: 750.0
+Connected components: [[0.0], [11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11800.0, 11845.626677302696, 11850.0, 11900.0, 11950.0, 12000.0]]
+Low-to-high cluster gap: 11500.0
+Equilibrium-like candidate: 11845.626677302696
+Reachable from equilibrium: [11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11800.0, 11845.626677302696, 11850.0, 11900.0, 11950.0, 12000.0]
+Zero reachable from equilibrium: False
+Minimum reachable from equilibrium: 11500.0

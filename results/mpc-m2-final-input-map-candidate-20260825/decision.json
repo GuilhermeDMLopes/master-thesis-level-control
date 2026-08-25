@@ -1,0 +1,36 @@
+{
+  "classification": "M2_MODEL_11750_DEADZONE_REJECTED__EXACT_REAL_DEADZONE_NOT_IDENTIFIED__SINGLE_11550_CANDIDATE_SELECTED_FOR_OFFLINE_REPLAY",
+  "same_session_completed_points": [
+    {
+      "dac": 11650.0,
+      "post_delay_mean_delta_raw": 75.01785714285714
+    },
+    {
+      "dac": 11700.0,
+      "post_delay_mean_delta_raw": 168.575
+    },
+    {
+      "dac": 11750.0,
+      "post_delay_mean_delta_raw": 277.91901408450707
+    }
+  ],
+  "same_session_linear_trend": {
+    "delta_raw_per_dac": 2.0290115694164994,
+    "intercept_raw": -23565.59807176392,
+    "zero_crossing_dac": 11614.324150226943,
+    "r_squared": 0.9979861535804327
+  },
+  "prior_11600": {
+    "responsive": true,
+    "recorded_post_delay_change_raw": 204.0,
+    "used_in_same_session_regression": false,
+    "reason": "different session and response-summary definition"
+  },
+  "model_deadzone_11750_supported": false,
+  "exact_real_deadzone_identified": false,
+  "selected_single_replay_candidate_deadzone_dac": 11550.0,
+  "candidate_selection_basis": "nearest 50-DAC grid point strictly below the lowest already responsive tested input (11600 DAC)",
+  "implementation_authorized": false,
+  "real_run_authorized": false,
+  "next": "Run one offline authoritative V3H replay with only the input-map dead-zone candidate changed from 11750 to 11550; keep all other controller/model parameters unchanged."
+}

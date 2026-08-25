@@ -1,0 +1,48 @@
+{
+  "baseline_mismatch_raw": -61.0,
+  "candidate_values": [
+    0.0,
+    11500.0,
+    11550.0,
+    11600.0,
+    11650.0,
+    11700.0,
+    11750.0,
+    11800.0,
+    11845.626677302696,
+    11850.0,
+    11900.0,
+    11950.0,
+    12000.0
+  ],
+  "classification": "DISCONNECTED_CANDIDATE_ACTION_GRAPH_CONFIRMED",
+  "connected_components": [
+    [
+      0.0
+    ],
+    [
+      11500.0,
+      11550.0,
+      11600.0,
+      11650.0,
+      11700.0,
+      11750.0,
+      11800.0,
+      11845.626677302696,
+      11850.0,
+      11900.0,
+      11950.0,
+      12000.0
+    ]
+  ],
+  "equilibrium_like_candidate_dac": 11845.626677302696,
+  "final_10s_mean_median_raw": 748.5869565217391,
+  "gap_low_to_high_candidate_cluster": 11500.0,
+  "max_move_dac_per_update": 750.0,
+  "minimum_reachable_from_equilibrium_cluster": 11500.0,
+  "observed_high_dac_fraction": 0.8038036871117624,
+  "observed_max_dac": 11850.0,
+  "recommended_next_variant": "MPC V3F - additive connected move-based candidate action set",
+  "sp_raw": 450.0,
+  "zero_reachable_from_equilibrium_cluster": false
+}

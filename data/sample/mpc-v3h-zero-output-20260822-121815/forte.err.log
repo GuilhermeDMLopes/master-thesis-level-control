@@ -1,0 +1,29 @@
+INFO: T#18446743682719617368: FORTE is up and running
+INFO: T#18446743682720262568: Using provided bootfile location set in CMake: forte.fboot
+INFO: T#18446743682720700268: Boot file forte.fboot could not be opened. Skipping...
+INFO: T#18446743682721060368: CWin32SocketInterface: Opening TCP-Server connection at: localhost:61499
+INFO: T#18446743713408335068: Connection established by client
+INFO: T#18446743713422730468: Connection closed by peer
+INFO: T#18446743731165932468: Connection established by client
+WARNING: T#18446743732554374668: [CStringDictionary::insert] String to insert was empty
+WARNING: T#18446743732555088168: [CStringDictionary::insert] String to insert was empty
+INFO: T#18446743732565287468: Connection closed by peer
+INFO: T#18446743732621701368: Connection established by client
+INFO: T#18446743740365526168: [OPC UA LOGGER] info/client	Connecting to endpoint opc.tcp://127.0.0.1:4841
+INFO: T#18446743740365913168: [OPC UA LOGGER] info/client	SecurityPolicy not specified -> use default #None
+WARNING: T#18446743740366421068: [OPC UA LOGGER] warning/(null)	Security policy None is used to create SecureChannel. Accepting all certificates
+INFO: T#18446743740368260068: [OPC UA LOGGER] info/client	TCP connection established
+INFO: T#18446743740370920368: [OPC UA CLIENT]: A TCP connection to the server is open
+INFO: T#18446743740371989768: [OPC UA LOGGER] info/client	Opened SecureChannel with SecurityPolicy http://opcfoundation.org/UA/SecurityPolicy#None
+INFO: T#18446743740372186768: [OPC UA CLIENT]: A SecureChannel to the server is open
+INFO: T#18446743740372348368: [OPC UA LOGGER] info/client	Endpoint and UserTokenPolicy unconfigured, perform GetEndpoints
+INFO: T#18446743740373890368: [OPC UA LOGGER] info/client	Found 1 endpoints
+INFO: T#18446743740374063268: [OPC UA LOGGER] info/client	Endpoint 0 has 3 user token policies
+INFO: T#18446743740374224268: [OPC UA LOGGER] info/client	Selected Endpoint opc.tcp://127.0.0.1:4841 with SecurityMode None and SecurityPolicy http://opcfoundation.org/UA/SecurityPolicy#None
+INFO: T#18446743740374381368: [OPC UA LOGGER] info/client	Selected UserTokenPolicy anonymous with UserTokenType Anonymous and SecurityPolicy http://opcfoundation.org/UA/SecurityPolicy#None
+INFO: T#18446743740377188868: [OPC UA CLIENT]: A session with the server is open
+INFO: T#18446743740377467768: [OPC UA CLIENT]: Client connected to endpoint opc.tcp://127.0.0.1:4841
+INFO: T#18446743740378872668: [OPC UA CLIENT]: Create subscription to opc.tcp://127.0.0.1:4841 succeeded, id 78
+INFO: T#18446743740380467768: [OPC UA CLIENT]: Monitoring of FB MpcWatchdogRead at index 0 succeeded. The monitoring item id is 112
+INFO: T#18446743740409750068: [OPC UA CLIENT]: Monitoring of FB MpcAppliedDACRead at index 0 succeeded. The monitoring item id is 113
+INFO: T#18446743740438863068: [OPC UA CLIENT]: Monitoring of FB MpcLevelRead at index 0 succeeded. The monitoring item id is 114

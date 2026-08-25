@@ -1,0 +1,22 @@
+WATCHDOG OPC UA FINALIZER
+=========================
+
+Generated at: 2026-04-03T03:01:35.0248363-03:00
+Working project: C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715
+Project file: C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\PLANTA_LCPIC.apj
+OPC UA file: C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad
+OPC UA backup: C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\X20CP0483\Connectivity\OpcUA\OpcUaMap.uad.pre_finalizer_20260403-030134.bak
+Added variables: Heartbeat, SafetyReset, WatchdogHealthy, WatchdogTripped, AppliedEnable, AppliedDAC
+Static project validation: PASSED
+Ready for manual Rebuild Configuration: YES
+Ready for PLC transfer: NO
+
+Next action when validation is PASSED:
+Open the watchdog_v2 project and run only Project -> Rebuild Configuration.
+Do not Transfer, Install, Build and Transfer, or enter Online mode.
+
+Access-right note:
+The project UAD file uses simple Variable entries without per-variable ACL attributes.
+This script preserves that existing format.
+Heartbeat and SafetyReset must be writable.
+The diagnostic variables are overwritten by the PLC cyclic logic and do not bypass the physical-output gate.

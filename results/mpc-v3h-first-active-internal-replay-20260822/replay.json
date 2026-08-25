@@ -1,0 +1,438 @@
+{
+  "classification": "MODEL_DEADZONE_PLUS_MOVE_PENALTY_CREATES_11750_STRUCTURAL_HOLD__LATE_HOLD_NOT_EXPLAINED_BY_COMMITTED_HIGH_DAC_DELAY__AUTHORITATIVE_V3H_REPLAY_SUPPORTS_11750_CHOICE__REAL_STATIC_DEADZONE_REMAINS_UNIDENTIFIED",
+  "plateau_diagnosis_commit": "2f1bd97",
+  "active_csv_sha256": "EF977716F8FD55B939FEE251D8580DF38AA4525E76908DBFF511FF8F034E3C76",
+  "warmup_csv_sha256": "4306A1208286972E35FD03DA4DE89FD99682839DEA3C9627D67E256EB3E0DA44",
+  "replay_method": {
+    "controller_sample_time_s": 0.5,
+    "delay_steps": 18,
+    "delay_seconds": 9.0,
+    "median_filter_reconstruction": "9 raw samples at reconstructed 500 ms controller cadence, seeded from the final warmup zero-output evidence",
+    "caveat": "d_hat and controller PV were not logged directly in FORTE. This is a causal reconstruction using the authoritative Python V3H model and recorded real raw/AppliedDAC evidence."
+  },
+  "snapshot_times_s": [
+    27.5,
+    36.5,
+    45.0,
+    52.5,
+    60.0
+  ],
+  "snapshots": [
+    {
+      "t": 27.5,
+      "raw": 615.0,
+      "controller_med9": 502.0,
+      "supervisor_med9": 615.0,
+      "applied": 11750.0,
+      "delayed_u_oldest": 11800.0,
+      "delay_history_high_fraction": 0.9444444444444444,
+      "delay_history_all_at_or_below_deadzone": false,
+      "innovation_raw": 31.94932810643877,
+      "d_hat_raw_per_step": 12.239052128150762,
+      "equivalent_steady_shift_raw": 122.49786156669623,
+      "v3h_best": {
+        "target": 11750.0,
+        "feasible": true,
+        "cost": 360203.7404298821,
+        "predicted_max": 502.0,
+        "predicted_final": 411.3338344265517,
+        "command_dac": 11750.0,
+        "disturbance_hat_raw_per_step": 12.239052128150762,
+        "equivalent_steady_shift_raw": 122.49786156669623,
+        "last_innovation_raw": 31.94932810643877
+      },
+      "canonical_best": {
+        "target": 11850.0,
+        "feasible": true,
+        "cost": 264559.34293016914,
+        "predicted_max": 502.0,
+        "predicted_final": 457.9332618670301,
+        "command": 11850.0
+      },
+      "candidates": {
+        "zero": {
+          "target": 0.0,
+          "feasible": true,
+          "cost": 360551.2404298821,
+          "predicted_max": 502.0,
+          "predicted_final": 411.3338344265517,
+          "first_command": 11000.0,
+          "input_effect_first_command": 0.0
+        },
+        "11500": {
+          "target": 11500.0,
+          "feasible": true,
+          "cost": 360206.2404298821,
+          "predicted_max": 502.0,
+          "predicted_final": 411.3338344265517,
+          "first_command": 11500.0,
+          "input_effect_first_command": 0.0
+        },
+        "11750": {
+          "target": 11750.0,
+          "feasible": true,
+          "cost": 360203.7404298821,
+          "predicted_max": 502.0,
+          "predicted_final": 411.3338344265517,
+          "first_command": 11750.0,
+          "input_effect_first_command": 0.0
+        },
+        "11800": {
+          "target": 11800.0,
+          "feasible": true,
+          "cost": 412207.2141293497,
+          "predicted_max": 502.0,
+          "predicted_final": 484.8413260622597,
+          "first_command": 11800.0,
+          "input_effect_first_command": 7.433672400622925
+        },
+        "equilibrium": {
+          "target": 11845.626677302696,
+          "feasible": true,
+          "cost": 2631739.097962874,
+          "predicted_max": 571.3863398700207,
+          "predicted_final": 571.3863398700207,
+          "first_command": 11845.626677302696,
+          "input_effect_first_command": 16.185804547134126
+        }
+      }
+    },
+    {
+      "t": 36.5,
+      "raw": 696.0,
+      "controller_med9": 665.0,
+      "supervisor_med9": 665.0,
+      "applied": 11750.0,
+      "delayed_u_oldest": 11750.0,
+      "delay_history_high_fraction": 0.0,
+      "delay_history_all_at_or_below_deadzone": true,
+      "innovation_raw": 46.667841165420896,
+      "d_hat_raw_per_step": 31.396752803382196,
+      "equivalent_steady_shift_raw": 314.2428872989533,
+      "v3h_best": {
+        "target": 11750.0,
+        "feasible": true,
+        "cost": 8128701.943969373,
+        "predicted_max": 665.0,
+        "predicted_final": 602.3563231770636,
+        "command_dac": 11750.0,
+        "disturbance_hat_raw_per_step": 31.396752803382196,
+        "equivalent_steady_shift_raw": 314.2428872989533,
+        "last_innovation_raw": 46.667841165420896
+      },
+      "canonical_best": {
+        "target": 11850.0,
+        "feasible": true,
+        "cost": 856323.3675241669,
+        "predicted_max": 665.0,
+        "predicted_final": 457.55731134267586,
+        "command": 11850.0
+      },
+      "candidates": {
+        "zero": {
+          "target": 0.0,
+          "feasible": true,
+          "cost": 8129049.443969373,
+          "predicted_max": 665.0,
+          "predicted_final": 602.3563231770636,
+          "first_command": 11000.0,
+          "input_effect_first_command": 0.0
+        },
+        "11500": {
+          "target": 11500.0,
+          "feasible": true,
+          "cost": 8128704.443969373,
+          "predicted_max": 665.0,
+          "predicted_final": 602.3563231770636,
+          "first_command": 11500.0,
+          "input_effect_first_command": 0.0
+        },
+        "11750": {
+          "target": 11750.0,
+          "feasible": true,
+          "cost": 8128701.943969373,
+          "predicted_max": 665.0,
+          "predicted_final": 602.3563231770636,
+          "first_command": 11750.0,
+          "input_effect_first_command": 0.0
+        },
+        "11800": {
+          "target": 11800.0,
+          "feasible": true,
+          "cost": 12976377.802841563,
+          "predicted_max": 675.8638148127723,
+          "predicted_final": 675.8638148127723,
+          "first_command": 11800.0,
+          "input_effect_first_command": 7.433672400622925
+        },
+        "equilibrium": {
+          "target": 11845.626677302696,
+          "feasible": true,
+          "cost": 20842157.756860178,
+          "predicted_max": 762.4088286205329,
+          "predicted_final": 762.4088286205329,
+          "first_command": 11845.626677302696,
+          "input_effect_first_command": 16.185804547134126
+        }
+      }
+    },
+    {
+      "t": 45.0,
+      "raw": 603.0,
+      "controller_med9": 686.0,
+      "supervisor_med9": 645.0,
+      "applied": 11750.0,
+      "delayed_u_oldest": 11750.0,
+      "delay_history_high_fraction": 0.0,
+      "delay_history_all_at_or_below_deadzone": true,
+      "innovation_raw": 21.763372226555703,
+      "d_hat_raw_per_step": 38.71818667157187,
+      "equivalent_steady_shift_raw": 387.52143722786263,
+      "v3h_best": {
+        "target": 11750.0,
+        "feasible": true,
+        "cost": 15981508.183364915,
+        "predicted_max": 686.0,
+        "predicted_final": 675.5403776302844,
+        "command_dac": 11750.0,
+        "disturbance_hat_raw_per_step": 38.71818667157187,
+        "equivalent_steady_shift_raw": 387.52143722786263,
+        "last_innovation_raw": 21.763372226555703
+      },
+      "canonical_best": {
+        "target": 11850.0,
+        "feasible": true,
+        "cost": 922681.9862092098,
+        "predicted_max": 686.0,
+        "predicted_final": 457.59526964473577,
+        "command": 11850.0
+      },
+      "candidates": {
+        "zero": {
+          "target": 0.0,
+          "feasible": true,
+          "cost": 15981855.683364915,
+          "predicted_max": 686.0,
+          "predicted_final": 675.5403776302844,
+          "first_command": 11000.0,
+          "input_effect_first_command": 0.0
+        },
+        "11500": {
+          "target": 11500.0,
+          "feasible": true,
+          "cost": 15981510.683364915,
+          "predicted_max": 686.0,
+          "predicted_final": 675.5403776302844,
+          "first_command": 11500.0,
+          "input_effect_first_command": 0.0
+        },
+        "11750": {
+          "target": 11750.0,
+          "feasible": true,
+          "cost": 15981508.183364915,
+          "predicted_max": 686.0,
+          "predicted_final": 675.5403776302844,
+          "first_command": 11750.0,
+          "input_effect_first_command": 0.0
+        },
+        "11800": {
+          "target": 11800.0,
+          "feasible": true,
+          "cost": 22714284.649966903,
+          "predicted_max": 749.0478692659929,
+          "predicted_final": 749.0478692659929,
+          "first_command": 11800.0,
+          "input_effect_first_command": 7.433672400622925
+        },
+        "equilibrium": {
+          "target": 11845.626677302696,
+          "feasible": true,
+          "cost": 32799512.642472807,
+          "predicted_max": 835.5928830737536,
+          "predicted_final": 835.5928830737536,
+          "first_command": 11845.626677302696,
+          "input_effect_first_command": 16.185804547134126
+        }
+      }
+    },
+    {
+      "t": 52.5,
+      "raw": 635.0,
+      "controller_med9": 471.0,
+      "supervisor_med9": 573.0,
+      "applied": 11750.0,
+      "delayed_u_oldest": 11750.0,
+      "delay_history_high_fraction": 0.0,
+      "delay_history_all_at_or_below_deadzone": true,
+      "innovation_raw": 18.283964395836563,
+      "d_hat_raw_per_step": 18.059661045171776,
+      "equivalent_steady_shift_raw": 180.754999283361,
+      "v3h_best": {
+        "target": 11750.0,
+        "feasible": true,
+        "cost": 112937.84904334994,
+        "predicted_max": 471.0,
+        "predicted_final": 468.75905720790024,
+        "command_dac": 11750.0,
+        "disturbance_hat_raw_per_step": 18.059661045171776,
+        "equivalent_steady_shift_raw": 180.754999283361,
+        "last_innovation_raw": 18.283964395836563
+      },
+      "canonical_best": {
+        "target": 11850.0,
+        "feasible": true,
+        "cost": 1133288.1552928877,
+        "predicted_max": 471.0,
+        "predicted_final": 457.20664893317075,
+        "command": 11850.0
+      },
+      "candidates": {
+        "zero": {
+          "target": 0.0,
+          "feasible": true,
+          "cost": 113285.34904334994,
+          "predicted_max": 471.0,
+          "predicted_final": 468.75905720790024,
+          "first_command": 11000.0,
+          "input_effect_first_command": 0.0
+        },
+        "11500": {
+          "target": 11500.0,
+          "feasible": true,
+          "cost": 112940.34904334994,
+          "predicted_max": 471.0,
+          "predicted_final": 468.75905720790024,
+          "first_command": 11500.0,
+          "input_effect_first_command": 0.0
+        },
+        "11750": {
+          "target": 11750.0,
+          "feasible": true,
+          "cost": 112937.84904334994,
+          "predicted_max": 471.0,
+          "predicted_final": 468.75905720790024,
+          "first_command": 11750.0,
+          "input_effect_first_command": 0.0
+        },
+        "11800": {
+          "target": 11800.0,
+          "feasible": true,
+          "cost": 1445474.9394047277,
+          "predicted_max": 542.2665488436089,
+          "predicted_final": 542.2665488436089,
+          "first_command": 11800.0,
+          "input_effect_first_command": 7.433672400622925
+        },
+        "equilibrium": {
+          "target": 11845.626677302696,
+          "feasible": true,
+          "cost": 5172659.949052025,
+          "predicted_max": 628.8115626513693,
+          "predicted_final": 628.8115626513693,
+          "first_command": 11845.626677302696,
+          "input_effect_first_command": 16.185804547134126
+        }
+      }
+    },
+    {
+      "t": 60.0,
+      "raw": 828.0,
+      "controller_med9": 757.0,
+      "supervisor_med9": 675.0,
+      "applied": 11750.0,
+      "delayed_u_oldest": 11750.0,
+      "delay_history_high_fraction": 0.0,
+      "delay_history_all_at_or_below_deadzone": true,
+      "innovation_raw": 120.66608864037562,
+      "d_hat_raw_per_step": 46.829462611433925,
+      "equivalent_steady_shift_raw": 468.7053350335683,
+      "v3h_best": {
+        "target": 11750.0,
+        "feasible": true,
+        "cost": 29169262.49493017,
+        "predicted_max": 757.0,
+        "predicted_final": 756.705867651749,
+        "command_dac": 11750.0,
+        "disturbance_hat_raw_per_step": 46.829462611433925,
+        "equivalent_steady_shift_raw": 468.7053350335683,
+        "last_innovation_raw": 120.66608864037562
+      },
+      "canonical_best": {
+        "target": 11850.0,
+        "feasible": true,
+        "cost": 1286414.6337352374,
+        "predicted_max": 757.0,
+        "predicted_final": 457.72360485646186,
+        "command": 11850.0
+      },
+      "candidates": {
+        "zero": {
+          "target": 0.0,
+          "feasible": true,
+          "cost": 29169609.99493017,
+          "predicted_max": 757.0,
+          "predicted_final": 756.705867651749,
+          "first_command": 11000.0,
+          "input_effect_first_command": 0.0
+        },
+        "11500": {
+          "target": 11500.0,
+          "feasible": true,
+          "cost": 29169264.99493017,
+          "predicted_max": 757.0,
+          "predicted_final": 756.705867651749,
+          "first_command": 11500.0,
+          "input_effect_first_command": 0.0
+        },
+        "11750": {
+          "target": 11750.0,
+          "feasible": true,
+          "cost": 29169262.49493017,
+          "predicted_max": 757.0,
+          "predicted_final": 756.705867651749,
+          "first_command": 11750.0,
+          "input_effect_first_command": 0.0
+        },
+        "11800": {
+          "target": 11800.0,
+          "feasible": true,
+          "cost": 38015375.839562304,
+          "predicted_max": 830.2133592874576,
+          "predicted_final": 830.2133592874576,
+          "first_command": 11800.0,
+          "input_effect_first_command": 7.433672400622925
+        },
+        "equilibrium": {
+          "target": 11845.626677302696,
+          "feasible": true,
+          "cost": 50588768.85062152,
+          "predicted_max": 916.7583730952178,
+          "predicted_final": 916.7583730952178,
+          "first_command": 11845.626677302696,
+          "input_effect_first_command": 16.185804547134126
+        }
+      }
+    }
+  ],
+  "late_plateau": {
+    "start_s": 36.5,
+    "end_s": 60.0,
+    "records": 48,
+    "delay_history_fully_flushed_fraction": 1.0,
+    "replay_target_11750_fraction": 1.0,
+    "mean_d_hat_raw_per_step": 31.68239631825372,
+    "mean_equivalent_steady_shift_raw": 317.1018276299349,
+    "mean_innovation_raw": 34.89417708147255,
+    "median_replay_vs_recorded_command_abs_error_dac": 0.0,
+    "11500_vs_11750_structural_equivalence_move_tiebreak_fraction": 1.0,
+    "zero_vs_11750_structural_equivalence_move_tiebreak_fraction": 1.0
+  },
+  "conclusions": {
+    "structural_11750_hold_confirmed_in_model": true,
+    "late_hold_explained_by_committed_high_dac_delay": false,
+    "authoritative_replay_supports_11750_choice": true,
+    "real_static_deadzone_identified": false,
+    "controller_change_authorized": false,
+    "new_real_run_authorized": false
+  }
+}

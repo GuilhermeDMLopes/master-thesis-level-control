@@ -1,0 +1,53 @@
+﻿FIRST BOUNDED ACTIVE MPC V3H RUN
+================================
+
+THIS CHECKLIST DOES NOT BY ITSELF AUTHORIZE ACTUATION.
+
+PRECONDITIONS
+[ ] physical/emergency stop accessible
+[ ] tank visually safe
+[ ] ruler/physical reference visible
+[ ] initial physical water height recorded
+[ ] repository clean
+[ ] exact V3H FORTE hash verified
+[ ] PLC/gateway connectivity healthy
+[ ] no other PI/MPC controller active
+
+FRESH DEPLOYMENT
+[ ] deploy ONLY FORTE_PC -> ResRealRawMPCV3H
+[ ] ENABLE_REQUEST = FALSE
+[ ] MpcInitMerge.EI1 triggered exactly once
+[ ] zero output confirmed
+[ ] 12 s zero warmup completed
+
+ACTIVE WINDOW
+[ ] evidence logging active before enable
+[ ] ENABLE_REQUEST set TRUE
+[ ] maximum active duration = 60 s
+[ ] SP = 450 raw unchanged
+[ ] no tuning during run
+
+IMMEDIATE ABORT
+[ ] raw >= 1100
+[ ] physical height >= 5 cm
+[ ] WatchdogHealthy FALSE
+[ ] WatchdogTripped TRUE
+[ ] communication unhealthy
+[ ] FORTE exits
+[ ] unexpected actuator behavior
+[ ] operator concern
+
+SHUTDOWN
+[ ] ENABLE_REQUEST FALSE
+[ ] Enable FALSE
+[ ] DAC 0
+[ ] AppliedEnable FALSE
+[ ] AppliedDAC 0
+[ ] >=10 s final zero confirmation
+[ ] FORTE stopped after zero confirmed
+[ ] maximum physical height recorded
+
+POST-RUN
+[ ] preserve CSV/logs
+[ ] preserve physical observation
+[ ] classify run before changing controller

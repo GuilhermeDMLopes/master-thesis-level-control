@@ -1,0 +1,17 @@
+open62541 source provenance
+===========================
+
+Source directory:
+C:\Users\guilh\4diac\open62541
+
+Git commit:
+ce5209d78d3821504d31b3bbdb03f53d6e3f93a7
+
+Describe:
+v1.0
+
+Working tree clean:
+YES
+
+Validated runtime DLL SHA256:
+452DD9B74FFBFCD08AE1A268D6DE58B552F8CB9D111972265CDFD8989C4F4318

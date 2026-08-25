@@ -1,0 +1,9 @@
+Nivel
+DAC
+Enable
+Heartbeat
+SafetyReset
+WatchdogHealthy
+WatchdogTripped
+AppliedEnable
+AppliedDAC

@@ -1,0 +1,84 @@
+{
+  "authorization": {
+    "real_actuation_performed_by_this_analysis": false,
+    "real_mpc_full_operation_authorized": false
+  },
+  "controller_contract_proposal": {
+    "bias_adaptation_policy": "Do not apply immediate-input bias adaptation through the transport-delay interval. If bias adaptation is retained, use delayed applied-input sensitivity.",
+    "candidate_prediction_iterations": 780,
+    "history_queue_length_samples": 18,
+    "maximum_dac": 12000.0,
+    "maximum_delta_dac_per_update": 750.0,
+    "minimum_dac": 0.0,
+    "prediction_horizon_s": 30.0,
+    "prediction_requires_applied_dac_history_queue": true,
+    "prediction_steps": 60,
+    "sample_time_s": 0.5,
+    "target_candidates": 13
+  },
+  "dynamic_fit_500ms": {
+    "canonical_v2_replay_rmse_raw": 82.9106122244395,
+    "discrete_a": 0.9000876262522592,
+    "discrete_b_raw_per_DAC_power_p": 0.06798911886355202,
+    "empirical_effective_delay_s": 9.953,
+    "empirical_rise_threshold_raw": 338.0,
+    "fit_samples": 58,
+    "fit_start_s": 11.985,
+    "method": "grid search over implementable 500 ms delay queue and first-order tau with static nonlinearity fixed",
+    "observation_state_floor_raw": 288.0,
+    "rmse_ratio_v3_over_v2": 0.16653506836544718,
+    "rmse_raw": 13.807524475018115,
+    "tau_s": 4.75,
+    "transport_delay_s": 9.0,
+    "transport_delay_steps": 18
+  },
+  "empty_baseline_observation": {
+    "count": 276.0,
+    "final_raw": 288.0,
+    "initial_raw": 288.0,
+    "maximum_raw": 298.0,
+    "mean_raw": 287.4710144927536,
+    "median_raw": 288.0,
+    "minimum_raw": 267.0
+  },
+  "evidence": {
+    "active_commissioning": {
+      "path": "data/sample/mpc-v3-real-evidence/first-active-v2-20260818-192023.csv",
+      "sha256": "F31AACC2776DA64F76876350CDB28E41451D09A084101EBD2401F0507AED1562"
+    },
+    "empty_baseline": {
+      "path": "data/sample/mpc-v3-real-evidence/empty-baseline-20260818-192945.csv",
+      "sha256": "030443E50CC55755FE57A1E3BCDBCA4D6C10C4085D207D736EF2253941E7096D"
+    },
+    "static_model_source": {
+      "path": "models/mpc/deadzone-hammerstein-v1.json",
+      "sha256": "398A165C7164EF8D01BB138386663D8476294EC7E760ECD0B11B9FFB9138EFEC"
+    }
+  },
+  "model_type": "delayed_deadzone_hammerstein_first_order",
+  "physical_context": {
+    "central_bottom_drain": true,
+    "context_source": "manual laboratory observation 2026-08-18",
+    "drain_description": "Central pipe at the bottom drains water by gravity back to the lower reservoir.",
+    "empty_tank_height_cm": 0.0,
+    "empty_tank_raw_offset": 288.0
+  },
+  "scope_limitations": [
+    "The central gravity drain is physically documented but is represented only through the effective identified first-order dynamics in this V3 candidate.",
+    "Static dead-zone, exponent, and gain are retained from the broader preserved identification dataset because one commissioning transient cannot identify all static and dynamic parameters independently.",
+    "This candidate is for offline implementation and replay validation before any additional real-plant MPC run."
+  ],
+  "static_nonlinearity": {
+    "deadzone_DAC": 11750.0,
+    "equilibrium_gain_G_raw_per_DAC_power_p": 0.6804874743063485,
+    "input_exponent_p": 1.2,
+    "previous_baseline_raw_not_reused_for_physical_zero": 298.0,
+    "previous_tau_s_not_reused_for_v3_dynamics": 32.0,
+    "source": "preserved broader V1 identification dataset"
+  },
+  "status": "candidate_offline_from_real_commissioning",
+  "target_implication": {
+    "implied_equilibrium_DAC": 11845.626677302696,
+    "target_raw": 450.0
+  }
+}

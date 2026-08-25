@@ -1,0 +1,171 @@
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:42 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="TimerDeviceType" Value="SWIOTIMER" />
+  BEFORE |     <Parameter ID="Cyclic1Duration" Value="10000" />
+  MATCH  |     <Parameter ID="Cyclic1Tolerance" Value="10000" />
+  AFTER  |     <Parameter ID="Cyclic2Duration" Value="20000" />
+  AFTER  |     <Parameter ID="Cyclic2Tolerance" Value="20000" />
+  AFTER  |     <Parameter ID="Cyclic3Duration" Value="50000" />
+  AFTER  |     <Parameter ID="Cyclic3Tolerance" Value="50000" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:44 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic1Tolerance" Value="10000" />
+  BEFORE |     <Parameter ID="Cyclic2Duration" Value="20000" />
+  MATCH  |     <Parameter ID="Cyclic2Tolerance" Value="20000" />
+  AFTER  |     <Parameter ID="Cyclic3Duration" Value="50000" />
+  AFTER  |     <Parameter ID="Cyclic3Tolerance" Value="50000" />
+  AFTER  |     <Parameter ID="Cyclic4Duration" Value="100000" />
+  AFTER  |     <Parameter ID="Cyclic4Tolerance" Value="100000" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:46 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic2Tolerance" Value="20000" />
+  BEFORE |     <Parameter ID="Cyclic3Duration" Value="50000" />
+  MATCH  |     <Parameter ID="Cyclic3Tolerance" Value="50000" />
+  AFTER  |     <Parameter ID="Cyclic4Duration" Value="100000" />
+  AFTER  |     <Parameter ID="Cyclic4Tolerance" Value="100000" />
+  AFTER  |     <Parameter ID="Cyclic5Duration" Value="200000" />
+  AFTER  |     <Parameter ID="Cyclic5Tolerance" Value="200000" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:48 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic3Tolerance" Value="50000" />
+  BEFORE |     <Parameter ID="Cyclic4Duration" Value="100000" />
+  MATCH  |     <Parameter ID="Cyclic4Tolerance" Value="100000" />
+  AFTER  |     <Parameter ID="Cyclic5Duration" Value="200000" />
+  AFTER  |     <Parameter ID="Cyclic5Tolerance" Value="200000" />
+  AFTER  |     <Parameter ID="Cyclic6Duration" Value="500000" />
+  AFTER  |     <Parameter ID="Cyclic6Tolerance" Value="500000" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:50 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic4Tolerance" Value="100000" />
+  BEFORE |     <Parameter ID="Cyclic5Duration" Value="200000" />
+  MATCH  |     <Parameter ID="Cyclic5Tolerance" Value="200000" />
+  AFTER  |     <Parameter ID="Cyclic6Duration" Value="500000" />
+  AFTER  |     <Parameter ID="Cyclic6Tolerance" Value="500000" />
+  AFTER  |     <Parameter ID="Cyclic7Duration" Value="1000000" />
+  AFTER  |     <Parameter ID="Cyclic7Tolerance" Value="1000000" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:52 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic5Tolerance" Value="200000" />
+  BEFORE |     <Parameter ID="Cyclic6Duration" Value="500000" />
+  MATCH  |     <Parameter ID="Cyclic6Tolerance" Value="500000" />
+  AFTER  |     <Parameter ID="Cyclic7Duration" Value="1000000" />
+  AFTER  |     <Parameter ID="Cyclic7Tolerance" Value="1000000" />
+  AFTER  |     <Parameter ID="Cyclic8Duration" Value="10000" />
+  AFTER  |     <Parameter ID="Cyclic8Tolerance" Value="30000000" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:54 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic6Tolerance" Value="500000" />
+  BEFORE |     <Parameter ID="Cyclic7Duration" Value="1000000" />
+  MATCH  |     <Parameter ID="Cyclic7Tolerance" Value="1000000" />
+  AFTER  |     <Parameter ID="Cyclic8Duration" Value="10000" />
+  AFTER  |     <Parameter ID="Cyclic8Tolerance" Value="30000000" />
+  AFTER  |     <Group ID="FileDevice1" />
+  AFTER  |     <Parameter ID="FileDeviceName1" Value="USER" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Physical\Config1\Hardware.hw:56 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="Cyclic7Tolerance" Value="1000000" />
+  BEFORE |     <Parameter ID="Cyclic8Duration" Value="10000" />
+  MATCH  |     <Parameter ID="Cyclic8Tolerance" Value="30000000" />
+  AFTER  |     <Group ID="FileDevice1" />
+  AFTER  |     <Parameter ID="FileDeviceName1" Value="USER" />
+  AFTER  |     <Parameter ID="FileDevicePath1" Value="USER_PATH" />
+  AFTER  |     <Parameter ID="ActivateOpcUa" Value="1" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:11 | Pattern=CycleTime
+  BEFORE |     <Parameter ID="SimulationModeOpcUa" Value="on" />
+  BEFORE |     <Parameter ID="ActivateDtmServer" Value="0" Type="UDINT" />
+  MATCH  |     <Parameter ID="X2XCycleTimeMin" Value="800" Type="UDINT" />
+  AFTER  |     <Parameter ID="X2XCycleTimeMax" Value="32000" Type="UDINT" />
+  AFTER  |   </Module>
+  AFTER  |   <Module ID="CPU" Hardware="X20CP0483" />
+  AFTER  |   <Module ID="IF2" Hardware="X20BB52">
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:12 | Pattern=CycleTime
+  BEFORE |     <Parameter ID="ActivateDtmServer" Value="0" Type="UDINT" />
+  BEFORE |     <Parameter ID="X2XCycleTimeMin" Value="800" Type="UDINT" />
+  MATCH  |     <Parameter ID="X2XCycleTimeMax" Value="32000" Type="UDINT" />
+  AFTER  |   </Module>
+  AFTER  |   <Module ID="CPU" Hardware="X20CP0483" />
+  AFTER  |   <Module ID="IF2" Hardware="X20BB52">
+  AFTER  |     <Parameter ID="ActivateOSAFT" Value="0" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:29 | Pattern=CycleTime
+  BEFORE |   </Module>
+  BEFORE |   <Module ID="IF3.PLK" Hardware="EPL-V2">
+  MATCH  |     <Parameter ID="CycleTime" Value="2000" Type="UDINT" />
+  AFTER  |     <Parameter ID="Synchron" Value="on" />
+  AFTER  |     <Parameter ID="MuxPrescaler" Value="8" Type="UDINT" />
+  AFTER  |     <Parameter ID="Mode" Value="MN" />
+  AFTER  |     <Parameter ID="NodeID" Value="240" Type="DINT" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:39 | Pattern=Tolerance
+  BEFORE |     <Parameter ID="BasicEthernetInServiceMode" Value="off" />
+  BEFORE |     <Parameter ID="EplNatSubnet" Value="192.168.101.0" />
+  MATCH  |     <Parameter ID="EPL_LossFrameTolerance" Value="-1" Type="DINT" />
+  AFTER  |     <Parameter ID="ApplSwDate" Value="0" Type="UDINT" />
+  AFTER  |     <Parameter ID="ApplSwTime" Value="0" Type="UDINT" />
+  AFTER  |     <Parameter ID="BusCycleTrigger" Value="auto" />
+  AFTER  |     <Parameter ID="OutputCycleTrigger" Value="auto" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:46 | Pattern=CycleTime
+  BEFORE |   </Module>
+  BEFORE |   <Module ID="IF6.X2X" Hardware="X2X">
+  MATCH  |     <Parameter ID="CycleTimeMin" Value="800" Type="UDINT" />
+  AFTER  |     <Parameter ID="CycleTimeMax" Value="32000" Type="UDINT" />
+  AFTER  |     <Parameter ID="CycleTime" Value="4000" Type="UDINT" />
+  AFTER  |     <Parameter ID="Synchron" Value="on" />
+  AFTER  |     <Parameter ID="BusLength" Value="1000" Type="UDINT" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:47 | Pattern=CycleTime
+  BEFORE |   <Module ID="IF6.X2X" Hardware="X2X">
+  BEFORE |     <Parameter ID="CycleTimeMin" Value="800" Type="UDINT" />
+  MATCH  |     <Parameter ID="CycleTimeMax" Value="32000" Type="UDINT" />
+  AFTER  |     <Parameter ID="CycleTime" Value="4000" Type="UDINT" />
+  AFTER  |     <Parameter ID="Synchron" Value="on" />
+  AFTER  |     <Parameter ID="BusLength" Value="1000" Type="UDINT" />
+  AFTER  |     <Parameter ID="Stations" Value="64" Type="UDINT" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\arconfig.br.tmp.xml:48 | Pattern=CycleTime
+  BEFORE |     <Parameter ID="CycleTimeMin" Value="800" Type="UDINT" />
+  BEFORE |     <Parameter ID="CycleTimeMax" Value="32000" Type="UDINT" />
+  MATCH  |     <Parameter ID="CycleTime" Value="4000" Type="UDINT" />
+  AFTER  |     <Parameter ID="Synchron" Value="on" />
+  AFTER  |     <Parameter ID="BusLength" Value="1000" Type="UDINT" />
+  AFTER  |     <Parameter ID="Stations" Value="64" Type="UDINT" />
+  AFTER  |     <Parameter ID="AsyncPayload" Value="80" Type="UDINT" />
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\ChannelConfiguration.xml:24 | Pattern=CycleTime
+  BEFORE |     <Channel ID="IF3.CycleCount" Description="Overall number of bus cycles" FromVersion="I2.85" Ext="/INFO" Direction="IN" Type="UDINT" Sig_St_Udint="1" />
+  BEFORE |     <Channel ID="IF3.FailedCycleCount" Description="Number of failed bus cycles" FromVersion="I2.85" Ext="/INFO" Direction="IN" Type="UDINT" Sig_St_Udint="1" />
+  MATCH  |     <Channel ID="IF3.CycleTimeViolationCount" Description="Number of cycle time violations" FromVersion="I2.85" Ext="/INFO" Direction="IN" Type="UDINT" Sig_St_Udint="1" />
+  AFTER  |     <Channel ID="IF3.CycleIdleTime" Description="Unoccupied time during one POWERLINK cycle [µs]" FromVersion="B2.87" Ext="/INFO" Direction="IN" Type="UDINT" Sig_St_Udint="1" />
+  AFTER  |     <Channel ID="IF3.CycleCongestionCount" Description="allways 0, available for legacy projects" FromVersion="B2.87" Ext="/INFO" Direction="IN" Type="UDINT" Sig_St_Udint="1" />
+  AFTER  |   </Module>
+  AFTER  |   <Module ID="$root" Hardware="X20BB52" HardwareModuleName="X20BB52" ModuleID="1">
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\HardwareConfiguration.xml:41 | Pattern=CycleTime
+  BEFORE |         <Channel ID="IF3.CycleCount" Description-de="Anzahl aller Buszyklen" Description-en="Overall number of bus cycles" Sig_St_Udint="1" />
+  BEFORE |         <Channel ID="IF3.FailedCycleCount" Description-de="Anzahl der fehlerhaften Buszyklen" Description-en="Number of failed bus cycles" Sig_St_Udint="1" />
+  MATCH  |         <Channel ID="IF3.CycleTimeViolationCount" Description-de="Anzahl der Zykluszeitverletzungen" Description-en="Number of cycle time violations" Sig_St_Udint="1" />
+  AFTER  |         <Channel ID="IF3.CycleIdleTime" Description-de="Ungenützte Zeit während eines POWERLINK Zyklus [µs]" Description-en="Unoccupied time during one POWERLINK cycle [µs]" Sig_St_Udint="1" />
+  AFTER  |         <Channel ID="IF3.CycleCongestionCount" Description-de="Immer 0, verfuegbar wegen Abwaertskompatibilitaet" Description-en="allways 0, available for legacy projects" Sig_St_Udint="1" />
+  AFTER  |       </Channels>
+  AFTER  |     </Module>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\iomap.xml:62 | Pattern=CycleTime
+  BEFORE | <Prod Device="$root" DPName="IF3.FailedCycleCount" Kind="io"/>
+  BEFORE | </LN>
+  MATCH  | <LN ID="%ID.IF3.CycleTimeViolationCount" Type="UDINT">
+  AFTER  | <Prod Device="$root" DPName="IF3.CycleTimeViolationCount" Kind="io"/>
+  AFTER  | </LN>
+  AFTER  | <LN ID="%ID.IF3.CycleIdleTime" Type="UDINT">
+  AFTER  | <Prod Device="$root" DPName="IF3.CycleIdleTime" Kind="io"/>
+
+C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715\PLANTA_LCPIC\Temp\Objects\Config1\X20CP0483\iomap.xml:63 | Pattern=CycleTime
+  BEFORE | </LN>
+  BEFORE | <LN ID="%ID.IF3.CycleTimeViolationCount" Type="UDINT">
+  MATCH  | <Prod Device="$root" DPName="IF3.CycleTimeViolationCount" Kind="io"/>
+  AFTER  | </LN>
+  AFTER  | <LN ID="%ID.IF3.CycleIdleTime" Type="UDINT">
+  AFTER  | <Prod Device="$root" DPName="IF3.CycleIdleTime" Kind="io"/>
+  AFTER  | </LN>

@@ -1,0 +1,48 @@
+{
+  "classification": "BOUNDED_ABORT_OR_PARTIAL_LOCAL_IDENTIFICATION",
+  "run_started": "2026-08-22T13:19:20",
+  "initial_physical_cm": 0.0,
+  "dac_points": [
+    11600,
+    11650,
+    11700,
+    11750,
+    11800,
+    11850,
+    11900
+  ],
+  "plateau_hold_s": 45.0,
+  "sample_s": 0.1,
+  "safety": {
+    "instant_raw_abort": 1100.0,
+    "median_raw_abort": 1100.0,
+    "positive_rate_abort_raw_per_s": 180.0,
+    "maximum_dac": 12000.0,
+    "physical_abort_cm": 5.0
+  },
+  "baseline": {
+    "raw_median": 278.0,
+    "median9_reference": 278.0,
+    "raw_min": 257.0,
+    "raw_max": 298.0
+  },
+  "points": [
+    {
+      "index": 1,
+      "target_dac": 11600,
+      "completed_full_hold": true,
+      "stop_reason": "HOLD_COMPLETE",
+      "active_duration_s": 45.0,
+      "raw_min": 95.0,
+      "raw_max": 543.0,
+      "median9_min": 166.0,
+      "median9_max": 492.0,
+      "applied_dac_median": 11600.0,
+      "maximum_physical_cm": 0.5,
+      "recovery_completed": false,
+      "recovery_duration_s": 180.10900000017136
+    }
+  ],
+  "stop_reason": "RECOVERY_TIMEOUT_AFTER_11600",
+  "final_zero_verified": true
+}

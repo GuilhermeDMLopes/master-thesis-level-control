@@ -1,0 +1,19 @@
+FORTE upstream working tree provenance
+======================================
+
+Source directory:
+C:\Users\guilh\4diac\4diac-forte
+
+Git commit:
+7c8b6296227fa292c13d71d2958a404c6db03e53
+
+Branch:
+release
+
+Describe:
+2.0.1-7-g7c8b62962-dirty
+
+Important:
+The working tree used for the thesis builds is intentionally dirty.
+The tracked diff and non-build untracked source overlay are preserved alongside
+this file.

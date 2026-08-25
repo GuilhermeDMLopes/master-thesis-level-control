@@ -1,0 +1,16 @@
+WATCHDOG PRE-REBUILD VALIDATION V2
+==================================
+
+Generated at: 2026-04-03T03:03:19.0707750-03:00
+Working project: C:\projects\mestrado_guilherme_watchdog_v2_20260403-021715
+Static project validation: PASSED
+Ready for manual Rebuild Configuration: YES
+Ready for PLC transfer: NO
+
+Blocking failures: 0
+
+Manual review still required:
+- confirm OPC UA read/write permissions visually;
+- record task name, period, tolerance, and priority;
+- run only Project -> Rebuild Configuration;
+- do not Transfer, Install, Build and Transfer, or go Online.
