@@ -1,0 +1,2 @@
+timestamp;height_cm_observed_during_plateau;raw_min;raw_max;raw_median;raw_mean;raw_peak_to_peak;target_dac;estimated_hz;hold_s;capture_tail_s;hold_completed;soft_stop_triggered
+2026-08-25T19:24:49.634041;3.0;1531;1918;1776;1747.666667;387;16000;22.8;5.0;2.0;True;False

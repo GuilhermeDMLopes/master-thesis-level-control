@@ -78,9 +78,9 @@ def validate(a):
         )
     if a.max_raw <= 0:
         raise ValueError("max raw must be positive")
-    if not 0 < a.hold_s <= 20.0:
+    if not 0 < a.hold_s <= 90.0:
         raise ValueError(
-            "hold time must be greater than 0 and at most 20 s"
+            "hold time must be greater than 0 and at most 90 s"
         )
     if not 0 < a.capture_tail_s <= a.hold_s:
         raise ValueError(
