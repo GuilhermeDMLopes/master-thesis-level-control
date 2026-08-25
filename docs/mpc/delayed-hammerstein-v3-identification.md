@@ -19,7 +19,7 @@ The empty-tank raw offset is treated as the non-negative physical level-state fl
 - empty baseline CSV: `data/sample/mpc-v3-real-evidence/empty-baseline-20260818-192945.csv`
 - empty SHA256: `030443E50CC55755FE57A1E3BCDBCA4D6C10C4085D207D736EF2253941E7096D`
 - static model: `models/mpc/deadzone-hammerstein-v1.json`
-- static model SHA256: `398A165C7164EF8D01BB138386663D8476294EC7E760ECD0B11B9FFB9138EFEC`
+- static model SHA256: `29D0B0AE747D7C2E85963BE9F8C8B619140C8EF73012E69F5A9EC69C2C82A681`
 
 ## Empty baseline observation
 
