@@ -52,7 +52,7 @@
     },
     "static_model_source": {
       "path": "models/mpc/deadzone-hammerstein-v1.json",
-      "sha256": "398A165C7164EF8D01BB138386663D8476294EC7E760ECD0B11B9FFB9138EFEC"
+      "sha256": "29D0B0AE747D7C2E85963BE9F8C8B619140C8EF73012E69F5A9EC69C2C82A681"
     }
   },
   "model_type": "delayed_deadzone_hammerstein_first_order",
