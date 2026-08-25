@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import asyncio
@@ -148,11 +148,22 @@ async def run_real(evidence_dir: Path) -> int:
     # OPC UA or require runtime communication dependencies.
     from asyncua import Client, ua
 
-    evidence_dir.mkdir(parents=True, exist_ok=False)
+    # The PowerShell wrapper may pre-create this directory so it can redirect
+    # gateway stdout/stderr into the same run folder. Accept that directory,
+    # but never overwrite evidence owned by this runner.
+    evidence_dir.mkdir(parents=True, exist_ok=True)
 
     csv_path = evidence_dir / "local-deadzone-resume-monitor.csv"
     summary_path = evidence_dir / "run-summary.json"
     physical_path = evidence_dir / "physical-observations.txt"
+
+    runner_owned_paths = (csv_path, summary_path, physical_path)
+    existing_runner_evidence = [p for p in runner_owned_paths if p.exists()]
+    if existing_runner_evidence:
+        joined = ", ".join(str(p) for p in existing_runner_evidence)
+        raise FileExistsError(
+            "Refusing to overwrite existing runner evidence: " + joined
+        )
 
     fieldnames = [
         "elapsed_s",

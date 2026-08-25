@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import ast
 import subprocess
@@ -100,3 +100,10 @@ def test_wrapper_runs_python_file_not_python_stdin():
     text = wrapper_text()
     assert "& $Python $Runner --run --evidence-dir $EvidenceDir" in text
     assert "| & $Python -" not in text
+
+
+def test_runner_accepts_wrapper_precreated_directory_without_overwrite_semantics():
+    text = runner_text()
+    assert "evidence_dir.mkdir(parents=True, exist_ok=True)" in text
+    assert "runner_owned_paths = (csv_path, summary_path, physical_path)" in text
+    assert "Refusing to overwrite existing runner evidence" in text
