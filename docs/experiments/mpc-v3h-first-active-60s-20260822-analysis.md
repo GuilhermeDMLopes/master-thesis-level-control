@@ -1,4 +1,4 @@
-# MPC V3H first bounded active 60 s run ??? 2026-08-22
+# MPC V3H first bounded active 60 s run — 2026-08-22
 
 ## Classification
 
@@ -15,7 +15,7 @@
 - MAE: 133.017 raw;
 - RMSE: 155.090 raw;
 - IAE: 7966.390 raw*s;
-- first target band (??5%): 2.031 s;
+- first target band (±5%): 2.031 s;
 - final 10 s mean Median9: 608.988 raw;
 - final 10 s MAE: 158.988 raw;
 - final 20 s Median9 slope: -1.432 raw/s;

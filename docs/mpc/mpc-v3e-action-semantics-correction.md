@@ -38,10 +38,10 @@ Python reference checks:
 The 4diac algorithm explicitly:
 
 1. computes `delta_u := candidate_target - predicted_u`;
-2. clamps `delta_u` to ??750;
+2. clamps `delta_u` to ±750;
 3. applies `predicted_u := predicted_u + delta_u`;
 4. after optimization, computes `delta_u := best_target - APPLIED_DAC`;
-5. clamps again to ??750;
+5. clamps again to ±750;
 6. applies `command_candidate := APPLIED_DAC + delta_u`.
 
 Therefore the 11500-DAC numerical gap between candidate *targets* does not

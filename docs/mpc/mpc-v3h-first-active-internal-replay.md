@@ -69,7 +69,7 @@ high-DAC lock-in problem.
 - increase raw ceiling: **NO**;
 - repeat the same 60 s run: **NO**;
 - claim exact real dead-zone = 11750 DAC: **NO**;
-- next: review existing identification evidence around 11500???12000 DAC and
+- next: review existing identification evidence around 11500–12000 DAC and
   determine whether it is sufficient to estimate the real local dead-zone/gain;
 - if existing evidence is insufficient, prepare a separate small bounded
   identification experiment rather than another closed-loop performance run.

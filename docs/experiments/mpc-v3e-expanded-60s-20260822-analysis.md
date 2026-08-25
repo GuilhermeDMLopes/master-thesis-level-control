@@ -1,4 +1,4 @@
-# MPC V3E expanded-envelope 60 s experiment ??? 2026-08-22
+# MPC V3E expanded-envelope 60 s experiment — 2026-08-22
 
 ## Experimental classification
 
@@ -32,9 +32,9 @@ short transient-only test.
 - instantaneous peak overshoot: 470.0 raw (104.4%);
 - MAE: 207.820 raw;
 - RMSE: 230.068 raw;
-- IAE: 12450.265 raw??s;
-- first Median9 within ??5% band: 22.672 s;
-- first Median9 within ??10% band: 22.672 s;
+- IAE: 12450.265 raw·s;
+- first Median9 within ±5% band: 22.672 s;
+- first Median9 within ±10% band: 22.672 s;
 - first Median9 >= SP: 22.672 s;
 - first Median9 >= 550 raw: 29.516 s;
 - first Median9 >= 800 raw: 57.172 s;

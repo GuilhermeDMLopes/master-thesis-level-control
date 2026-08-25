@@ -18,7 +18,7 @@ A simple local linear trend over these three completed same-session points gives
 
 - slope: `2.0290 raw/DAC` in this empirical response metric;
 - zero crossing: `11614.3 DAC`;
-- R??: `0.9980`.
+- R²: `0.9980`.
 
 This zero crossing is **not** accepted as the physical dead-zone estimate because the earlier independent 11600-DAC long-hold experiment already produced a material response (`+204.0 raw` by its own recorded metric). The two sessions also use different response summaries and must not be pooled as if they were identical observations.
 

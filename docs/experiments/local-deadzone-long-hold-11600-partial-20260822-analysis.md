@@ -72,9 +72,9 @@ Do not continue with the remaining DAC points using the current executor unchang
 
 Two aspects need revision before the next real run:
 
-1. **Target-settling gate** ??? begin the 45 s identification hold only after
+1. **Target-settling gate** — begin the 45 s identification hold only after
    AppliedDAC is at the requested target and stable;
-2. **Recovery-state gate** ??? require verified zero output plus a stable zero-output
+2. **Recovery-state gate** — require verified zero output plus a stable zero-output
    state, while recording a new local baseline for the next point, instead of
    requiring every point to return to the first numerical baseline.
 

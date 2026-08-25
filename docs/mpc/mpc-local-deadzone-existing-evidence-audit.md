@@ -1,4 +1,4 @@
-# Existing evidence audit for the local 11500???12000 DAC input map
+# Existing evidence audit for the local 11500–12000 DAC input map
 
 ## Classification
 
@@ -24,37 +24,37 @@ feedback policy are changing simultaneously.
 
 ## Existing local evidence
 
-- `data/raw/local-identification-20260808-120916/local-identification.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 12000.0]; local constant segments: 3.
-- `data/raw/local-identification-v3-20260808-121546/local-identification.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11600.0, 11700.0, 11850.0, 12000.0]; local constant segments: 3.
-- `data/raw/mpc-v3-clean-active-20260822-085254/clean-active-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0]; local constant segments: 1.
-- `data/raw/mpc-v3-extended-active-20260822-091514/extended-active-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11850.0]; local constant segments: 1.
-- `data/raw/mpc-v3-extended-active-20260822-091942/extended-active-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0]; local constant segments: 1.
-- `data/raw/mpc-v3e-expanded-active-20260822-103807/expanded-active-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11850.0]; local constant segments: 1.
-- `data/raw/mpc-v3h-first-active-20260822-124042/v3h-first-active-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11750.0, 11800.0, 11850.0, 11900.0, 11950.0, 12000.0]; local constant segments: 11.
-- `data/raw/mpc-v3h-first-active-20260822-124503/v3h-first-active-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11750.0, 11800.0, 11850.0]; local constant segments: 4.
-- `data/raw/open-loop-identification-20260729-142246/open-loop-identification.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 12000.0]; local constant segments: 1.
-- `data/raw/pi-tuned-test-20260731-151307/pi-tuned-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 12000.0]; local constant segments: 2.
-- `data/raw/pi-tuned-test-20260731-152327/pi-tuned-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11800.0, 11850.0, 11900.0, 11950.0, 12000.0]; local constant segments: 54.
-- `data/raw/pi-tuned-test-20260731-154406/pi-tuned-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11600.0, 11650.0, 11700.0, 11850.0, 12000.0]; local constant segments: 20.
-- `data/raw/pi-tuned-test-20260731-155856/pi-tuned-monitor.csv` ??? CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11850.0, 12000.0]; local constant segments: 25.
-- `data/raw/positive-dac-manual-stop-20260729-134727/positive-dac-monitor.csv` ??? DYNAMIC_CONTROL_OR_UNKNOWN; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
-- `data/raw/steady-calibration-20260808-103415/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
-- `data/raw/steady-calibration-20260808-103827/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
-- `data/raw/steady-calibration-20260808-104108/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
-- `data/raw/steady-calibration-20260808-113116/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11700.0, 11850.0, 12000.0]; local constant segments: 2.
-- `data/raw/steady-calibration-20260808-113159/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
-- `data/raw/steady-calibration-20260808-113516/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
-- `data/raw/steady-calibration-20260808-113623/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
-- `data/raw/steady-calibration-20260808-113720/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
-- `data/raw/steady-calibration-dac13000-20260808-114728/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 0.
-- `data/raw/steady-calibration-dac14000-20260808-114400/samples.csv` ??? IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
+- `data/raw/local-identification-20260808-120916/local-identification.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 12000.0]; local constant segments: 3.
+- `data/raw/local-identification-v3-20260808-121546/local-identification.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11600.0, 11700.0, 11850.0, 12000.0]; local constant segments: 3.
+- `data/raw/mpc-v3-clean-active-20260822-085254/clean-active-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0]; local constant segments: 1.
+- `data/raw/mpc-v3-extended-active-20260822-091514/extended-active-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11850.0]; local constant segments: 1.
+- `data/raw/mpc-v3-extended-active-20260822-091942/extended-active-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0]; local constant segments: 1.
+- `data/raw/mpc-v3e-expanded-active-20260822-103807/expanded-active-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11850.0]; local constant segments: 1.
+- `data/raw/mpc-v3h-first-active-20260822-124042/v3h-first-active-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11750.0, 11800.0, 11850.0, 11900.0, 11950.0, 12000.0]; local constant segments: 11.
+- `data/raw/mpc-v3h-first-active-20260822-124503/v3h-first-active-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11750.0, 11800.0, 11850.0]; local constant segments: 4.
+- `data/raw/open-loop-identification-20260729-142246/open-loop-identification.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 12000.0]; local constant segments: 1.
+- `data/raw/pi-tuned-test-20260731-151307/pi-tuned-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 12000.0]; local constant segments: 2.
+- `data/raw/pi-tuned-test-20260731-152327/pi-tuned-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11800.0, 11850.0, 11900.0, 11950.0, 12000.0]; local constant segments: 54.
+- `data/raw/pi-tuned-test-20260731-154406/pi-tuned-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11550.0, 11600.0, 11650.0, 11700.0, 11850.0, 12000.0]; local constant segments: 20.
+- `data/raw/pi-tuned-test-20260731-155856/pi-tuned-monitor.csv` — CLOSED_LOOP_NAMED; local DAC levels (50-count bins): [11500.0, 11550.0, 11600.0, 11650.0, 11700.0, 11750.0, 11850.0, 12000.0]; local constant segments: 25.
+- `data/raw/positive-dac-manual-stop-20260729-134727/positive-dac-monitor.csv` — DYNAMIC_CONTROL_OR_UNKNOWN; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
+- `data/raw/steady-calibration-20260808-103415/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
+- `data/raw/steady-calibration-20260808-103827/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
+- `data/raw/steady-calibration-20260808-104108/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
+- `data/raw/steady-calibration-20260808-113116/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11700.0, 11850.0, 12000.0]; local constant segments: 2.
+- `data/raw/steady-calibration-20260808-113159/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
+- `data/raw/steady-calibration-20260808-113516/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
+- `data/raw/steady-calibration-20260808-113623/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
+- `data/raw/steady-calibration-20260808-113720/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 2.
+- `data/raw/steady-calibration-dac13000-20260808-114728/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 0.
+- `data/raw/steady-calibration-dac14000-20260808-114400/samples.csv` — IDENTIFICATION_OR_CALIBRATION_NAMED; local DAC levels (50-count bins): [11550.0, 11700.0, 11850.0, 12000.0]; local constant segments: 1.
 
 ## Identification-quality coverage
 
 - minimum qualifying identification-like DAC levels: [11600.0, 12000.0];
 - preferred-duration identification-like DAC levels: [11600.0];
 - evidence at/below 11600 DAC: YES;
-- evidence around 11650???11800 DAC: NO;
+- evidence around 11650–11800 DAC: NO;
 - evidence at/above 11900 DAC: YES;
 - minimum three-level low/boundary/high structure: NO;
 - preferred-duration depth: NO.
@@ -62,7 +62,7 @@ feedback policy are changing simultaneously.
 ## Decision
 
 The existing repository does **not** provide a defensible static local dead-zone
-identification around 11500???12000 DAC under the stated delay/dynamics criteria.
+identification around 11500–12000 DAC under the stated delay/dynamics criteria.
 
 The V3H closed-loop 11750-DAC plateau remains useful diagnostic evidence, but it
 does not substitute for multi-level local excitation.

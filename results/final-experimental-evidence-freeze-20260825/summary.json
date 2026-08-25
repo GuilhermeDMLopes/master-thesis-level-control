@@ -1,0 +1,40 @@
+﻿{
+    "schema_version":  1,
+    "stage":  "ETAPA_7_7",
+    "date":  "2026-08-25",
+    "practical_campaign_status":  "FROZEN",
+    "additional_real_campaign_authorized":  false,
+    "controller_modified":  false,
+    "fourdiac_modified":  false,
+    "real_actuation":  false,
+    "markdown_encoding_repairs":  [
+                                      "docs/experiments/local-deadzone-long-hold-11600-partial-20260822-analysis.md",
+                                      "docs/experiments/mpc-v3-clean-bounded-20260822-analysis.md",
+                                      "docs/experiments/mpc-v3e-expanded-60s-20260822-analysis.md",
+                                      "docs/experiments/mpc-v3-extended-60s-internal-trip-analysis-r1.md",
+                                      "docs/experiments/mpc-v3h-first-active-60s-20260822-analysis.md",
+                                      "docs/experiments/pi-vs-mpc-v3-real-plant-comparison.md",
+                                      "docs/mpc/mpc-local-deadzone-existing-evidence-audit.md",
+                                      "docs/mpc/mpc-m2-final-input-map-candidate-20260825.md",
+                                      "docs/mpc/mpc-v3e-action-semantics-correction.md",
+                                      "docs/mpc/mpc-v3h-first-active-internal-replay.md"
+                                  ],
+    "full_suite_feature":  "PASSED",
+    "expected_test_count":  472,
+    "milestones":  {
+                       "M1":  "COMPLETED",
+                       "M2":  "CLOSED_WITH_DOCUMENTED_LIMITATION",
+                       "M3":  "CLOSED_WITH_DYNAMIC_CAPTURE_LIMITATION",
+                       "M4":  "COMPLETED_AS_DESCRIPTIVE_COMPARISON"
+                   },
+    "commits":  {
+                    "m2_closure":  "6b7f616",
+                    "m3_closure":  "fb48245",
+                    "m4_comparison":  "6b98851"
+                },
+    "sha256":  {
+                   "m2_decision_json":  "A84B243DB6C399E62F1066306617284EBBF74D9E6A56C462E31983EADC397C82",
+                   "m3_summary_json":  "4B0534E0B2888067633ECCA3A2D35D5C94226E6FE3134AC9264E9250B87F88F9",
+                   "m4_comparison_json":  "A3AD72446F0CB296E97AAA54D2C86F86EDD67A1A8EC3DC694E2F7A1D527E78DB"
+               }
+}

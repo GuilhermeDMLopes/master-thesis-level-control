@@ -1,4 +1,4 @@
-# MPC V3 clean bounded experiment ??? 2026-08-22
+# MPC V3 clean bounded experiment — 2026-08-22
 
 ## Classification
 
