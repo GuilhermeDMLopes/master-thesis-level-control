@@ -10,25 +10,31 @@ This repository contains the software, engineering artifacts, automated tests, e
 - Eclipse 4diac IDE;
 - Eclipse 4diac FORTE;
 - a validated real-plant PI baseline;
-- a Model Predictive Controller under development.
+- a Model Predictive Controller implemented in 4diac, with staged real-plant evidence and final online thesis validation still pending.
 
 The research objective is to develop, validate, and compare PI and MPC control strategies on a real level-control process while preserving reproducibility, operational safety, and the complete engineering history of the project.
 
 ## Current Project Status
 
-The real-plant communication path and the fail-closed raw-count PI baseline have been validated.
+The PLC-gateway-FORTE communication path and the fail-closed raw-count PI baseline have been validated on the real plant. Plant characterization, calibration evidence, delayed model identification, MPC preparation, and staged real-plant MPC actuation evidence are also preserved in `main`.
 
 Validated checkpoints:
 
-| Checkpoint | Git tag | Result |
+| Checkpoint | Git reference | Result |
 |---|---|---|
 | Initial repository and gateway baseline | `baseline-gateway-v1` | Repository, Python environment, gateway source, and complete 4diac project validated |
-| Real FORTE/gateway communication with zero output | `real-forte-zero-output-v1` | PLC–gateway–FORTE communication validated without positive actuator output |
+| Real FORTE/gateway communication with zero output | `real-forte-zero-output-v1` | PLC-gateway-FORTE communication validated without positive actuator output |
 | Real raw-count PI baseline | `real-raw-pi-v1` | Safe real-plant PI test completed, evidence preserved, and automated acceptance criteria passed |
+| MPC preparation and real evidence | `7d9a3b5` | M1-M4 evidence integrated into `main`, including the final V3H application and preserved real-plant datasets |
+| Canonical evidence hash correction | `ecada4e` | Model evidence manifest normalized to the canonical LF representation |
 
-The validated PI checkpoint is integrated into `main`. The complete automated test suite currently contains **149 passing tests**.
+The complete automated test suite currently contains **472 passing tests**.
 
-The MPC has not yet been validated on the real plant. Model identification and offline MPC preparation are the current development focus.
+The final 4diac application is `MPC_REAL_RAW_SAFE_V3H`, mapped to `FORTE_PC.ResRealRawMPCV3H`. It includes real signal acquisition, median filtering, the delayed MPC controller, actuator limiting, gateway communication, and fail-closed output handling.
+
+The MPC has produced staged real-plant actuation evidence and preserved runtime datasets. The remaining milestone is **M5 - Final 4diac MPC Integration and Thesis Evidence**: offline structural verification followed, in the laboratory, by deployment, online monitoring, synchronized screenshots, final safe-stop evidence, and consolidation of the PI-MPC comparison.
+
+The repository therefore does not yet claim that the final M5 online validation package is complete.
 
 ## Current Architecture
 
@@ -43,8 +49,12 @@ OPC UA Server for FORTE
     |
     v
 4diac FORTE
-OPC UA Client
-PI controller and future MPC
+PI_REAL_RAW_SAFE or MPC_REAL_RAW_SAFE_V3H
+    |
+    +-- MPC_MEDIAN_FILTER_9
+    +-- MPC_MOVE_BLOCKED_NMPC_V3H
+    +-- MpcSafeDACLimiter
+    +-- DAC and Enable writers
 ```
 
 Current communication path:
@@ -52,6 +62,8 @@ Current communication path:
 ```text
 B&R PLC <-> Python Gateway <-> 4diac FORTE
 ```
+
+The PI application remains the validated experimental baseline and fallback. The V3H application is the final MPC implementation selected for M5 structural and online thesis evidence.
 
 ## Why the Python Gateway Is Required
 
@@ -113,7 +125,7 @@ Its current purpose is to provide:
 - a safe and reproducible real PI baseline;
 - a fallback controller during MPC development;
 - reference data for model identification and controller comparison;
-- a stable interface for the existing PLC–gateway–FORTE architecture.
+- a stable interface for the existing PLC-gateway-FORTE architecture.
 
 The baseline uses raw level counts in the validated control path. Historical applications using other scaling and control structures remain preserved in the 4diac project.
 
@@ -151,6 +163,18 @@ Repository location:
 4diac/application/OPAS_Tank_System/
 ```
 
+The final MPC application selected for M5 is:
+
+```text
+Application: MPC_REAL_RAW_SAFE_V3H
+Resource: FORTE_PC.ResRealRawMPCV3H
+Controller: MPC_MOVE_BLOCKED_NMPC_V3H
+Filter: MPC_MEDIAN_FILTER_9
+Safety limiter: MpcSafeDACLimiter
+```
+
+The application retains fail-closed defaults, including `ENABLE_REQUEST=FALSE`, and uses real level, watchdog, and applied-DAC feedback from the gateway path.
+
 The complete project must remain versioned, including:
 
 - `.project`;
@@ -162,9 +186,9 @@ The complete project must remain versioned, including:
 - MPC development artifacts;
 - intermediate and experimental applications.
 
-Changes to the 4diac project must be additive and documented. Existing historical applications and function blocks must not be deleted, renamed, or overwritten merely to simplify the current implementation.
+Changes to the 4diac project must be additive and documented. Existing historical applications and function blocks must not be deleted, renamed, or overwritten merely to simplify the final implementation.
 
-The presence of `MPC_LEVEL.fbt` or other MPC artifacts does not imply that an MPC has been validated.
+Historical MPC artifacts remain preserved, but only `MPC_REAL_RAW_SAFE_V3H` is the selected final application for the remaining structural and online validation work.
 
 ## Repository Structure
 
@@ -292,7 +316,7 @@ python -m pytest -q
 Current validated result:
 
 ```text
-149 passed
+472 passed
 ```
 
 The offline tests do not require access to the B&R PLC, FORTE, or the laboratory network.
@@ -349,23 +373,23 @@ Only selected evidence files should be copied to `data/sample/` and committed. E
 
 ## Development Roadmap
 
-### Completed — Repository and Historical Preservation
+### Completed - Repository and Historical Preservation
 
 - organized the repository;
 - preserved the complete `OPAS_Tank_System` project;
 - created automated preservation checks;
 - validated a clean clone and rebuild workflow;
-- established Git tags for reproducible checkpoints.
+- established Git references for reproducible checkpoints.
 
-### Completed — Communication and Fail-Closed Integration
+### Completed - Communication and Fail-Closed Integration
 
-- validated PLC–gateway communication;
-- validated gateway–FORTE communication;
+- validated PLC-gateway communication;
+- validated gateway-FORTE communication;
 - integrated heartbeat and watchdog information;
 - confirmed zero-output communication before positive actuation;
 - implemented and tested fail-closed shutdown behavior.
 
-### Completed — Real PI Baseline
+### Completed - Real PI Baseline
 
 - added the `PI_REAL_RAW_SAFE` application without replacing historical applications;
 - added controlled PI commissioning scripts;
@@ -374,36 +398,43 @@ Only selected evidence files should be copied to `data/sample/` and committed. E
 - documented the acceptance result;
 - integrated the checkpoint into `main`.
 
-### In Development — Plant Identification
+### Completed - Plant Characterization and Calibration Evidence
 
-- review and harden the open-loop identification workflow;
-- define safe excitation levels and operating regions;
-- collect identification datasets;
-- check sensor quality, delay, saturation, and repeatability;
-- estimate low-order plant models;
-- validate models on independent data.
+- completed the minimum local actuator characterization;
+- selected one conservative input-map/model interpretation;
+- preserved the physical zero and level-calibration evidence;
+- documented the central bottom drain and dynamic calibration limitations;
+- froze the evidence required for the final controller stage.
 
-### In Development — Offline MPC
+### Completed - Offline MPC Preparation
 
-- define the controller input/output contract;
-- select prediction and control horizons;
-- define level and DAC constraints;
-- implement the optimization problem;
-- validate tracking, saturation, disturbances, and communication failures;
-- verify execution time against the sampling period.
+- identified the delayed Hammerstein candidate;
+- preserved the canonical static nonlinearity;
+- defined the controller input/output contract;
+- implemented delay-aware prediction with applied-DAC history;
+- validated controller contracts and safety constraints offline;
+- preserved historical MPC variants without replacing them.
 
-### Planned — Real MPC Integration
+### Completed - Staged Real MPC Evidence
 
-- add the MPC path in parallel with the PI baseline;
-- preserve PI as a safe fallback;
-- integrate mode selection and bumpless transfer;
-- validate safe initialization and shutdown;
-- perform staged real-plant commissioning;
-- preserve a tagged MPC baseline.
+- implemented `MPC_REAL_RAW_SAFE_V3H`;
+- mapped the application to `FORTE_PC.ResRealRawMPCV3H`;
+- preserved staged real-plant runtime and first-actuation evidence;
+- retained the validated PI path as the experimental baseline;
+- integrated M1-M4 evidence into `main`.
 
-### Planned — PI and MPC Comparison
+### In Progress - M5 Final 4diac MPC Integration and Thesis Evidence
 
-The final experimental comparison will include:
+- verify the final V3H application structure offline;
+- verify event, data, initialization, and safety connections;
+- document the MPC function block interface and internal behavior;
+- prepare a reproducible deployment and monitoring checklist;
+- perform the final online validation when laboratory access is available;
+- capture synchronized 4diac, CSV, plot, and safe-stop evidence.
+
+### In Progress - Final PI-MPC Comparison
+
+The final experimental presentation will consolidate:
 
 - Integral Absolute Error;
 - Integral Squared Error;
@@ -415,6 +446,8 @@ The final experimental comparison will include:
 - computation time;
 - communication jitter;
 - safety and fallback behavior.
+
+No additional model variants or unrelated controller implementations are planned unless the M5 structural audit identifies a necessary correction.
 
 ## Git and Documentation Conventions
 
@@ -435,6 +468,8 @@ Use annotated or lightweight tags only for meaningful validated checkpoints.
 
 ## Current Priority
 
-The immediate priority is to identify and validate a plant model, implement the MPC offline, and retain the validated PI controller as the experimental reference and fail-safe fallback.
+The immediate priority is **M5 - Final 4diac MPC Integration and Thesis Evidence**.
 
-The repository should remain focused on functional progress. Additional organization or refactoring should be performed only when it directly supports reproducibility, safety, model identification, MPC integration, or the final PI–MPC comparison.
+Outside the laboratory, work is limited to the offline structural verification of `MPC_REAL_RAW_SAFE_V3H`, documentation, automated tests, evidence preparation, and the deployment checklist. Positive real-plant actuation must wait for the documented laboratory procedure.
+
+The repository should remain focused on completing the dissertation. Additional model candidates, controller variants, refactoring, or organizational work should be avoided unless required to correct the final V3H application, preserve reproducibility, or support the final PI-MPC evidence package.
