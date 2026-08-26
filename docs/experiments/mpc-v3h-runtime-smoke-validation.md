@@ -14,19 +14,19 @@ triggered. No PLC access or real actuation occurred.
 
 FORTE:
 
-$ForteExe
+C:\Projetos\forte-mpc-v3h-runtime\mpc-v3h-candidate\forte.exe
 
 SHA256:
 
-$ForteHash
+8B3D4E7BA1B87F678AD4BE6F991FC16C00CE010B36EA4D49C205874553DBBAD2
 
 open62541:
 
-$Open62541
+C:\Projetos\forte-mpc-v3h-runtime\mpc-v3h-candidate\open62541.dll
 
 SHA256:
 
-$OpenHash
+452DD9B74FFBFCD08AE1A268D6DE58B552F8CB9D111972265CDFD8989C4F4318
 
 ## Deployment scope
 
@@ -67,7 +67,7 @@ data/sample/mpc-v3h-runtime-smoke-20260822-120740/forte-mpc-v3h-smoke-20260822-1
 
 SHA256:
 
-$OutHash
+E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855
 
 stderr:
 
@@ -75,7 +75,7 @@ data/sample/mpc-v3h-runtime-smoke-20260822-120740/forte-mpc-v3h-smoke-20260822-1
 
 SHA256:
 
-$ErrHash
+1EBE4973A96C3D208BD45CDAD05B0C0E743FB513409D9A7A5D3B992BD696708F
 
 ## Classification
 

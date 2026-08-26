@@ -28,7 +28,7 @@ Validated checkpoints:
 | MPC preparation and real evidence | `7d9a3b5` | M1-M4 evidence integrated into `main`, including the final V3H application and preserved real-plant datasets |
 | Canonical evidence hash correction | `ecada4e` | Model evidence manifest normalized to the canonical LF representation |
 
-The complete automated test suite currently contains **472 passing tests**.
+The complete automated test suite currently contains **474 passing tests**.
 
 The final 4diac application is `MPC_REAL_RAW_SAFE_V3H`, mapped to `FORTE_PC.ResRealRawMPCV3H`. It includes real signal acquisition, median filtering, the delayed MPC controller, actuator limiting, gateway communication, and fail-closed output handling.
 
@@ -316,7 +316,7 @@ python -m pytest -q
 Current validated result:
 
 ```text
-472 passed
+474 passed
 ```
 
 The offline tests do not require access to the B&R PLC, FORTE, or the laboratory network.
