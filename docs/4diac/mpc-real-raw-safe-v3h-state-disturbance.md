@@ -105,9 +105,10 @@ The audit also corrected the descriptive TRIP_CODE mapping. Controller trip
 behavior itself was not changed.
 
 The preserved 2026-08-22 runtime and real-plant evidence remains historical
-evidence for V3H version 3.8. Before another deployment, V3H version 3.9 must be
-exported, rebuilt, smoke-tested, and assigned new runtime hashes. No existing
-historical V1, V2, V3, or V3E artifact is changed by this correction.
+evidence for V3H version 3.8. Version 3.9 was exported, rebuilt, and accepted by
+an isolated resource-only runtime type smoke on 2026-08-26. Its canonical FORTE
+SHA256 is `2535F31A5A5FC246BFC699ABDB4171531C71E56C4B72675D284C1322F7FAF31A`. No existing historical V1, V2, V3, or V3E
+artifact is changed by this correction.
 
 ## Next gates
 

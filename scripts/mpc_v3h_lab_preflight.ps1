@@ -1,13 +1,19 @@
 ﻿[CmdletBinding()]
 param(
     [string]$ProjectRoot = "C:\Projetos\master-thesis-level-control",
-    [string]$RuntimeDir = "C:\Projetos\forte-mpc-v3h-runtime\mpc-v3h-candidate"
+    [string]$RuntimeDir = ""
 )
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-$ExpectedForteHash = "8B3D4E7BA1B87F678AD4BE6F991FC16C00CE010B36EA4D49C205874553DBBAD2"
+if ([string]::IsNullOrWhiteSpace($RuntimeDir)) {
+    $RuntimeDir = Join-Path `
+        $ProjectRoot `
+        "forte\preserved-v3h-3_9\runtimes\mpc-v3h-3_9"
+}
+
+$ExpectedForteHash = "2535F31A5A5FC246BFC699ABDB4171531C71E56C4B72675D284C1322F7FAF31A"
 $ExpectedOpen62541Hash = "452DD9B74FFBFCD08AE1A268D6DE58B552F8CB9D111972265CDFD8989C4F4318"
 
 Set-Location $ProjectRoot

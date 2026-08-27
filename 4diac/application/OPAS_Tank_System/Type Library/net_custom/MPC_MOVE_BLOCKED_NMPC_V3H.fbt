@@ -6,7 +6,7 @@
 	</VersionInfo>
   <InterfaceList>
     <EventInputs>
-      <Event Name="REQ" Type="Event" Comment="Execute one 500 ms delay-aware MPC V3 cycle">
+      <Event Name="REQ" Type="Event" Comment="Execute one 500 ms delay-aware MPC V3H cycle">
         <With Var="PV_RAW" />
         <With Var="PV_MODEL" />
         <With Var="APPLIED_DAC" />
