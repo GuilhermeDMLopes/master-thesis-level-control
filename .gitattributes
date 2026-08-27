@@ -43,3 +43,4 @@ CMakeLists.txt text eol=lf
 *.rar binary
 *.exe binary
 *.dll binary
+forte/preserved-v3h-3_9/external-modules/MPC_V3H/* -text -diff !eol
