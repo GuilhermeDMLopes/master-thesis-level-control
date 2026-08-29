@@ -691,3 +691,14 @@ variant, model-identification campaign or real-plant experiment is required.
 The remaining work is limited to consolidating the final PI-MPC comparison,
 incorporating the results and figures into the dissertation, and completing
 academic writing and review.
+
+## Final matched PI comparison
+
+For a single methodologically matched PI baseline against the validated MPC V4,
+use the additive `PI_REAL_RAW_HIGH_RANGE_COMPARE` application mapped to
+`FORTE_PC -> ResRealRawPICompare`. The historical PI remains unchanged.
+
+The frozen plan uses a 17000-raw target (15 cm physical), 180 s active window,
+0.1 s sampling, 0..16000 DAC bounds, and the independent supervisor
+`scripts/pi_high_range_validation.py`. Full safety and stop criteria are in
+`docs/experiments/pi-vs-mpc-v4-matched-comparison.md`.
