@@ -1,0 +1,127 @@
+{
+  "status": "validated_real_high_range_15cm",
+  "authorization": {
+    "real_actuation_performed_by_this_analysis": false,
+    "real_high_range_validation_authorized": false,
+    "real_high_range_validation_completed": true,
+    "future_real_actuation_authorized": false
+  },
+  "model_type": "high_range_deadzone_hammerstein_first_order",
+  "fit_500ms": {
+    "sample_time_s": 0.5,
+    "offset_raw": 257.0,
+    "discrete_a": 0.9972317763043488,
+    "discrete_b_raw_per_DAC_power_p": 0.004607840412329724,
+    "tau_s": 180.3711257596329,
+    "additional_transport_delay_steps": 0,
+    "additional_transport_delay_s": 0.0,
+    "static_gain": 1.6645477096263863,
+    "deadzone_DAC": 11750.0,
+    "input_exponent_p": 1.2,
+    "joint_replay_rmse_raw": 146.34179463198313,
+    "fit_method": "joint nonlinear least-squares replay of the real 3, 5, 8.5 and 13 cm DAC-16000 calibration transients"
+  },
+  "controller_contract": {
+    "target_raw": 17000.0,
+    "target_physical_height_cm": 15.0,
+    "target_raw_basis": "refined after the first real 180 s V4 run stabilized near 15700 raw at approximately 14 cm; 17000 raw is the bounded 15 cm follow-up target",
+    "minimum_dac": 0.0,
+    "maximum_dac": 16000.0,
+    "maximum_delta_dac_per_500ms": 750.0,
+    "prediction_horizon_s": 30.0,
+    "prediction_steps": 60,
+    "predicted_soft_raw": 18000.0,
+    "predicted_hard_raw": 19500.0,
+    "measured_hard_raw": 20000.0,
+    "supervised_validation_duration_s": 180.0,
+    "physical_operator_abort_cm": 20.0,
+    "declared_plant_safe_max_cm": 25.0
+  },
+  "scope_limitations": [
+    "The high-range fit is dynamic commissioning evidence, not a fully observed steady-state map.",
+    "The final physical interpretation is the preserved manual 15 cm observation paired with the raw-count trajectory; the legacy raw/1000 gateway field is not the final calibration.",
+    "The bounded validation does not authorize unattended or unrestricted future real-plant actuation."
+  ],
+  "evidence": {
+    "point-03cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-03cm-samples.csv",
+      "sha256": "1CE5F2FB8C75EA83CCD72D606D85F3A922989CBD6F2A4A052E9A9F17CB80B75B"
+    },
+    "point-05cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-05cm-samples.csv",
+      "sha256": "500B70908103BD649F8F49DAF482A4368DD96E86888FE1CCC6E86840C4971578"
+    },
+    "point-08_5cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-08_5cm-samples.csv",
+      "sha256": "33DA513D2A409193FCE5DFB853F1754C0F7D55AB8D83B71BE063C935DECBF066"
+    },
+    "point-13cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-13cm-samples.csv",
+      "sha256": "1D020534DF896F00DF8370F590CCB78450A447943F7EC4CEFAF0DC23DADF67A9"
+    },
+    "calibration-points.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/calibration-points.csv",
+      "sha256": "5ADB8E381884F4F1E213FF7AEDAC1796D6065C602F92DC3097B621F7710E64D5"
+    },
+    "final-active-monitor.csv": {
+      "path": "data/sample/mpc-v4-target17000-20260829/first-active-monitor.csv",
+      "sha256": "B2315428080F2BEA7C2FC294CF5EE8CB95311C4134A5D2F1C9AD17E1D6A99854"
+    },
+    "final-predeployment-zero-output-monitor.csv": {
+      "path": "data/sample/mpc-v4-target17000-20260829/predeployment-zero-output-monitor.csv",
+      "sha256": "2D962725335492212FD6D2DA41F92862A58DF397DEE9176DEE1A5F5E27B883C0"
+    },
+    "final-postshutdown-zero-output-monitor.csv": {
+      "path": "data/sample/mpc-v4-target17000-20260829/postshutdown-zero-output-monitor.csv",
+      "sha256": "21680C23F3412DC40040C2D6ACF349A77AA1612F1BF4B3BF9F080392BA7AE23A"
+    },
+    "final-physical-observation.txt": {
+      "path": "data/sample/mpc-v4-target17000-20260829/physical-observation.txt",
+      "sha256": "5644F53A4331D7A9E0163B7ADD275701EBEC0A3569F9C6DBD82C7EBA93BB508C"
+    }
+  },
+  "first_v4_real_observation": {
+    "date": "2026-08-29",
+    "active_duration_s": 180.0,
+    "shutdown_reason": "ACTIVE_WINDOW_COMPLETE",
+    "maximum_observed_dac": 16000.0,
+    "maximum_raw": 15945.0,
+    "maximum_median9_raw": 15853.0,
+    "maximum_positive_median_rate_raw_per_s": 280.5,
+    "final_physical_height_cm_approx": 14.0,
+    "final_controller_dac_region": 14500.0,
+    "conclusion": "The actuator ceiling was not the final limiting factor; the controller reduced DAC after approaching SP_RAW=16000. The follow-up changes only SP_RAW to 17000 and preserves DAC_MAX."
+  },
+  "final_v4_real_observation": {
+    "date": "2026-08-29",
+    "active_duration_s": 179.969,
+    "shutdown_reason": "ACTIVE_WINDOW_COMPLETE",
+    "physical_height_cm": 15.0,
+    "target_raw": 17000.0,
+    "maximum_instant_raw": 17106.0,
+    "maximum_median9_raw": 17086.0,
+    "overshoot_percent": 0.5058823529411764,
+    "rise_time_10_to_90_s": 90.656,
+    "settling_time_5_percent_s": 122.031,
+    "tail30_mean_raw": 16848.453441295547,
+    "tail30_mean_error_raw": 151.54655870445345,
+    "tail30_std_raw": 107.58727246965107,
+    "tail30_mean_applied_dac": 14092.914979757084,
+    "tail30_applied_dac_range": [
+      13500.0,
+      14500.0
+    ],
+    "maximum_applied_dac": 16000.0,
+    "watchdog_healthy_all_active": true,
+    "predeployment_zero_samples": 695,
+    "postshutdown_zero_samples": 74,
+    "postshutdown_zero_verified": true,
+    "conclusion": "The final bounded V4 run reached and stabilized at the physically observed 15 cm target with low overshoot, healthy watchdog state and verified safe zero shutdown."
+  },
+  "runtime_evidence": {
+    "forte_sha256": "62AB0F00FB1DFE30E89BF89D81249A83AEBBEABE9A7565327BFB3B7FBA536C60",
+    "open62541_sha256": "452DD9B74FFBFCD08AE1A268D6DE58B552F8CB9D111972265CDFD8989C4F4318",
+    "controller_cpp_sha256": "2B7FB16C6AD4080FC10A3A404400AF241B52C08249B58DD75B3C9AFDE21F901F",
+    "source_bundle_sha256": "32AE9F47B8647A812DE49136B03B6C213571EEBDFC1EF07835F221BACB4C2EF6"
+  }
+}

@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<FBType Name="MPC_MOVE_BLOCKED_NMPC_V3H" Comment="Additive V3H state-disturbance MPC preserving V3E envelope, delay-aware model and exporter-safe nested candidate/prediction loops">
+<FBType Name="MPC_MOVE_BLOCKED_NMPC_V4" Comment="High-range V4 state-disturbance MPC identified from real 3, 5, 8.5 and 13 cm calibration transients">
   <Identification Standard="61499-2">
 	</Identification>
-  <VersionInfo Version="3.9" Author="Guilherme" Date="2026-08-26">
+  <VersionInfo Version="4.0" Author="Guilherme" Date="2026-08-29">
 	</VersionInfo>
   <InterfaceList>
     <EventInputs>
-      <Event Name="REQ" Type="Event" Comment="Execute one 500 ms delay-aware MPC V3H cycle">
+      <Event Name="REQ" Type="Event" Comment="Execute one 500 ms high-range MPC V4 cycle">
         <With Var="PV_RAW" />
         <With Var="PV_MODEL" />
         <With Var="APPLIED_DAC" />
@@ -36,7 +36,7 @@
       <VarDeclaration Name="ENABLE_REQUEST" Type="BOOL" Comment="Explicit operator/commissioning enable; FALSE is normal zero-output mode" />
       <VarDeclaration Name="EXTERNAL_HEALTHY" Type="BOOL" Comment="PLC/gateway watchdog healthy input" />
       <VarDeclaration Name="RESET_REQUEST" Type="BOOL" Comment="Explicitly clear the latched MPC trip and internal estimator state" />
-      <VarDeclaration Name="SP_RAW" Type="LREAL" Comment="Raw-count setpoint; first commissioning value is 450" />
+      <VarDeclaration Name="SP_RAW" Type="LREAL" Comment="Raw-count setpoint; 15 cm validation target is 16000" />
     </InputVars>
     <OutputVars>
       <VarDeclaration Name="COMMAND_ENABLE" Type="BOOL" Comment="Fail-closed actuator enable request" />
@@ -47,7 +47,7 @@
       <VarDeclaration Name="INPUT_BIAS_ESTIMATE_DAC" Type="LREAL" Comment="Bounded offset-compensation estimate" />
       <VarDeclaration Name="PREDICTED_MAX_RAW" Type="LREAL" Comment="Maximum predicted model level for the selected candidate" />
       <VarDeclaration Name="PREDICTED_FINAL_RAW" Type="LREAL" Comment="Final horizon model level for the selected candidate" />
-      <VarDeclaration Name="CONFIGURATION_VALID" Type="BOOL" Comment="Frozen V3H commissioning configuration is internally valid" />
+      <VarDeclaration Name="CONFIGURATION_VALID" Type="BOOL" Comment="Frozen V4 high-range configuration is internally valid" />
     </OutputVars>
   </InterfaceList>
   <BasicFB>
@@ -130,7 +130,7 @@
       <ECTransition Source="START" Destination="EXEC" Condition="REQ" x="300.0" y="100.0" />
       <ECTransition Source="EXEC" Destination="START" Condition="1" x="300.0" y="220.0" />
     </ECC>
-    <Algorithm Name="ALG_NMPC" Comment="Move-blocked V3H NMPC with delay history, state-disturbance estimation, model constraints, trip latch, and piecewise-linear x^1.2 input">
+    <Algorithm Name="ALG_NMPC" Comment="Move-blocked V4 high-range NMPC with state-disturbance estimation, model constraints, trip latch, and piecewise-linear x^1.2 input">
       <ST>IF RESET_REQUEST THEN
     trip_latched_internal := FALSE;
     trip_code_internal := 0;
@@ -149,7 +149,7 @@ INPUT_BIAS_ESTIMATE_DAC := LREAL#0.0;
 PREDICTED_MAX_RAW := LREAL#-1.0;
 PREDICTED_FINAL_RAW := LREAL#-1.0;
 
-record_history_internal := (PV_RAW = PV_RAW) AND (PV_MODEL = PV_MODEL) AND (APPLIED_DAC = APPLIED_DAC) AND (SP_RAW = SP_RAW) AND (APPLIED_DAC &gt;= LREAL#0.0) AND (APPLIED_DAC &lt;= LREAL#12000.0);
+record_history_internal := (PV_RAW = PV_RAW) AND (PV_MODEL = PV_MODEL) AND (APPLIED_DAC = APPLIED_DAC) AND (SP_RAW = SP_RAW) AND (APPLIED_DAC &gt;= LREAL#0.0) AND (APPLIED_DAC &lt;= LREAL#16000.0);
 
 IF NOT trip_latched_internal THEN
     IF NOT ENABLE_REQUEST THEN
@@ -167,61 +167,72 @@ IF NOT trip_latched_internal THEN
         ELSIF NOT (PV_RAW = PV_RAW) OR NOT (PV_MODEL = PV_MODEL) OR NOT (APPLIED_DAC = APPLIED_DAC) OR NOT (SP_RAW = SP_RAW) THEN
             trip_latched_internal := TRUE;
             trip_code_internal := 1;
-        ELSIF PV_RAW &lt; LREAL#0.0 OR PV_MODEL &lt; LREAL#0.0 OR PV_RAW &gt;= LREAL#1500.0 THEN
+        ELSIF PV_RAW &lt; LREAL#0.0 OR PV_MODEL &lt; LREAL#0.0 OR PV_RAW &gt;= LREAL#20000.0 THEN
             trip_latched_internal := TRUE;
             trip_code_internal := 3;
-        ELSIF APPLIED_DAC &lt; LREAL#0.0 OR APPLIED_DAC &gt; LREAL#12000.0 THEN
+        ELSIF APPLIED_DAC &lt; LREAL#0.0 OR APPLIED_DAC &gt; LREAL#16000.0 THEN
             trip_latched_internal := TRUE;
             trip_code_internal := 4;
-        ELSIF SP_RAW &lt; LREAL#0.0 OR SP_RAW &gt;= LREAL#800.0 THEN
+        ELSIF SP_RAW &lt; LREAL#0.0 OR SP_RAW &gt;= LREAL#18000.0 THEN
             trip_latched_internal := TRUE;
             trip_code_internal := 5;
-        ELSIF history_count &lt; 18 THEN
-            trip_latched_internal := TRUE;
-            trip_code_internal := 7;
         ELSE
             IF disturbance_previous_valid_internal THEN
-                IF disturbance_previous_pv_internal &lt; LREAL#288.0 THEN
-                    disturbance_previous_pv_internal := LREAL#288.0;
+                IF disturbance_previous_pv_internal &lt; LREAL#257.0 THEN
+                    disturbance_previous_pv_internal := LREAL#257.0;
                 END_IF;
-                effective_input := h00 - LREAL#11750.0;
+                effective_input := APPLIED_DAC - LREAL#11750.0;
                 IF effective_input &lt; LREAL#0.0 THEN
                     effective_input := LREAL#0.0;
-                ELSIF effective_input &gt; LREAL#500.0 THEN
-                    effective_input := LREAL#500.0;
+                ELSIF effective_input &gt; LREAL#4250.0 THEN
+                    effective_input := LREAL#4250.0;
                 END_IF;
                 IF effective_input &lt;= LREAL#0.0 THEN
                     phi_value := LREAL#0.0;
-                ELSIF effective_input &lt;= LREAL#50.0 THEN
-                    phi_value := LREAL#0.0 + LREAL#2.186724147886556 * (effective_input - LREAL#0.0);
-                ELSIF effective_input &lt;= LREAL#100.0 THEN
-                    phi_value := LREAL#109.336207394327786 + LREAL#2.837048715132604 * (effective_input - LREAL#50.0);
-                ELSIF effective_input &lt;= LREAL#150.0 THEN
-                    phi_value := LREAL#251.188643150957972 + LREAL#3.148436919260821 * (effective_input - LREAL#100.0);
-                ELSIF effective_input &lt;= LREAL#200.0 THEN
-                    phi_value := LREAL#408.610489113999051 + LREAL#3.369389464977726 * (effective_input - LREAL#150.0);
                 ELSIF effective_input &lt;= LREAL#250.0 THEN
-                    phi_value := LREAL#577.07996236288534 + LREAL#3.543841594105197 * (effective_input - LREAL#200.0);
-                ELSIF effective_input &lt;= LREAL#300.0 THEN
-                    phi_value := LREAL#754.272042068145197 + LREAL#3.689367025828481 * (effective_input - LREAL#250.0);
-                ELSIF effective_input &lt;= LREAL#350.0 THEN
-                    phi_value := LREAL#938.740393359569225 + LREAL#3.814953797640478 * (effective_input - LREAL#300.0);
-                ELSIF effective_input &lt;= LREAL#400.0 THEN
-                    phi_value := LREAL#1129.488083241593131 + LREAL#3.925870473888026 * (effective_input - LREAL#350.0);
-                ELSIF effective_input &lt;= LREAL#450.0 THEN
-                    phi_value := LREAL#1325.781606935994432 + LREAL#4.025491573724398 * (effective_input - LREAL#400.0);
+                    phi_value := LREAL#0.000000000000000 + LREAL#3.017088168272581 * (effective_input - LREAL#0.0);
                 ELSIF effective_input &lt;= LREAL#500.0 THEN
-                    phi_value := LREAL#1527.056185622214343 + LREAL#4.116118445313023 * (effective_input - LREAL#450.0);
+                    phi_value := LREAL#754.272042068145197 + LREAL#3.914360263278881 * (effective_input - LREAL#250.0);
+                ELSIF effective_input &lt;= LREAL#750.0 THEN
+                    phi_value := LREAL#1732.862107887865477 + LREAL#4.343991804743724 * (effective_input - LREAL#500.0);
+                ELSIF effective_input &lt;= LREAL#1000.0 THEN
+                    phi_value := LREAL#2818.860059073796492 + LREAL#4.648846585844700 * (effective_input - LREAL#750.0);
+                ELSIF effective_input &lt;= LREAL#1250.0 THEN
+                    phi_value := LREAL#3981.071705534971443 + LREAL#4.889543362906937 * (effective_input - LREAL#1000.0);
+                ELSIF effective_input &lt;= LREAL#1500.0 THEN
+                    phi_value := LREAL#5203.457546261705829 + LREAL#5.090329117552494 * (effective_input - LREAL#1250.0);
+                ELSIF effective_input &lt;= LREAL#1750.0 THEN
+                    phi_value := LREAL#6476.039825649829254 + LREAL#5.263604911708677 * (effective_input - LREAL#1500.0);
+                ELSIF effective_input &lt;= LREAL#2000.0 THEN
+                    phi_value := LREAL#7791.941053576998456 + LREAL#5.416639939878100 * (effective_input - LREAL#1750.0);
+                ELSIF effective_input &lt;= LREAL#2250.0 THEN
+                    phi_value := LREAL#9146.101038546523341 + LREAL#5.554090126229741 * (effective_input - LREAL#2000.0);
+                ELSIF effective_input &lt;= LREAL#2500.0 THEN
+                    phi_value := LREAL#10534.623570103958627 + LREAL#5.679130709085999 * (effective_input - LREAL#2250.0);
+                ELSIF effective_input &lt;= LREAL#2750.0 THEN
+                    phi_value := LREAL#11954.406247375458406 + LREAL#5.794031214691713 * (effective_input - LREAL#2500.0);
+                ELSIF effective_input &lt;= LREAL#3000.0 THEN
+                    phi_value := LREAL#13402.914051048386682 + LREAL#5.900474152760405 * (effective_input - LREAL#2750.0);
+                ELSIF effective_input &lt;= LREAL#3250.0 THEN
+                    phi_value := LREAL#14878.032589238488072 + LREAL#5.999743896709013 * (effective_input - LREAL#3000.0);
+                ELSIF effective_input &lt;= LREAL#3500.0 THEN
+                    phi_value := LREAL#16377.968563415741301 + LREAL#6.092844710159137 * (effective_input - LREAL#3250.0);
+                ELSIF effective_input &lt;= LREAL#3750.0 THEN
+                    phi_value := LREAL#17901.179740955525631 + LREAL#6.180577736426479 * (effective_input - LREAL#3500.0);
+                ELSIF effective_input &lt;= LREAL#4000.0 THEN
+                    phi_value := LREAL#19446.324175062145514 + LREAL#6.263593040671942 * (effective_input - LREAL#3750.0);
+                ELSIF effective_input &lt;= LREAL#4250.0 THEN
+                    phi_value := LREAL#21012.222435230130941 + LREAL#6.342425861622032 * (effective_input - LREAL#4000.0);
                 ELSE
-                    phi_value := LREAL#1732.862107887865477;
+                    phi_value := LREAL#22597.828900635639002;
                 END_IF;
-                disturbance_prediction_internal := LREAL#288.0 + LREAL#0.900087626252259 * (disturbance_previous_pv_internal - LREAL#288.0) + LREAL#0.067989118863552 * phi_value;
+                disturbance_prediction_internal := LREAL#257.0 + LREAL#0.997231776304349 * (disturbance_previous_pv_internal - LREAL#257.0) + LREAL#0.004607840412330 * phi_value;
                 disturbance_innovation_internal := PV_MODEL - disturbance_prediction_internal;
                 disturbance_hat_internal := LREAL#0.9 * disturbance_hat_internal + LREAL#0.1 * disturbance_innovation_internal;
-                IF disturbance_hat_internal &gt; LREAL#100.0 THEN
-                    disturbance_hat_internal := LREAL#100.0;
-                ELSIF disturbance_hat_internal &lt; LREAL#-100.0 THEN
-                    disturbance_hat_internal := LREAL#-100.0;
+                IF disturbance_hat_internal &gt; LREAL#10.0 THEN
+                    disturbance_hat_internal := LREAL#10.0;
+                ELSIF disturbance_hat_internal &lt; LREAL#-10.0 THEN
+                    disturbance_hat_internal := LREAL#-10.0;
                 END_IF;
             END_IF;
             disturbance_previous_pv_internal := PV_MODEL;
@@ -231,34 +242,30 @@ IF NOT trip_latched_internal THEN
             best_target := LREAL#0.0;
             best_predicted_max := LREAL#-1.0;
             best_predicted_final := LREAL#-1.0;
-            FOR candidate_index := 0 TO 12 DO
+            FOR candidate_index := 0 TO 10 DO
                 CASE candidate_index OF
                     0:
                         candidate_target := LREAL#0.0;
                     1:
-                        candidate_target := LREAL#11500.0;
-                    2:
-                        candidate_target := LREAL#11550.0;
-                    3:
-                        candidate_target := LREAL#11600.0;
-                    4:
-                        candidate_target := LREAL#11650.0;
-                    5:
-                        candidate_target := LREAL#11700.0;
-                    6:
-                        candidate_target := LREAL#11750.0;
-                    7:
-                        candidate_target := LREAL#11800.0;
-                    8:
-                        candidate_target := LREAL#11845.626677302696407;
-                    9:
-                        candidate_target := LREAL#11850.0;
-                    10:
-                        candidate_target := LREAL#11900.0;
-                    11:
-                        candidate_target := LREAL#11950.0;
-                    12:
                         candidate_target := LREAL#12000.0;
+                    2:
+                        candidate_target := LREAL#12500.0;
+                    3:
+                        candidate_target := LREAL#13000.0;
+                    4:
+                        candidate_target := LREAL#13500.0;
+                    5:
+                        candidate_target := LREAL#13800.0;
+                    6:
+                        candidate_target := LREAL#14000.0;
+                    7:
+                        candidate_target := LREAL#14500.0;
+                    8:
+                        candidate_target := LREAL#15000.0;
+                    9:
+                        candidate_target := LREAL#15500.0;
+                    10:
+                        candidate_target := LREAL#16000.0;
                     ELSE
                         candidate_target := LREAL#0.0;
                 END_CASE;
@@ -280,8 +287,8 @@ IF NOT trip_latched_internal THEN
                 q15 := h15;
                 q16 := h16;
                 q17 := h17;
-                IF PV_MODEL &lt; LREAL#288.0 THEN
-                    predicted_y := LREAL#288.0;
+                IF PV_MODEL &lt; LREAL#257.0 THEN
+                    predicted_y := LREAL#257.0;
                 ELSE
                     predicted_y := PV_MODEL;
                 END_IF;
@@ -299,12 +306,12 @@ IF NOT trip_latched_internal THEN
                             delta_u := LREAL#-750.0;
                         END_IF;
                         predicted_u := predicted_u + delta_u;
-                        IF predicted_u &gt; LREAL#12000.0 THEN
-                            predicted_u := LREAL#12000.0;
+                        IF predicted_u &gt; LREAL#16000.0 THEN
+                            predicted_u := LREAL#16000.0;
                         ELSIF predicted_u &lt; LREAL#0.0 THEN
                             predicted_u := LREAL#0.0;
                         END_IF;
-                        delayed_u := q00;
+                        delayed_u := predicted_u;
                         q00 := q01;
                         q01 := q02;
                         q02 := q03;
@@ -326,46 +333,60 @@ IF NOT trip_latched_internal THEN
                         effective_input := delayed_u - LREAL#11750.0;
                         IF effective_input &lt; LREAL#0.0 THEN
                             effective_input := LREAL#0.0;
-                        ELSIF effective_input &gt; LREAL#500.0 THEN
-                            effective_input := LREAL#500.0;
+                        ELSIF effective_input &gt; LREAL#4250.0 THEN
+                            effective_input := LREAL#4250.0;
                         END_IF;
                         IF effective_input &lt;= LREAL#0.0 THEN
                             phi_value := LREAL#0.0;
-                        ELSIF effective_input &lt;= LREAL#50.0 THEN
-                            phi_value := LREAL#0.0 + LREAL#2.186724147886556 * (effective_input - LREAL#0.0);
-                        ELSIF effective_input &lt;= LREAL#100.0 THEN
-                            phi_value := LREAL#109.336207394327786 + LREAL#2.837048715132604 * (effective_input - LREAL#50.0);
-                        ELSIF effective_input &lt;= LREAL#150.0 THEN
-                            phi_value := LREAL#251.188643150957972 + LREAL#3.148436919260821 * (effective_input - LREAL#100.0);
-                        ELSIF effective_input &lt;= LREAL#200.0 THEN
-                            phi_value := LREAL#408.610489113999051 + LREAL#3.369389464977726 * (effective_input - LREAL#150.0);
                         ELSIF effective_input &lt;= LREAL#250.0 THEN
-                            phi_value := LREAL#577.07996236288534 + LREAL#3.543841594105197 * (effective_input - LREAL#200.0);
-                        ELSIF effective_input &lt;= LREAL#300.0 THEN
-                            phi_value := LREAL#754.272042068145197 + LREAL#3.689367025828481 * (effective_input - LREAL#250.0);
-                        ELSIF effective_input &lt;= LREAL#350.0 THEN
-                            phi_value := LREAL#938.740393359569225 + LREAL#3.814953797640478 * (effective_input - LREAL#300.0);
-                        ELSIF effective_input &lt;= LREAL#400.0 THEN
-                            phi_value := LREAL#1129.488083241593131 + LREAL#3.925870473888026 * (effective_input - LREAL#350.0);
-                        ELSIF effective_input &lt;= LREAL#450.0 THEN
-                            phi_value := LREAL#1325.781606935994432 + LREAL#4.025491573724398 * (effective_input - LREAL#400.0);
+                            phi_value := LREAL#0.000000000000000 + LREAL#3.017088168272581 * (effective_input - LREAL#0.0);
                         ELSIF effective_input &lt;= LREAL#500.0 THEN
-                            phi_value := LREAL#1527.056185622214343 + LREAL#4.116118445313023 * (effective_input - LREAL#450.0);
+                            phi_value := LREAL#754.272042068145197 + LREAL#3.914360263278881 * (effective_input - LREAL#250.0);
+                        ELSIF effective_input &lt;= LREAL#750.0 THEN
+                            phi_value := LREAL#1732.862107887865477 + LREAL#4.343991804743724 * (effective_input - LREAL#500.0);
+                        ELSIF effective_input &lt;= LREAL#1000.0 THEN
+                            phi_value := LREAL#2818.860059073796492 + LREAL#4.648846585844700 * (effective_input - LREAL#750.0);
+                        ELSIF effective_input &lt;= LREAL#1250.0 THEN
+                            phi_value := LREAL#3981.071705534971443 + LREAL#4.889543362906937 * (effective_input - LREAL#1000.0);
+                        ELSIF effective_input &lt;= LREAL#1500.0 THEN
+                            phi_value := LREAL#5203.457546261705829 + LREAL#5.090329117552494 * (effective_input - LREAL#1250.0);
+                        ELSIF effective_input &lt;= LREAL#1750.0 THEN
+                            phi_value := LREAL#6476.039825649829254 + LREAL#5.263604911708677 * (effective_input - LREAL#1500.0);
+                        ELSIF effective_input &lt;= LREAL#2000.0 THEN
+                            phi_value := LREAL#7791.941053576998456 + LREAL#5.416639939878100 * (effective_input - LREAL#1750.0);
+                        ELSIF effective_input &lt;= LREAL#2250.0 THEN
+                            phi_value := LREAL#9146.101038546523341 + LREAL#5.554090126229741 * (effective_input - LREAL#2000.0);
+                        ELSIF effective_input &lt;= LREAL#2500.0 THEN
+                            phi_value := LREAL#10534.623570103958627 + LREAL#5.679130709085999 * (effective_input - LREAL#2250.0);
+                        ELSIF effective_input &lt;= LREAL#2750.0 THEN
+                            phi_value := LREAL#11954.406247375458406 + LREAL#5.794031214691713 * (effective_input - LREAL#2500.0);
+                        ELSIF effective_input &lt;= LREAL#3000.0 THEN
+                            phi_value := LREAL#13402.914051048386682 + LREAL#5.900474152760405 * (effective_input - LREAL#2750.0);
+                        ELSIF effective_input &lt;= LREAL#3250.0 THEN
+                            phi_value := LREAL#14878.032589238488072 + LREAL#5.999743896709013 * (effective_input - LREAL#3000.0);
+                        ELSIF effective_input &lt;= LREAL#3500.0 THEN
+                            phi_value := LREAL#16377.968563415741301 + LREAL#6.092844710159137 * (effective_input - LREAL#3250.0);
+                        ELSIF effective_input &lt;= LREAL#3750.0 THEN
+                            phi_value := LREAL#17901.179740955525631 + LREAL#6.180577736426479 * (effective_input - LREAL#3500.0);
+                        ELSIF effective_input &lt;= LREAL#4000.0 THEN
+                            phi_value := LREAL#19446.324175062145514 + LREAL#6.263593040671942 * (effective_input - LREAL#3750.0);
+                        ELSIF effective_input &lt;= LREAL#4250.0 THEN
+                            phi_value := LREAL#21012.222435230130941 + LREAL#6.342425861622032 * (effective_input - LREAL#4000.0);
                         ELSE
-                            phi_value := LREAL#1732.862107887865477;
+                            phi_value := LREAL#22597.828900635639002;
                         END_IF;
-                        predicted_y := LREAL#288.0 + LREAL#0.900087626252259 * (predicted_y - LREAL#288.0) + LREAL#0.067989118863552 * phi_value + disturbance_hat_internal;
+                        predicted_y := LREAL#257.0 + LREAL#0.997231776304349 * (predicted_y - LREAL#257.0) + LREAL#0.004607840412330 * phi_value + disturbance_hat_internal;
                         IF predicted_y &gt; candidate_predicted_max THEN
                             candidate_predicted_max := predicted_y;
                         END_IF;
-                        IF NOT (predicted_y = predicted_y) OR predicted_y &gt; LREAL#1400.0 THEN
+                        IF NOT (predicted_y = predicted_y) OR predicted_y &gt; LREAL#19500.0 THEN
                             candidate_feasible := FALSE;
                         ELSE
                             tracking_error := predicted_y - SP_RAW;
                             move_value := predicted_u - previous_u;
                             candidate_cost := candidate_cost + LREAL#5.0 * tracking_error * tracking_error + LREAL#0.00004 * move_value * move_value;
-                            IF predicted_y &gt; LREAL#1100.0 THEN
-                                soft_excess := predicted_y - LREAL#1100.0;
+                            IF predicted_y &gt; LREAL#18000.0 THEN
+                                soft_excess := predicted_y - LREAL#18000.0;
                                 candidate_cost := candidate_cost + LREAL#100.0 * soft_excess * soft_excess;
                             END_IF;
                             previous_u := predicted_u;
@@ -395,8 +416,8 @@ IF NOT trip_latched_internal THEN
                     delta_u := LREAL#-750.0;
                 END_IF;
                 command_candidate := APPLIED_DAC + delta_u;
-                IF command_candidate &gt; LREAL#12000.0 THEN
-                    command_candidate := LREAL#12000.0;
+                IF command_candidate &gt; LREAL#16000.0 THEN
+                    command_candidate := LREAL#16000.0;
                 ELSIF command_candidate &lt; LREAL#0.0 THEN
                     command_candidate := LREAL#0.0;
                 END_IF;

@@ -1,4 +1,4 @@
-﻿# MPC_REAL_RAW_SAFE_V3H â€” additive state/process-disturbance MPC
+﻿# MPC_REAL_RAW_SAFE_V3H - additive state/process-disturbance MPC
 
 ## Scope
 
@@ -93,6 +93,22 @@ This stage creates:
 - 12 mappings cloned from V3E.
 
 The existing V3E artifacts are not modified semantically.
+
+## M5 offline contract correction
+
+The M5 structural audit found that the V3H ST implementation activated the
+expanded soft threshold at 1100 raw but retained the previous 650-raw value in
+the soft-excess subtraction. Version 3.9 corrects that subtraction to 1100 raw,
+matching the accepted Python V3H reference and the documented V3E envelope.
+
+The audit also corrected the descriptive TRIP_CODE mapping. Controller trip
+behavior itself was not changed.
+
+The preserved 2026-08-22 runtime and real-plant evidence remains historical
+evidence for V3H version 3.8. Version 3.9 was exported, rebuilt, and accepted by
+an isolated resource-only runtime type smoke on 2026-08-26. Its canonical FORTE
+SHA256 is `2535F31A5A5FC246BFC699ABDB4171531C71E56C4B72675D284C1322F7FAF31A`. No existing historical V1, V2, V3, or V3E
+artifact is changed by this correction.
 
 ## Next gates
 

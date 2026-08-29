@@ -9,13 +9,17 @@ This runbook does **not** authorize active MPC operation.
 
 ## Validated runtime
 
+FORTE:
+
+C:\Projetos\master-thesis-level-control\forte\preserved-v3h-3_9\runtimes\mpc-v3h-3_9\forte.exe
+
 FORTE SHA256:
 
-$ForteHash
+2535F31A5A5FC246BFC699ABDB4171531C71E56C4B72675D284C1322F7FAF31A
 
 open62541 SHA256:
 
-$OpenHash
+452DD9B74FFBFCD08AE1A268D6DE58B552F8CB9D111972265CDFD8989C4F4318
 
 Required resource:
 

@@ -190,6 +190,48 @@ def test_input_bias_output_is_not_repurposed():
     assert "INPUT_BIAS_ESTIMATE_DAC := LREAL#0.0;" in st
 
 
+def test_v3h_soft_penalty_matches_expanded_python_contract():
+    st = st_text(V3H)
+    assert "predicted_y > LREAL#1100.0" in st
+    assert "soft_excess := predicted_y - LREAL#1100.0;" in st
+    assert "soft_excess := predicted_y - LREAL#650.0;" not in st
+
+
+def test_v3h_trip_code_comment_matches_implemented_branches():
+    root = parse(V3H)
+    declarations = [
+        elem
+        for elem in root.iter()
+        if local_tag(elem) == "VarDeclaration"
+        and elem.attrib.get("Name") == "TRIP_CODE"
+    ]
+    assert len(declarations) == 1
+    assert declarations[0].attrib.get("Comment") == (
+        "0=none,1=non-finite input,2=external health,"
+        "3=PV bounds,4=AppliedDAC bounds,5=setpoint bounds,"
+        "6=no feasible prediction,7=delay history not ready"
+    )
+    st = st_text(V3H)
+    assert re.search(
+        r"IF NOT EXTERNAL_HEALTHY THEN\s+"
+        r"trip_latched_internal := TRUE;\s+"
+        r"trip_code_internal := 2;",
+        st,
+    )
+    assert re.search(
+        r"ELSIF NOT \(PV_RAW = PV_RAW\).*?THEN\s+"
+        r"trip_latched_internal := TRUE;\s+"
+        r"trip_code_internal := 1;",
+        st,
+    )
+    assert re.search(
+        r"ELSIF history_count < 18 THEN\s+"
+        r"trip_latched_internal := TRUE;\s+"
+        r"trip_code_internal := 7;",
+        st,
+    )
+
+
 def test_v3h_system_application_resource_and_mappings_exist_once():
     root = parse(SYS)
 

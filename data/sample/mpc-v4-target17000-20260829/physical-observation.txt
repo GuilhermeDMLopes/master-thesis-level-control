@@ -1,0 +1,11 @@
+MPC V4 target-17000 real-plant validation
+Date: 2026-08-29
+Physical observation: level reached 15 cm and stabilized.
+Active duration: 180 s
+Target: 17000 raw
+Maximum raw: 17106
+Maximum median9 raw: 17086
+Maximum DAC: 16000
+Steady-state DAC region: approximately 13500 to 14500
+Shutdown reason: ACTIVE_WINDOW_COMPLETE
+Final zero output verified: YES

@@ -1,0 +1,25 @@
+INFO: T#523491650352: FORTE is up and running
+INFO: T#523492273552: Using provided bootfile location set in CMake: forte.fboot
+INFO: T#523492780852: Boot file forte.fboot could not be opened. Skipping...
+INFO: T#523493064752: CWin32SocketInterface: Opening TCP-Server connection at: localhost:61499
+INFO: T#545402441452: Connection established by client
+INFO: T#545426739252: Connection closed by peer
+INFO: T#545492440552: Connection established by client
+INFO: T#553378119852: [OPC UA LOGGER] info/client	Connecting to endpoint opc.tcp://127.0.0.1:4841
+INFO: T#553378664852: [OPC UA LOGGER] info/client	SecurityPolicy not specified -> use default #None
+WARNING: T#553380167152: [OPC UA LOGGER] warning/(null)	Security policy None is used to create SecureChannel. Accepting all certificates
+INFO: T#553381972252: [OPC UA LOGGER] info/client	TCP connection established
+INFO: T#553383374652: [OPC UA CLIENT]: A TCP connection to the server is open
+INFO: T#553384604552: [OPC UA LOGGER] info/client	Opened SecureChannel with SecurityPolicy http://opcfoundation.org/UA/SecurityPolicy#None
+INFO: T#553384854752: [OPC UA CLIENT]: A SecureChannel to the server is open
+INFO: T#553385016452: [OPC UA LOGGER] info/client	Endpoint and UserTokenPolicy unconfigured, perform GetEndpoints
+INFO: T#553387276752: [OPC UA LOGGER] info/client	Found 1 endpoints
+INFO: T#553387435952: [OPC UA LOGGER] info/client	Endpoint 0 has 3 user token policies
+INFO: T#553387591152: [OPC UA LOGGER] info/client	Selected Endpoint opc.tcp://127.0.0.1:4841 with SecurityMode None and SecurityPolicy http://opcfoundation.org/UA/SecurityPolicy#None
+INFO: T#553387737152: [OPC UA LOGGER] info/client	Selected UserTokenPolicy anonymous with UserTokenType Anonymous and SecurityPolicy http://opcfoundation.org/UA/SecurityPolicy#None
+INFO: T#553390669752: [OPC UA CLIENT]: A session with the server is open
+INFO: T#553390835752: [OPC UA CLIENT]: Client connected to endpoint opc.tcp://127.0.0.1:4841
+INFO: T#553392231952: [OPC UA CLIENT]: Create subscription to opc.tcp://127.0.0.1:4841 succeeded, id 78
+INFO: T#553393970852: [OPC UA CLIENT]: Monitoring of FB MpcWatchdogRead at index 0 succeeded. The monitoring item id is 112
+INFO: T#553412658552: [OPC UA CLIENT]: Monitoring of FB MpcAppliedDACRead at index 0 succeeded. The monitoring item id is 113
+INFO: T#553433039352: [OPC UA CLIENT]: Monitoring of FB MpcLevelRead at index 0 succeeded. The monitoring item id is 114

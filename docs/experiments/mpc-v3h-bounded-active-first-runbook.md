@@ -26,17 +26,17 @@ The first active run is deliberately a validation run, not a performance claim.
 
 FORTE:
 
-$ForteExe
+C:\Projetos\master-thesis-level-control\forte\preserved-v3h-3_9\runtimes\mpc-v3h-3_9\forte.exe
 
 SHA256:
 
-$ForteHash
+2535F31A5A5FC246BFC699ABDB4171531C71E56C4B72675D284C1322F7FAF31A
 
 open62541 SHA256:
 
-$OpenHash
+452DD9B74FFBFCD08AE1A268D6DE58B552F8CB9D111972265CDFD8989C4F4318
 
-## Controller contract â€” unchanged
+## Controller contract - unchanged
 
 - SP: 450 raw;
 - Ts: 500 ms;
