@@ -464,7 +464,7 @@ def print_plan(args: argparse.Namespace) -> int:
     )
     print()
     print("Expected 4diac settings before --run:")
-    print("  SP_RAW = 16000.0")
+    print("  SP_RAW = 17000.0")
     print("  ENABLE_REQUEST = FALSE")
     print("  EXTERNAL_HEALTHY = TRUE")
     print("  controller TRIPPED = FALSE")
@@ -494,7 +494,7 @@ async def execute(args: argparse.Namespace) -> int:
         "Type HIGH_RANGE_MPC_READY only if the physical stop is accessible, "
         "the tank is visually safe, the gateway + canonical MPC FORTE are "
         "running, ResRealRawMPCV4 is deployed and initialized, "
-        "ENABLE_REQUEST is FALSE, SP_RAW is 16000, and the bounded limits "
+        "ENABLE_REQUEST is FALSE, SP_RAW is 17000, and the bounded limits "
         "printed by --plan are accepted: "
     ).strip()
 

@@ -1088,7 +1088,7 @@
 			<FB Name="MpcController" Type="MPC_MOVE_BLOCKED_NMPC_V4" Comment="First commissioning-stage nonlinear MPC; disabled by default" x="3600.0" y="1400.0">
 				<Parameter Name="ENABLE_REQUEST" Value="FALSE"/>
 				<Parameter Name="RESET_REQUEST" Value="FALSE"/>
-				<Parameter Name="SP_RAW" Value="LREAL#16000.0"/>
+				<Parameter Name="SP_RAW" Value="LREAL#17000.0"/>
 			</FB>
 			<FB Name="MpcSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Defense-in-depth DAC clamp and symmetric rate limiter" x="5200.0" y="1400.0">
 				<Parameter Name="MAX_DELTA_DAC" Value="LREAL#750.0"/>

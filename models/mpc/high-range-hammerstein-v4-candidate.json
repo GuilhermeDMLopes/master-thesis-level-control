@@ -20,9 +20,9 @@
     "fit_method": "joint nonlinear least-squares replay of the real 3, 5, 8.5 and 13 cm DAC-16000 calibration transients"
   },
   "controller_contract": {
-    "target_raw": 16000.0,
+    "target_raw": 17000.0,
     "target_physical_height_cm": 15.0,
-    "target_raw_basis": "approximately 15 cm from the preserved 8.5 and 13 cm calibration trend",
+    "target_raw_basis": "refined after the first real 180 s V4 run stabilized near 15700 raw at approximately 14 cm; 17000 raw is the bounded 15 cm follow-up target",
     "minimum_dac": 0.0,
     "maximum_dac": 16000.0,
     "maximum_delta_dac_per_500ms": 750.0,
@@ -61,5 +61,17 @@
       "path": "data/sample/m3-level-calibration-20260825/calibration-points.csv",
       "sha256": "5ADB8E381884F4F1E213FF7AEDAC1796D6065C602F92DC3097B621F7710E64D5"
     }
+  },
+  "first_v4_real_observation": {
+    "date": "2026-08-29",
+    "active_duration_s": 180.0,
+    "shutdown_reason": "ACTIVE_WINDOW_COMPLETE",
+    "maximum_observed_dac": 16000.0,
+    "maximum_raw": 15945.0,
+    "maximum_median9_raw": 15853.0,
+    "maximum_positive_median_rate_raw_per_s": 280.5,
+    "final_physical_height_cm_approx": 14.0,
+    "final_controller_dac_region": 14500.0,
+    "conclusion": "The actuator ceiling was not the final limiting factor; the controller reduced DAC after approaching SP_RAW=16000. The follow-up changes only SP_RAW to 17000 and preserves DAC_MAX."
   }
 }

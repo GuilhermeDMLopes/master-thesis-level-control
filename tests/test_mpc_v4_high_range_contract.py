@@ -64,7 +64,7 @@ def test_v4_application_and_resource_are_additive():
         re.DOTALL,
     )
     assert app is not None
-    assert 'Name="SP_RAW" Value="LREAL#16000.0"' in app.group(0)
+    assert 'Name="SP_RAW" Value="LREAL#17000.0"' in app.group(0)
     assert 'Name="DAC_MAX" Value="LREAL#16000.0"' in app.group(0)
 
 
@@ -108,7 +108,7 @@ def test_high_range_executor_defaults_and_guards():
     source = EXECUTOR.read_text(encoding="utf-8")
     assert "HIGH_RANGE_MPC_READY" in source
     assert "ResRealRawMPCV4" in source
-    assert "SP_RAW = 16000.0" in source
+    assert "SP_RAW = 17000.0" in source
     assert "maximum DAC must be in 1..16000" in source
     assert "high-range duration must not exceed 240 s" in source
     tree = ast.parse(source)
