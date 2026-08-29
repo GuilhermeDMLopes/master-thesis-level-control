@@ -1,0 +1,65 @@
+{
+  "status": "candidate_offline_from_real_high_range_calibration",
+  "authorization": {
+    "real_actuation_performed_by_this_analysis": false,
+    "real_high_range_validation_authorized": false
+  },
+  "model_type": "high_range_deadzone_hammerstein_first_order",
+  "fit_500ms": {
+    "sample_time_s": 0.5,
+    "offset_raw": 257.0,
+    "discrete_a": 0.9972317763043488,
+    "discrete_b_raw_per_DAC_power_p": 0.004607840412329724,
+    "tau_s": 180.3711257596329,
+    "additional_transport_delay_steps": 0,
+    "additional_transport_delay_s": 0.0,
+    "static_gain": 1.6645477096263863,
+    "deadzone_DAC": 11750.0,
+    "input_exponent_p": 1.2,
+    "joint_replay_rmse_raw": 146.34179463198313,
+    "fit_method": "joint nonlinear least-squares replay of the real 3, 5, 8.5 and 13 cm DAC-16000 calibration transients"
+  },
+  "controller_contract": {
+    "target_raw": 16000.0,
+    "target_physical_height_cm": 15.0,
+    "target_raw_basis": "approximately 15 cm from the preserved 8.5 and 13 cm calibration trend",
+    "minimum_dac": 0.0,
+    "maximum_dac": 16000.0,
+    "maximum_delta_dac_per_500ms": 750.0,
+    "prediction_horizon_s": 30.0,
+    "prediction_steps": 60,
+    "predicted_soft_raw": 18000.0,
+    "predicted_hard_raw": 19500.0,
+    "measured_hard_raw": 20000.0,
+    "supervised_validation_duration_s": 180.0,
+    "physical_operator_abort_cm": 20.0,
+    "declared_plant_safe_max_cm": 25.0
+  },
+  "scope_limitations": [
+    "The high-range fit is dynamic commissioning evidence, not a fully observed steady-state map.",
+    "The 15 cm raw target is interpolated/extrapolated from preserved physical calibration points; the final run must record a manual height observation.",
+    "The independent supervisor must terminate FORTE and verify zero at the 180 s boundary or at any limit violation."
+  ],
+  "evidence": {
+    "point-03cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-03cm-samples.csv",
+      "sha256": "1CE5F2FB8C75EA83CCD72D606D85F3A922989CBD6F2A4A052E9A9F17CB80B75B"
+    },
+    "point-05cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-05cm-samples.csv",
+      "sha256": "500B70908103BD649F8F49DAF482A4368DD96E86888FE1CCC6E86840C4971578"
+    },
+    "point-08_5cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-08_5cm-samples.csv",
+      "sha256": "33DA513D2A409193FCE5DFB853F1754C0F7D55AB8D83B71BE063C935DECBF066"
+    },
+    "point-13cm-samples.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/point-13cm-samples.csv",
+      "sha256": "1D020534DF896F00DF8370F590CCB78450A447943F7EC4CEFAF0DC23DADF67A9"
+    },
+    "calibration-points.csv": {
+      "path": "data/sample/m3-level-calibration-20260825/calibration-points.csv",
+      "sha256": "5ADB8E381884F4F1E213FF7AEDAC1796D6065C602F92DC3097B621F7710E64D5"
+    }
+  }
+}

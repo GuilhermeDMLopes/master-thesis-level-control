@@ -475,3 +475,11 @@ The immediate priority is **M5 - Final 4diac MPC Integration and Thesis Evidence
 Outside the laboratory, work is limited to the offline structural verification of `MPC_REAL_RAW_SAFE_V3H`, documentation, automated tests, evidence preparation, and the deployment checklist. Positive real-plant actuation must wait for the documented laboratory procedure.
 
 The repository should remain focused on completing the dissertation. Additional model candidates, controller variants, refactoring, or organizational work should be avoided unless required to correct the final V3H application, preserve reproducibility, or support the final PI-MPC evidence package.
+
+## M5F - High-range final MPC validation
+
+The bounded 20 s V3H 3.9 run validated the real actuation chain but was too
+short for performance analysis. The additive V4 contract targets approximately
+15 cm (`SP_RAW=16000`) with a real-calibration high-range model, DAC up to 16000
+and an independently supervised 180 s validation. Real execution remains
+blocked until the V4 FORTE export/build and type-only smoke gate pass.
