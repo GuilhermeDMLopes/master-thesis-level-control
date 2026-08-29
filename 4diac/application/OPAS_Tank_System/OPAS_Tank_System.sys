@@ -692,7 +692,7 @@
 		</SubAppNetwork>
 	</Application>
 	<Application Name="MPC_REAL_RAW_SAFE_V1" Comment="Additive real-plant raw-count MPC V1. Disabled by default; historical PI and MPC artifacts remain unchanged.">
-			<SubAppNetwork>
+		<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
 				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
@@ -750,7 +750,7 @@
 				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 			</EventConnections>
 			<DataConnections>
 				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -764,10 +764,10 @@
 				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
 				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
 			</DataConnections>
-			</SubAppNetwork>
+		</SubAppNetwork>
 	</Application>
 	<Application Name="MPC_REAL_RAW_SAFE_V2" Comment="Additive real-plant raw-count MPC V1. Disabled by default; historical PI and MPC artifacts remain unchanged.">
-			<SubAppNetwork>
+		<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
 				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
@@ -825,7 +825,7 @@
 				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 			</EventConnections>
 			<DataConnections>
 				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -839,10 +839,10 @@
 				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
 				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
 			</DataConnections>
-			</SubAppNetwork>
+		</SubAppNetwork>
 	</Application>
 	<Application Name="MPC_REAL_RAW_SAFE_V3" Comment="Additive real-plant raw-count MPC V1. Disabled by default; historical PI and MPC artifacts remain unchanged.">
-			<SubAppNetwork>
+		<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
 				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
@@ -900,7 +900,7 @@
 				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 			</EventConnections>
 			<DataConnections>
 				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -914,10 +914,10 @@
 				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
 				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
 			</DataConnections>
-			</SubAppNetwork>
+		</SubAppNetwork>
 	</Application>
 	<Application Name="MPC_REAL_RAW_SAFE_V3E" Comment="Additive real-plant raw-count MPC V1. Disabled by default; historical PI and MPC artifacts remain unchanged.">
-			<SubAppNetwork>
+		<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
 				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
@@ -975,7 +975,7 @@
 				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 			</EventConnections>
 			<DataConnections>
 				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -989,10 +989,10 @@
 				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
 				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
 			</DataConnections>
-			</SubAppNetwork>
+		</SubAppNetwork>
 	</Application>
 	<Application Name="MPC_REAL_RAW_SAFE_V3H" Comment="Additive real-plant raw-count MPC V1. Disabled by default; historical PI and MPC artifacts remain unchanged.">
-			<SubAppNetwork>
+		<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
 				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
@@ -1050,7 +1050,7 @@
 				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 			</EventConnections>
 			<DataConnections>
 				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1064,10 +1064,10 @@
 				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
 				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
 			</DataConnections>
-			</SubAppNetwork>
+		</SubAppNetwork>
 	</Application>
 	<Application Name="MPC_REAL_RAW_SAFE_V4" Comment="Final high-range real-plant MPC V4 for the 15 cm validation; disabled by default.">
-			<SubAppNetwork>
+		<SubAppNetwork>
 			<FB Name="MpcLevelRead" Type="SUBSCRIBE_1" Comment="Read unfiltered raw level from the local gateway" x="800.0" y="800.0">
 				<Parameter Name="QI" Value="TRUE"/>
 				<Parameter Name="ID" Value="&quot;opc_ua[SUBSCRIBE;opc.tcp://127.0.0.1:4841#;,2:s=Nivel]&quot;"/>
@@ -1125,7 +1125,7 @@
 				<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 				<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 				<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-			<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 			</EventConnections>
 			<DataConnections>
 				<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1139,7 +1139,7 @@
 				<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
 				<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
 			</DataConnections>
-			</SubAppNetwork>
+		</SubAppNetwork>
 	</Application>
 	<Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="3000.0" y="1173.3333333333335">
 		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
@@ -1602,7 +1602,7 @@
 					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+					<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 				</EventConnections>
 				<DataConnections>
 					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1677,7 +1677,7 @@
 					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+					<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 				</EventConnections>
 				<DataConnections>
 					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1752,7 +1752,7 @@
 					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+					<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 				</EventConnections>
 				<DataConnections>
 					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1827,7 +1827,7 @@
 					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+					<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 				</EventConnections>
 				<DataConnections>
 					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1902,7 +1902,7 @@
 					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
 					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
 					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+					<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
 				</EventConnections>
 				<DataConnections>
 					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
@@ -1940,9 +1940,9 @@
 				<FB Name="MpcController" Type="MPC_MOVE_BLOCKED_NMPC_V4" Comment="First commissioning-stage nonlinear MPC; disabled by default" x="3600.0" y="1400.0">
 					<Parameter Name="ENABLE_REQUEST" Value="FALSE"/>
 					<Parameter Name="RESET_REQUEST" Value="FALSE"/>
-					<Parameter Name="SP_RAW" Value="LREAL#16000.0"/>
+					<Parameter Name="SP_RAW" Value="LREAL#17000.0"/>
 				</FB>
-				<FB Name="MpcSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Defense-in-depth DAC clamp and symmetric rate limiter" x="5200.0" y="1400.0">
+				<FB Name="MpcSafeDACLimiter" Type="SAFE_DAC_RATE_LIMITER" Comment="Defense-in-depth DAC clamp and symmetric rate limiter" x="3866.666666666667" y="3333.3333333333335">
 					<Parameter Name="MAX_DELTA_DAC" Value="LREAL#750.0"/>
 					<Parameter Name="DAC_MIN" Value="LREAL#0.0"/>
 					<Parameter Name="DAC_MAX" Value="LREAL#16000.0"/>
@@ -1965,31 +1965,31 @@
 				<FB Name="MpcInitMerge" Type="E_MERGE" Comment="Manual-only initialization entry point; no START.COLD/WARM connection" x="400.0" y="5200.0">
 				</FB>
 				<EventConnections>
-					<Connection Source="MpcCycle.EO" Destination="MpcMedian9.REQ" Comment=""/>
-					<Connection Source="MpcMedian9.CNF" Destination="MpcController.REQ" Comment=""/>
-					<Connection Source="MpcAppliedDACRead.IND" Destination="MpcAppliedDACType.REQ" Comment=""/>
-					<Connection Source="MpcController.CNF" Destination="MpcSafeDACLimiter.REQ" Comment=""/>
-					<Connection Source="MpcSafeDACLimiter.CNF" Destination="MpcDACType.REQ" Comment=""/>
-					<Connection Source="MpcDACType.CNF" Destination="MpcDACWrite.REQ" Comment=""/>
-					<Connection Source="MpcDACWrite.CNF" Destination="MpcEnableWrite.REQ" Comment=""/>
-					<Connection Source="MpcInitMerge.EO" Destination="MpcEnableWrite.INIT" Comment=""/>
-					<Connection Source="MpcEnableWrite.INITO" Destination="MpcDACWrite.INIT" Comment=""/>
-					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment=""/>
-					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment=""/>
-					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment=""/>
-				<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment=""/>
+					<Connection Source="MpcCycle.EO" Destination="MpcMedian9.REQ" Comment="" dx1="80.0" dx2="80.0" dy="-2200.0"/>
+					<Connection Source="MpcMedian9.CNF" Destination="MpcController.REQ" Comment="" dx1="200.0"/>
+					<Connection Source="MpcAppliedDACRead.IND" Destination="MpcAppliedDACType.REQ" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="MpcController.CNF" Destination="MpcSafeDACLimiter.REQ" Comment="" dx1="80.0" dx2="80.0" dy="160.0"/>
+					<Connection Source="MpcSafeDACLimiter.CNF" Destination="MpcDACType.REQ" Comment="" dx1="540.0"/>
+					<Connection Source="MpcDACType.CNF" Destination="MpcDACWrite.REQ" Comment="" dx1="213.33333333333334"/>
+					<Connection Source="MpcDACWrite.CNF" Destination="MpcEnableWrite.REQ" Comment="" dx1="80.0" dx2="80.0" dy="700.0"/>
+					<Connection Source="MpcInitMerge.EO" Destination="MpcEnableWrite.INIT" Comment="" dx1="3480.0"/>
+					<Connection Source="MpcEnableWrite.INITO" Destination="MpcDACWrite.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-700.0"/>
+					<Connection Source="MpcDACWrite.INITO" Destination="MpcWatchdogRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="1200.0"/>
+					<Connection Source="MpcWatchdogRead.INITO" Destination="MpcAppliedDACRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-600.0"/>
+					<Connection Source="MpcAppliedDACRead.INITO" Destination="MpcLevelRead.INIT" Comment="" dx1="80.0" dx2="80.0" dy="-800.0"/>
+					<Connection Source="MpcLevelRead.INITO" Destination="MpcCycle.START" Comment="" dx1="80.0" dx2="80.0" dy="2200.0"/>
 				</EventConnections>
 				<DataConnections>
-					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment=""/>
-					<Connection Source="MpcLevelRead.RD_1" Destination="MpcController.PV_RAW" Comment=""/>
-					<Connection Source="MpcMedian9.PV_MEDIAN" Destination="MpcController.PV_MODEL" Comment=""/>
-					<Connection Source="MpcAppliedDACRead.RD_1" Destination="MpcAppliedDACType.IN" Comment=""/>
-					<Connection Source="MpcAppliedDACType.OUT" Destination="MpcController.APPLIED_DAC" Comment=""/>
-					<Connection Source="MpcWatchdogRead.RD_1" Destination="MpcController.EXTERNAL_HEALTHY" Comment=""/>
-					<Connection Source="MpcController.COMMAND_DAC" Destination="MpcSafeDACLimiter.DAC_IN" Comment=""/>
-					<Connection Source="MpcSafeDACLimiter.DAC_OUT" Destination="MpcDACType.IN" Comment=""/>
-					<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment=""/>
-					<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment=""/>
+					<Connection Source="MpcLevelRead.RD_1" Destination="MpcMedian9.PV_RAW" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="MpcLevelRead.RD_1" Destination="MpcController.PV_RAW" Comment="" dx1="986.6666666666667"/>
+					<Connection Source="MpcMedian9.PV_MEDIAN" Destination="MpcController.PV_MODEL" Comment="" dx1="200.0"/>
+					<Connection Source="MpcAppliedDACRead.RD_1" Destination="MpcAppliedDACType.IN" Comment="" dx1="186.66666666666669"/>
+					<Connection Source="MpcAppliedDACType.OUT" Destination="MpcController.APPLIED_DAC" Comment="" dx1="313.33333333333337"/>
+					<Connection Source="MpcWatchdogRead.RD_1" Destination="MpcController.EXTERNAL_HEALTHY" Comment="" dx1="986.6666666666667"/>
+					<Connection Source="MpcController.COMMAND_DAC" Destination="MpcSafeDACLimiter.DAC_IN" Comment="" dx1="80.0" dx2="80.0" dy="-46.66666666666667"/>
+					<Connection Source="MpcSafeDACLimiter.DAC_OUT" Destination="MpcDACType.IN" Comment="" dx1="540.0"/>
+					<Connection Source="MpcDACType.OUT" Destination="MpcDACWrite.SD_1" Comment="" dx1="213.33333333333334"/>
+					<Connection Source="MpcController.COMMAND_ENABLE" Destination="MpcEnableWrite.SD_1" Comment="" dx1="1206.6666666666667"/>
 				</DataConnections>
 			</FBNetwork>
 		</Resource>
