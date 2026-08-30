@@ -13,7 +13,7 @@ It does not replace or modify the historical `PI_REAL_RAW_SAFE` application.
 - final DAC range: 0 to 16000;
 - safe limiter: 150 DAC per 100 ms cycle, equivalent to the MPC limit of
   750 DAC per 500 ms cycle (1500 DAC/s);
-- PI gains retained from the validated raw PI: KP=4.0 and KI=0.02;
+- PI gains for the final single retuned attempt: KP=4.0 and KI=0.10;
 - feedforward bias: 14000 DAC, based on the observed steady-state region of
   the successful MPC V4 experiment;
 - startup state: `RawPI.MANUAL=TRUE`, producing a zero biased request;
@@ -39,3 +39,21 @@ If this single matched attempt is unsafe, unstable, or requires a new tuning
 campaign, stop the PI comparison. The dissertation then reports the PI only as
 historical infrastructure evidence and bases its final experimental conclusion
 on the validated MPC V4 result, without claiming quantitative superiority.
+
+## One-step integral retuning decision
+
+The first matched attempt retained the historical `KI=0.02`. It completed the
+180 s safety window without faults, but reached only about 6 cm: maximum level
+6370 raw, median9 maximum 6257 raw, and maximum DAC 14306. The target was not
+reached because bumpless transfer made the command rise too slowly.
+
+One final attempt therefore uses `KI=0.10`, with `KP=4.0` unchanged. At the
+initial error of approximately 16750 raw, the nominal integral increment is
+about 167.5 DAC per 100 ms cycle. This is already above the independent limiter
+of 150 DAC per cycle, so the limiter—not `KI`—defines the initial ramp. Values
+above 0.10 would not accelerate that ramp and would only increase integral
+aggressiveness near the reference.
+
+No iterative tuning campaign is authorized. If this single retuned attempt
+does not reach and regulate the 15 cm target safely, the experimental thesis
+conclusion remains based on the validated MPC V4 controller.

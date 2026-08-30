@@ -706,7 +706,7 @@
 			<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Matched PI controller in raw counts; original validated gains retained" x="3200.0" y="933.3333333333334">
 				<Parameter Name="SETPOINT" Value="LREAL#17000.0"/>
 				<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
-				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.02"/>
+				<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.10"/>
 				<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
 				<Parameter Name="OUTPUT_MIN" Value="LREAL#-14000.0"/>
 				<Parameter Name="OUTPUT_MAX" Value="LREAL#2000.0"/>
@@ -1633,7 +1633,7 @@
 				<FB Name="RawPI" Type="PI_LEVEL_CONTROLLER" Comment="Matched PI controller in raw counts; original validated gains retained" x="3200.0" y="933.3333333333334">
 					<Parameter Name="SETPOINT" Value="LREAL#17000.0"/>
 					<Parameter Name="PROPORTIONAL_GAIN" Value="LREAL#4.0"/>
-					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.02"/>
+					<Parameter Name="INTEGRAL_GAIN" Value="LREAL#0.10"/>
 					<Parameter Name="SAMPLING_TIME_S" Value="LREAL#0.1"/>
 					<Parameter Name="OUTPUT_MIN" Value="LREAL#-14000.0"/>
 					<Parameter Name="OUTPUT_MAX" Value="LREAL#2000.0"/>

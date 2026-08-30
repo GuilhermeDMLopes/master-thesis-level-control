@@ -467,7 +467,7 @@ def print_plan(args: argparse.Namespace) -> int:
     print("  RawPI.SETPOINT = 17000.0")
     print("  RawPI.MANUAL = TRUE before arming")
     print("  RawDACBias.IN2 = 14000.0")
-    print("  RawPI gains remain KP=4.0 and KI=0.02")
+    print("  RawPI gains: KP=4.0 and KI=0.10")
     print("  safe limiter DAC_MAX = 16000")
     print("  safe limiter MAX_DELTA_DAC = 150 per 100 ms cycle")
     print()
@@ -620,7 +620,7 @@ async def execute(args: argparse.Namespace) -> int:
                     if activity:
                         active_started = now
                         print()
-                        print("ACTIVE MPC OUTPUT DETECTED")
+                        print("ACTIVE PI OUTPUT DETECTED")
                         print("==========================")
                         print(
                             f"t={elapsed:.3f}s | "
@@ -744,7 +744,7 @@ async def execute(args: argparse.Namespace) -> int:
         shutdown_done = True
 
         print()
-        print("HIGH-RANGE MPC V4 VALIDATION COMPLETED")
+        print("MATCHED PI VALIDATION COMPLETED")
         print("===============================================")
         print(f"Shutdown reason: {shutdown_reason}")
         print(f"Samples logged: {samples}")
@@ -758,7 +758,7 @@ async def execute(args: argparse.Namespace) -> int:
         print(f"CSV: {csv_path}")
         print()
         if shutdown_reason == "ACTIVE_WINDOW_COMPLETE":
-            print("M5F HIGH-RANGE ACTIVE WINDOW: COMPLETED")
+            print("M5L MATCHED PI ACTIVE WINDOW: COMPLETED")
         else:
             print("M5F HIGH-RANGE ACTIVE WINDOW: NO ACTUATION OBSERVED")
         print("FINAL ZERO OUTPUT VERIFIED: YES")

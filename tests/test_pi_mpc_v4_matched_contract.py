@@ -44,7 +44,7 @@ def test_matched_pi_application_contract():
     assert params(pi) == {
         "SETPOINT": "LREAL#17000.0",
         "PROPORTIONAL_GAIN": "LREAL#4.0",
-        "INTEGRAL_GAIN": "LREAL#0.02",
+        "INTEGRAL_GAIN": "LREAL#0.10",
         "SAMPLING_TIME_S": "LREAL#0.1",
         "OUTPUT_MIN": "LREAL#-14000.0",
         "OUTPUT_MAX": "LREAL#2000.0",
@@ -97,3 +97,7 @@ def test_pi_supervisor_is_bounded_and_pi_specific():
     assert "default=16000.0" in text
     assert "force_zero_outputs" in text
     assert "terminate_forte" in text
+    assert "ACTIVE PI OUTPUT DETECTED" in text
+    assert "MATCHED PI VALIDATION COMPLETED" in text
+    assert "ACTIVE MPC OUTPUT DETECTED" not in text
+    assert "HIGH-RANGE MPC V4 VALIDATION COMPLETED" not in text

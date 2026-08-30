@@ -701,4 +701,4 @@ use the additive `PI_REAL_RAW_HIGH_RANGE_COMPARE` application mapped to
 The frozen plan uses a 17000-raw target (15 cm physical), 180 s active window,
 0.1 s sampling, 0..16000 DAC bounds, and the independent supervisor
 `scripts/pi_high_range_validation.py`. Full safety and stop criteria are in
-`docs/experiments/pi-vs-mpc-v4-matched-comparison.md`.
+`docs/experiments/pi-vs-mpc-v4-matched-comparison.md`. The final single PI attempt uses `KP=4.0` and `KI=0.10`; the 150 DAC/100 ms limiter remains the governing initial ramp.
