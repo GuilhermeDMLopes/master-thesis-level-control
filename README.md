@@ -34,7 +34,7 @@ Validated checkpoints:
 | Final 15 cm target refinement | `82f0978` | V4 target refined from the observed 14 cm response to `SP_RAW=17000` |
 | Final mapped V4 application | `ca02fe7` | Mapped target and 4diac layout synchronized before the successful final run |
 
-The complete automated test suite contains **494 passing tests** after the
+The complete automated test suite contains **507 passing tests** after the
 final evidence closure.
 
 The selected application is `MPC_REAL_RAW_SAFE_V4`, mapped to
@@ -364,7 +364,7 @@ The following commands require no laboratory connection:
 ```
 
 The analysis recreates `metrics.json` and the PNG/SVG figures from the frozen
-CSV. The expected test result is `494 passed`.
+CSV. The expected test result is `507 passed`.
 
 ### 6. Use the correct FORTE runtime
 
@@ -500,7 +500,7 @@ When the virtual environment is already active:
 python -m pytest -q
 ```
 
-Current validated result after final MPC evidence closure:
+Current validated result after final PI-MPC evidence closure:
 
 ```text
 494 passed
@@ -685,9 +685,37 @@ tests are preserved in the repository. The complete offline suite passes 494
 tests, providing regression protection for the communication, controller,
 safety, evidence and reproducibility contracts.
 
-The practical MPC implementation and required real-plant validation are
-therefore complete. Based on the accepted evidence, no additional controller
-variant, model-identification campaign or real-plant experiment is required.
-The remaining work is limited to consolidating the final PI-MPC comparison,
-incorporating the results and figures into the dissertation, and completing
-academic writing and review.
+The practical MPC implementation, matched PI baseline and final real-plant
+comparison are complete. The PI reached 14.7 cm and the MPC V4 reached 15.0 cm
+under the common bounded 180 s protocol; both ended with healthy watchdog state
+and independently verified zero output. Based on the accepted evidence, no
+additional controller variant, model-identification campaign, PI tuning or
+real-plant experiment is required. The remaining work is limited to using the
+preserved metrics and figures in the dissertation and completing academic
+writing and review.
+
+## Final matched PI comparison
+
+The final matched PI baseline is complete. The additive
+`PI_REAL_RAW_HIGH_RANGE_COMPARE` application, mapped to
+`FORTE_PC.ResRealRawPICompare`, preserves the historical PI application while
+providing the same nominal 15 cm target, 17000-raw reference, 180 s active
+window and 0..16000 DAC envelope used by the final MPC V4 experiment.
+
+The first matched attempt with `KP=4.0` and `KI=0.02` reached approximately
+6 cm and was preserved as retuning evidence. The single justified final attempt
+kept `KP=4.0`, used `KI=0.10`, and reached 14.7 cm with no physical overshoot.
+It completed the full active window with a healthy watchdog and independently
+verified zero output after FORTE termination.
+
+The final descriptive comparison shows that MPC V4 reached 15.0 cm and had a
+last-30-s mean raw error of 151.55, while the PI reached 14.7 cm and had a
+last-30-s mean raw error of 1132.23. The PI had no overshoot; MPC raw overshoot
+was 0.506%. Both converged to a similar applied-DAC region near 14000 to balance
+the continuous bottom drain. Because one final run per controller was used and
+the raw-to-centimetre offset varied between sessions, the evidence supports an
+engineering comparison rather than a statistical superiority claim.
+
+Full metrics, figures, limitations and reproducibility paths are documented in
+`docs/experiments/pi-vs-mpc-v4-final-20260901-analysis.md`. No additional
+real-plant experiment or PI tuning campaign is required.

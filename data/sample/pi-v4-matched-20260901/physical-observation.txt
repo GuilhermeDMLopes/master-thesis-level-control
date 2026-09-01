@@ -1,0 +1,22 @@
+Final retuned PI real-plant validation
+Date: 2026-09-01
+Physical target: 15 cm
+Physical height at active-window end: 14.7 cm
+Physical absolute error: 0.3 cm
+Physical relative error: approximately 2 percent
+Active duration: 180 s
+Confirmed physical zero before run: approximately 125 raw
+Setpoint: 17000 raw
+KP: 4.0
+KI: 0.10
+Bias: 14000 DAC
+Maximum DAC: 16000
+Maximum raw: 16170
+Maximum median9 raw: 16148
+Maximum positive median rate: 375.6 raw/s
+Shutdown reason: ACTIVE_WINDOW_COMPLETE
+Physical target approximately reached: YES
+Final zero output verified: YES
+FORTE stopped automatically: YES
+Disposition: matched PI baseline accepted
+Additional PI tuning or repetition required: NO

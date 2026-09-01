@@ -52,3 +52,7 @@ forte/preserved-v4/runtimes/mpc-v4-candidate/* -text -diff !eol
 data/sample/mpc-v4-target17000-20260829/*.csv -text -diff !eol
 data/sample/mpc-v4-target17000-20260829/*.log -text -diff !eol
 data/sample/mpc-v4-target17000-20260829/physical-observation.txt -text -diff !eol
+
+# Preserve exact final matched PI experimental bytes.
+data/sample/pi-v4-matched-20260901/*.csv -text -diff !eol
+data/sample/pi-v4-matched-first-attempt-20260829/*.csv -text -diff !eol
