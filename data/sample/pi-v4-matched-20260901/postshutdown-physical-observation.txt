@@ -1,0 +1,6 @@
+Final post-shutdown physical observation
+Date: 2026-09-01
+Measurement tank physical height: 0 cm
+Short post-shutdown raw median: 421 raw
+Interpretation: post-run offset/transient only; not a new stable calibration.
+Enable and DAC remained zero for all independent samples.

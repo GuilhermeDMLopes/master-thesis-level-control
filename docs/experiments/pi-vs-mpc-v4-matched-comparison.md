@@ -57,3 +57,18 @@ aggressiveness near the reference.
 No iterative tuning campaign is authorized. If this single retuned attempt
 does not reach and regulate the 15 cm target safely, the experimental thesis
 conclusion remains based on the validated MPC V4 controller.
+
+## Final accepted result
+
+The final single retuned PI attempt was completed on 2026-09-01 with
+`KP=4.0`, `KI=0.10`, a 17000-raw target, 14000-DAC bias, 0..16000 DAC bounds,
+and the independent 180 s supervisor. The physically measured level reached
+14.7 cm against the nominal 15 cm target. The maximum median-9 level was 16148
+raw, maximum applied DAC was 16000, and maximum positive median rate was 375.6
+raw/s. The watchdog remained healthy, the run ended with
+`ACTIVE_WINDOW_COMPLETE`, FORTE stopped automatically, and 80 independent
+post-shutdown samples confirmed zero output.
+
+The PI baseline is accepted. No additional PI tuning or real-plant repetition
+is required. The final comparison with MPC V4 is documented in
+`pi-vs-mpc-v4-final-20260901-analysis.md`.

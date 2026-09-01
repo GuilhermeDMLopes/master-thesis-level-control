@@ -1,0 +1,8 @@
+First matched PI real-plant attempt
+Date: 2026-08-29
+Physical target: 15 cm
+Physical height at active-window end: approximately 6 cm
+Active duration: 180 s
+KP: 4.0
+KI: 0.02
+Disposition: preserved as integral-retuning evidence
