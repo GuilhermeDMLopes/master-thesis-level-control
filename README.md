@@ -16,11 +16,9 @@ The research objective is to develop, validate, and compare PI and MPC control s
 
 ## Current Project Status
 
-The complete PLC-gateway-FORTE path, the fail-closed raw-count PI baseline and
-the final high-range MPC V4 implementation have been validated on the real
-plant. The final bounded MPC experiment completed a 180 s active window,
-reached and stabilized at the physically measured 15 cm target, and ended with
-independently verified zero output.
+The complete PLC-gateway-FORTE path, the fail-closed raw-count PI baseline, the final matched PI baseline, and the high-range MPC V4 implementation have been validated on the real plant. Under the common bounded 180 s protocol, MPC V4 reached and stabilized at the physically measured 15 cm target, while the matched PI reached 14.7 cm. Both runs maintained a healthy watchdog state and ended with independently verified zero output.
+
+The final PI-MPC comparison, reproducible metrics, figures, limitations, and source-evidence hashes are complete and integrated into `main`.
 
 Validated checkpoints:
 
@@ -34,7 +32,7 @@ Validated checkpoints:
 | Final 15 cm target refinement | `82f0978` | V4 target refined from the observed 14 cm response to `SP_RAW=17000` |
 | Final mapped V4 application | `ca02fe7` | Mapped target and 4diac layout synchronized before the successful final run |
 
-The complete automated test suite contains **507 passing tests** after the
+The complete automated test suite contains **507 passing tests** after the final evidence closure. The validated repository state is preserved by the annotated tag `thesis-real-plant-validation-20260901`.
 final evidence closure.
 
 The selected application is `MPC_REAL_RAW_SAFE_V4`, mapped to
@@ -96,7 +94,7 @@ Enable
 DAC
 ```
 
-Changing these names requires a coordinated migration of the gateway and the 4diac applications and is not part of the current MPC preparation stage.
+Changing these names requires a coordinated migration of the gateway and the 4diac applications and is not part of the validated final architecture.
 
 ## Safety Architecture
 
@@ -488,6 +486,10 @@ Check the environment:
 
 ## Automated Testing
 
+The automated test suite provides regression protection for the complete experimental chain. At a general level, it verifies the structural integrity and historical preservation of the 4diac project; communication and data-type contracts across the gateway, FORTE, and PLC interfaces; controller configuration, prediction, filtering, actuator constraints, and fail-closed safety behavior; controlled CLI preconditions and zero-output procedures; and the integrity and reproducibility of preserved experimental evidence, metrics, figures, and documentation.
+
+These tests are deterministic and run offline. They do not replace real-plant experiments; their purpose is to ensure that later code or documentation changes do not invalidate the software, safety contracts, evidence, or conclusions that were already validated on the physical plant.
+
 Run the complete offline test suite from the repository root:
 
 ```powershell
@@ -500,10 +502,10 @@ When the virtual environment is already active:
 python -m pytest -q
 ```
 
-Current validated result after final PI-MPC evidence closure:
+Current validated result after the final PI-MPC evidence closure:
 
 ```text
-494 passed
+507 passed
 ```
 
 The offline tests do not require access to the B&R PLC, FORTE, or the laboratory network.
@@ -620,22 +622,19 @@ Only selected evidence files should be copied to `data/sample/` and committed. E
 - preserved synchronized CSV, runtime, physical and safe-stop evidence;
 - generated reproducible final metrics and figures.
 
-### In Progress - Final PI-MPC Comparison
+### Completed - Final PI-MPC Comparison
 
-The final experimental presentation will consolidate:
+The final matched comparison has been completed and integrated into `main`:
 
-- Integral Absolute Error;
-- Integral Squared Error;
-- overshoot;
-- settling time;
-- steady-state error;
-- control effort;
-- constraint violations;
-- computation time;
-- communication jitter;
-- safety and fallback behavior.
+- preserved the first matched PI attempt with `KI=0.02` as retuning evidence;
+- completed the accepted matched PI run with `KP=4.0`, `KI=0.10`, the 17000-raw reference, and the same 180 s and 0..16000 DAC envelope used by MPC V4;
+- measured 14.7 cm for PI and 15.0 cm for MPC V4;
+- consolidated tracking error, IAE, ISE, overshoot, settling behavior, control effort, sampling behavior, watchdog state, and safe-zero evidence;
+- generated reproducible metrics and PI-MPC comparison figures;
+- documented the single-run and raw-to-centimetre offset limitations;
+- preserved the final repository state with the annotated tag `thesis-real-plant-validation-20260901`.
 
-No additional model variants or unrelated controller implementations are planned unless the M5 structural audit identifies a necessary correction.
+The results support a descriptive engineering comparison rather than a statistical superiority claim. No additional PI tuning, model variant, or real-plant experiment is required.
 
 ## Git and Documentation Conventions
 
@@ -656,9 +655,9 @@ Use annotated or lightweight tags only for meaningful validated checkpoints.
 
 ## Current Priority
 
-The practical MPC implementation and bounded real-plant validation are complete. The current priority is limited to final PI-MPC comparison figures, dissertation writing and review.
+The practical MPC implementation, the matched PI baseline, and the final real-plant PI-MPC comparison are complete. The current priority is limited to dissertation writing, academic review, and optional preparation of the repository for public release.
 
-No additional controller variants or real-plant experiments are planned. The repository should remain focused on preserving reproducibility and completing the dissertation.
+No additional controller variants, PI tuning campaigns, model-identification stages, or real-plant experiments are planned. The repository should remain focused on preserving the validated evidence and supporting the dissertation.
 
 ## M5F - High-range final MPC validation
 
