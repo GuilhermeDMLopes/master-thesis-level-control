@@ -484,6 +484,12 @@ Check the environment:
 .\.venv\Scripts\python.exe -m pip check
 ```
 
+## Final Real-Plant Execution Assets
+
+The exact gateway, 4diac engineering project, preserved FORTE runtime and bounded supervisors used for the accepted MPC V4 and matched PI experiments are versioned in this repository. Their roles, controller mappings, laboratory sequence and safe demonstration commands are recorded in [`docs/experiments/final-real-plant-execution-assets.md`](docs/experiments/final-real-plant-execution-assets.md).
+
+The `--plan` modes can be used to demonstrate the validated configurations without plant actuation. The `--run` modes belong exclusively to the supervised laboratory procedure and can command the real pump when the approved stack is connected.
+
 ## Automated Testing
 
 The automated test suite provides regression protection for the complete experimental chain. At a general level, it verifies the structural integrity and historical preservation of the 4diac project; communication and data-type contracts across the gateway, FORTE, and PLC interfaces; controller configuration, prediction, filtering, actuator constraints, and fail-closed safety behavior; controlled CLI preconditions and zero-output procedures; and the integrity and reproducibility of preserved experimental evidence, metrics, figures, and documentation.
