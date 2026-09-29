@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="ADP_RLS4" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="LAMBDA" />
+        <With Var="P0" />
+      </Event>
+      <Event Name="REQ" Type="Event">
+        <With Var="Y" />
+        <With Var="F1" />
+        <With Var="F2" />
+        <With Var="F3" />
+        <With Var="F4" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="T1" />
+        <With Var="T2" />
+        <With Var="T3" />
+        <With Var="T4" />
+        <With Var="Y_HAT" />
+        <With Var="ERROR" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="T1" />
+        <With Var="T2" />
+        <With Var="T3" />
+        <With Var="T4" />
+        <With Var="Y_HAT" />
+        <With Var="ERROR" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="LAMBDA" Type="LREAL" InitialValue="1.0" />
+      <VarDeclaration Name="P0" Type="LREAL" InitialValue="10000.0" />
+      <VarDeclaration Name="Y" Type="LREAL" />
+      <VarDeclaration Name="F1" Type="LREAL" />
+      <VarDeclaration Name="F2" Type="LREAL" />
+      <VarDeclaration Name="F3" Type="LREAL" />
+      <VarDeclaration Name="F4" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="T1" Type="LREAL" />
+      <VarDeclaration Name="T2" Type="LREAL" />
+      <VarDeclaration Name="T3" Type="LREAL" />
+      <VarDeclaration Name="T4" Type="LREAL" />
+      <VarDeclaration Name="Y_HAT" Type="LREAL" />
+      <VarDeclaration Name="ERROR" Type="LREAL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="LAMBDA_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="DEN" Type="LREAL" />
+      <VarDeclaration Name="V1" Type="LREAL" />
+      <VarDeclaration Name="V2" Type="LREAL" />
+      <VarDeclaration Name="V3" Type="LREAL" />
+      <VarDeclaration Name="V4" Type="LREAL" />
+      <VarDeclaration Name="R1" Type="LREAL" />
+      <VarDeclaration Name="R2" Type="LREAL" />
+      <VarDeclaration Name="R3" Type="LREAL" />
+      <VarDeclaration Name="R4" Type="LREAL" />
+      <VarDeclaration Name="G1" Type="LREAL" />
+      <VarDeclaration Name="G2" Type="LREAL" />
+      <VarDeclaration Name="G3" Type="LREAL" />
+      <VarDeclaration Name="G4" Type="LREAL" />
+      <VarDeclaration Name="N1" Type="LREAL" />
+      <VarDeclaration Name="N2" Type="LREAL" />
+      <VarDeclaration Name="N3" Type="LREAL" />
+      <VarDeclaration Name="N4" Type="LREAL" />
+      <VarDeclaration Name="P11" Type="LREAL" />
+      <VarDeclaration Name="P12" Type="LREAL" />
+      <VarDeclaration Name="P13" Type="LREAL" />
+      <VarDeclaration Name="P14" Type="LREAL" />
+      <VarDeclaration Name="P21" Type="LREAL" />
+      <VarDeclaration Name="P22" Type="LREAL" />
+      <VarDeclaration Name="P23" Type="LREAL" />
+      <VarDeclaration Name="P24" Type="LREAL" />
+      <VarDeclaration Name="P31" Type="LREAL" />
+      <VarDeclaration Name="P32" Type="LREAL" />
+      <VarDeclaration Name="P33" Type="LREAL" />
+      <VarDeclaration Name="P34" Type="LREAL" />
+      <VarDeclaration Name="P41" Type="LREAL" />
+      <VarDeclaration Name="P42" Type="LREAL" />
+      <VarDeclaration Name="P43" Type="LREAL" />
+      <VarDeclaration Name="P44" Type="LREAL" />
+      <VarDeclaration Name="C11" Type="LREAL" />
+      <VarDeclaration Name="C12" Type="LREAL" />
+      <VarDeclaration Name="C13" Type="LREAL" />
+      <VarDeclaration Name="C14" Type="LREAL" />
+      <VarDeclaration Name="C21" Type="LREAL" />
+      <VarDeclaration Name="C22" Type="LREAL" />
+      <VarDeclaration Name="C23" Type="LREAL" />
+      <VarDeclaration Name="C24" Type="LREAL" />
+      <VarDeclaration Name="C31" Type="LREAL" />
+      <VarDeclaration Name="C32" Type="LREAL" />
+      <VarDeclaration Name="C33" Type="LREAL" />
+      <VarDeclaration Name="C34" Type="LREAL" />
+      <VarDeclaration Name="C41" Type="LREAL" />
+      <VarDeclaration Name="C42" Type="LREAL" />
+      <VarDeclaration Name="C43" Type="LREAL" />
+      <VarDeclaration Name="C44" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="150" y="150" />
+      <ECState Name="INITIALIZE" x="600" y="150">
+        <ECAction Algorithm="INITIALIZE" />
+      </ECState>
+      <ECState Name="READY" x="1050" y="150" />
+      <ECState Name="EXECUTE" x="150" y="450">
+        <ECAction Algorithm="UPDATE" />
+      </ECState>
+      <ECState Name="INIT_OK" x="600" y="450">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="UPDATE_OK" x="1050" y="450">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="FAILED" x="150" y="750">
+        <ECAction Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="INITIALIZE" Destination="INIT_OK" Condition="VALID" />
+      <ECTransition Source="INITIALIZE" Destination="FAILED" Condition="NOT VALID" />
+      <ECTransition Source="INIT_OK" Destination="READY" Condition="1" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="READY" Destination="EXECUTE" Condition="REQ" />
+      <ECTransition Source="EXECUTE" Destination="UPDATE_OK" Condition="VALID" />
+      <ECTransition Source="EXECUTE" Destination="FAILED" Condition="NOT VALID" />
+      <ECTransition Source="UPDATE_OK" Destination="READY" Condition="1" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="VALID := FALSE;&#10;Y_HAT := 0.0;&#10;ERROR := 0.0;&#10;LAMBDA_ACTIVE := LAMBDA;&#10;T1 := 0.0;&#10;T2 := 0.0;&#10;T3 := 0.0;&#10;T4 := 0.0;&#10;P11 := 0.0;&#10;P12 := 0.0;&#10;P13 := 0.0;&#10;P14 := 0.0;&#10;P21 := 0.0;&#10;P22 := 0.0;&#10;P23 := 0.0;&#10;P24 := 0.0;&#10;P31 := 0.0;&#10;P32 := 0.0;&#10;P33 := 0.0;&#10;P34 := 0.0;&#10;P41 := 0.0;&#10;P42 := 0.0;&#10;P43 := 0.0;&#10;P44 := 0.0;&#10;IF (LAMBDA &gt; 0.0) AND (LAMBDA &lt;= 1.0) AND (P0 &gt; 0.0) AND (P0 &lt;= 1.0E100) THEN&#10;P11 := P0;&#10;P22 := P0;&#10;P33 := P0;&#10;P44 := P0;&#10;VALID := TRUE;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="UPDATE">
+      <ST Text="VALID := FALSE;&#10;IF (Y &gt;= -1.0E100) AND (Y &lt;= 1.0E100) AND (F1 &gt;= -1.0E100) AND (F1 &lt;= 1.0E100) AND (F2 &gt;= -1.0E100) AND (F2 &lt;= 1.0E100) AND (F3 &gt;= -1.0E100) AND (F3 &lt;= 1.0E100) AND (F4 &gt;= -1.0E100) AND (F4 &lt;= 1.0E100) THEN&#10;Y_HAT := F1 * T1 + F2 * T2 + F3 * T3 + F4 * T4;&#10;ERROR := Y - Y_HAT;&#10;V1 := P11 * F1 + P12 * F2 + P13 * F3 + P14 * F4;&#10;V2 := P21 * F1 + P22 * F2 + P23 * F3 + P24 * F4;&#10;V3 := P31 * F1 + P32 * F2 + P33 * F3 + P34 * F4;&#10;V4 := P41 * F1 + P42 * F2 + P43 * F3 + P44 * F4;&#10;R1 := F1 * P11 + F2 * P21 + F3 * P31 + F4 * P41;&#10;R2 := F1 * P12 + F2 * P22 + F3 * P32 + F4 * P42;&#10;R3 := F1 * P13 + F2 * P23 + F3 * P33 + F4 * P43;&#10;R4 := F1 * P14 + F2 * P24 + F3 * P34 + F4 * P44;&#10;DEN := LAMBDA_ACTIVE + F1 * V1 + F2 * V2 + F3 * V3 + F4 * V4;&#10;IF (DEN &gt; 1.0E-100) AND (DEN &lt;= 1.0E100) THEN&#10;G1 := V1 / DEN;&#10;G2 := V2 / DEN;&#10;G3 := V3 / DEN;&#10;G4 := V4 / DEN;&#10;N1 := T1 + G1 * ERROR;&#10;N2 := T2 + G2 * ERROR;&#10;N3 := T3 + G3 * ERROR;&#10;N4 := T4 + G4 * ERROR;&#10;C11 := (P11 - G1 * R1) / LAMBDA_ACTIVE;&#10;C12 := (P12 - G1 * R2) / LAMBDA_ACTIVE;&#10;C13 := (P13 - G1 * R3) / LAMBDA_ACTIVE;&#10;C14 := (P14 - G1 * R4) / LAMBDA_ACTIVE;&#10;C21 := (P21 - G2 * R1) / LAMBDA_ACTIVE;&#10;C22 := (P22 - G2 * R2) / LAMBDA_ACTIVE;&#10;C23 := (P23 - G2 * R3) / LAMBDA_ACTIVE;&#10;C24 := (P24 - G2 * R4) / LAMBDA_ACTIVE;&#10;C31 := (P31 - G3 * R1) / LAMBDA_ACTIVE;&#10;C32 := (P32 - G3 * R2) / LAMBDA_ACTIVE;&#10;C33 := (P33 - G3 * R3) / LAMBDA_ACTIVE;&#10;C34 := (P34 - G3 * R4) / LAMBDA_ACTIVE;&#10;C41 := (P41 - G4 * R1) / LAMBDA_ACTIVE;&#10;C42 := (P42 - G4 * R2) / LAMBDA_ACTIVE;&#10;C43 := (P43 - G4 * R3) / LAMBDA_ACTIVE;&#10;C44 := (P44 - G4 * R4) / LAMBDA_ACTIVE;&#10;C12 := (C12 + C21) / 2.0;&#10;C21 := C12;&#10;C13 := (C13 + C31) / 2.0;&#10;C31 := C13;&#10;C14 := (C14 + C41) / 2.0;&#10;C41 := C14;&#10;C23 := (C23 + C32) / 2.0;&#10;C32 := C23;&#10;C24 := (C24 + C42) / 2.0;&#10;C42 := C24;&#10;C34 := (C34 + C43) / 2.0;&#10;C43 := C34;&#10;IF (N1 &gt;= -1.0E100) AND (N1 &lt;= 1.0E100) AND (N2 &gt;= -1.0E100) AND (N2 &lt;= 1.0E100) AND (N3 &gt;= -1.0E100) AND (N3 &lt;= 1.0E100) AND (N4 &gt;= -1.0E100) AND (N4 &lt;= 1.0E100) AND (C11 &gt;= -1.0E100) AND (C11 &lt;= 1.0E100) AND (C12 &gt;= -1.0E100) AND (C12 &lt;= 1.0E100) AND (C13 &gt;= -1.0E100) AND (C13 &lt;= 1.0E100) AND (C14 &gt;= -1.0E100) AND (C14 &lt;= 1.0E100) AND (C21 &gt;= -1.0E100) AND (C21 &lt;= 1.0E100) AND (C22 &gt;= -1.0E100) AND (C22 &lt;= 1.0E100) AND (C23 &gt;= -1.0E100) AND (C23 &lt;= 1.0E100) AND (C24 &gt;= -1.0E100) AND (C24 &lt;= 1.0E100) AND (C31 &gt;= -1.0E100) AND (C31 &lt;= 1.0E100) AND (C32 &gt;= -1.0E100) AND (C32 &lt;= 1.0E100) AND (C33 &gt;= -1.0E100) AND (C33 &lt;= 1.0E100) AND (C34 &gt;= -1.0E100) AND (C34 &lt;= 1.0E100) AND (C41 &gt;= -1.0E100) AND (C41 &lt;= 1.0E100) AND (C42 &gt;= -1.0E100) AND (C42 &lt;= 1.0E100) AND (C43 &gt;= -1.0E100) AND (C43 &lt;= 1.0E100) AND (C44 &gt;= -1.0E100) AND (C44 &lt;= 1.0E100) THEN&#10;T1 := N1;&#10;T2 := N2;&#10;T3 := N3;&#10;T4 := N4;&#10;P11 := C11;&#10;P12 := C12;&#10;P13 := C13;&#10;P14 := C14;&#10;P21 := C21;&#10;P22 := C22;&#10;P23 := C23;&#10;P24 := C24;&#10;P31 := C31;&#10;P32 := C32;&#10;P33 := C33;&#10;P34 := C34;&#10;P41 := C41;&#10;P42 := C42;&#10;P43 := C43;&#10;P44 := C44;&#10;VALID := TRUE;&#10;END_IF;&#10;END_IF;&#10;END_IF;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

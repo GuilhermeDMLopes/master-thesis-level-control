@@ -1,0 +1,50 @@
+{
+  "origin": "Original results returned by Guilherme on 2026-09-26; unchanged bytes",
+  "files": [
+    {
+      "path": "data/sample/adaptive/20260926/fixo_lambda1.csv",
+      "sha256": "76b99f19accd85aec32f2fd2962f9ceb5429e882374b406f308e05f389246680",
+      "bytes": 20663
+    },
+    {
+      "path": "data/sample/adaptive/20260926/mudanca_lambda06.csv",
+      "sha256": "7a5cf6d657c20c39e60835b08738bb7e0a05d42b96d3c8853203270061aa6cba",
+      "bytes": 20634
+    },
+    {
+      "path": "data/sample/adaptive/20260926/mudanca_lambda08.csv",
+      "sha256": "2045a051c287d215ce20f6ea3ad98ce4702167b24b7ef035cb3a511631a22ac5",
+      "bytes": 20583
+    },
+    {
+      "path": "data/sample/adaptive/20260926/mudanca_lambda1.csv",
+      "sha256": "01f954ea54aae52388f9e2fb9be1bcc6fe7f1012c22d9bc310844b4c65ea7f50",
+      "bytes": 20519
+    },
+    {
+      "path": "results/adaptive/20260926/fixo_lambda1.png",
+      "sha256": "3e0afd0f61616f8a40086695cbd027c6b4763826fd2f078fca8e77896c629f74",
+      "bytes": 131177
+    },
+    {
+      "path": "results/adaptive/20260926/mudanca_lambda06.png",
+      "sha256": "8c059e5b374d0aba0631f5487eca507bf7411a799b38417a9010a9c55a5508a0",
+      "bytes": 141930
+    },
+    {
+      "path": "results/adaptive/20260926/mudanca_lambda08.png",
+      "sha256": "7049437c9d37990655b44a12a0a8643b9ba69cc27199dfebdc63735b9994f394",
+      "bytes": 156497
+    },
+    {
+      "path": "results/adaptive/20260926/mudanca_lambda1.png",
+      "sha256": "4c22ea0093fc8b8c90ab0fecb91a7cc6d637a116c12c3e52b0d8f03b9246cd13",
+      "bytes": 156190
+    },
+    {
+      "path": "results/adaptive/20260926/user-summary.json",
+      "sha256": "c77539fe6da977754d2bd8a65c0442856fc932b03da59a5b47370fbc2bcc62ed",
+      "bytes": 1362
+    }
+  ]
+}

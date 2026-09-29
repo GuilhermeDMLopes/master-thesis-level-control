@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<System Name="Adaptive_Identification" Comment="Offline only; native export and runtime validation pending">
+  <Application Name="Identification_Offline">
+    <SubAppNetwork>
+      <FB Name="Cycle" Type="E_CYCLE" x="300" y="300">
+        <Parameter Name="DT" Value="T#100ms" />
+      </FB>
+      <FB Name="Experiment" Type="ADP_IDENTIFICATION" x="2200" y="300">
+        <Parameter Name="LAMBDA" Value="0.8" />
+        <Parameter Name="CHANGE" Value="TRUE" />
+        <Parameter Name="P0" Value="10000.0" />
+      </FB>
+      <EventConnections>
+        <Connection Source="Experiment.INITO" Destination="Cycle.START" />
+        <Connection Source="Cycle.EO" Destination="Experiment.REQ" />
+        <Connection Source="Experiment.DONE" Destination="Cycle.STOP" />
+        <Connection Source="Experiment.ERR" Destination="Cycle.STOP" />
+      </EventConnections>
+    </SubAppNetwork>
+  </Application>
+</System>

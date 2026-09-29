@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="ADP_IDENTIFICATION" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="CHANGE" />
+        <With Var="LAMBDA" />
+        <With Var="P0" />
+      </Event>
+      <Event Name="REQ" Type="Event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="K" />
+        <With Var="Y" />
+        <With Var="U1" />
+        <With Var="U2" />
+        <With Var="B1" />
+        <With Var="T1" />
+        <With Var="T2" />
+        <With Var="T3" />
+        <With Var="T4" />
+        <With Var="Y_HAT" />
+        <With Var="ERROR" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="DONE" Type="Event" />
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="CHANGE" Type="BOOL" InitialValue="FALSE" />
+      <VarDeclaration Name="LAMBDA" Type="LREAL" InitialValue="1.0" />
+      <VarDeclaration Name="P0" Type="LREAL" InitialValue="10000.0" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="K" Type="UINT" />
+      <VarDeclaration Name="Y" Type="LREAL" />
+      <VarDeclaration Name="U1" Type="LREAL" />
+      <VarDeclaration Name="U2" Type="LREAL" />
+      <VarDeclaration Name="B1" Type="LREAL" />
+      <VarDeclaration Name="T1" Type="LREAL" />
+      <VarDeclaration Name="T2" Type="LREAL" />
+      <VarDeclaration Name="T3" Type="LREAL" />
+      <VarDeclaration Name="T4" Type="LREAL" />
+      <VarDeclaration Name="Y_HAT" Type="LREAL" />
+      <VarDeclaration Name="ERROR" Type="LREAL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB Name="Replay" Type="ADP_REPLAY100" x="400" y="200" />
+    <FB Name="History" Type="ADP_HISTORY2" x="2100" y="200" />
+    <FB Name="Process" Type="ADP_ARX22_PROCESS" x="2100" y="1600" />
+    <FB Name="Estimator" Type="ADP_RLS4" x="400" y="1600" />
+    <EventConnections>
+      <Connection Source="INIT" Destination="Replay.INIT" />
+      <Connection Source="Replay.INITO" Destination="History.INIT" />
+      <Connection Source="History.INITO" Destination="Process.INIT" />
+      <Connection Source="Process.INITO" Destination="Estimator.INIT" />
+      <Connection Source="Estimator.INITO" Destination="INITO" />
+      <Connection Source="REQ" Destination="Replay.REQ" />
+      <Connection Source="Replay.CNF" Destination="History.REQ" />
+      <Connection Source="History.CNF" Destination="Process.REQ" />
+      <Connection Source="Process.CNF" Destination="Estimator.REQ" />
+      <Connection Source="Estimator.CNF" Destination="History.COMMIT" />
+      <Connection Source="History.ACK" Destination="CNF" />
+      <Connection Source="Replay.DONE" Destination="DONE" />
+      <Connection Source="Estimator.ERR" Destination="ERR" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="CHANGE" Destination="Replay.CHANGE" />
+      <Connection Source="LAMBDA" Destination="Estimator.LAMBDA" />
+      <Connection Source="P0" Destination="Estimator.P0" />
+      <Connection Source="Process.Y" Destination="Estimator.Y" />
+      <Connection Source="Process.Y" Destination="History.Y_CURRENT" />
+      <Connection Source="Process.Y" Destination="Y" />
+      <Connection Source="Replay.U1" Destination="Process.U1" />
+      <Connection Source="Replay.U1" Destination="U1" />
+      <Connection Source="Replay.U2" Destination="Process.U2" />
+      <Connection Source="Replay.U2" Destination="U2" />
+      <Connection Source="Replay.B1" Destination="Process.B1" />
+      <Connection Source="Replay.B1" Destination="B1" />
+      <Connection Source="Replay.K" Destination="K" />
+      <Connection Source="History.Y1" Destination="Process.Y1" />
+      <Connection Source="History.Y1" Destination="Estimator.F1" />
+      <Connection Source="History.Y2" Destination="Process.Y2" />
+      <Connection Source="History.Y2" Destination="Estimator.F2" />
+      <Connection Source="Replay.U1" Destination="Estimator.F3" />
+      <Connection Source="Replay.U2" Destination="Estimator.F4" />
+      <Connection Source="Estimator.T1" Destination="T1" />
+      <Connection Source="Estimator.T2" Destination="T2" />
+      <Connection Source="Estimator.T3" Destination="T3" />
+      <Connection Source="Estimator.T4" Destination="T4" />
+      <Connection Source="Estimator.Y_HAT" Destination="Y_HAT" />
+      <Connection Source="Estimator.ERROR" Destination="ERROR" />
+      <Connection Source="Estimator.VALID" Destination="VALID" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>
