@@ -52,9 +52,9 @@ The standard E_CYCLE type is reused from the existing repository.
 | Adaptive closed-loop comparison | Pending |
 | Adaptive-control publication novelty | Not established |
 
-The targeted suite currently contains 15 passing tests. These checks include a
+The targeted suite currently contains 16 passing tests. These checks include a
 limited interpreter of the actual ST text, not native IEC language/runtime testing.
-Full local suite on Linux / Python 3.12: **519 passed, 3 failed** on 2026-09-29.
+Full local suite on Linux / Python 3.12: **520 passed, 3 failed** on 2026-09-29.
 All three failures reproduce unchanged in a clean worktree of the base commit
 `d4c08e8848e6d6e448ee7ce164121e7cb1ec4ac3`:
 

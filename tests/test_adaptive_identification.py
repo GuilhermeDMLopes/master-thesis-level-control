@@ -134,3 +134,16 @@ def test_composite_connections_and_with_contracts():
     assert ('Estimator.CNF','History.COMMIT') in edges
     assert ('History.ACK','CNF') in edges
     assert ('Process.CNF','Estimator.REQ') in edges
+
+
+def test_archived_evidence_matches_original_byte_manifest():
+    import hashlib
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    manifest = json.loads((root / 'docs/adaptive/evidence-manifest.json').read_text())
+    for entry in manifest['files']:
+        payload = (root / entry['path']).read_bytes()
+        assert len(payload) == entry['bytes'], entry['path']
+        assert hashlib.sha256(payload).hexdigest() == entry['sha256'], entry['path']
