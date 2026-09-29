@@ -1,0 +1,93 @@
+{
+  "purpose": "Identity of supplied sources; source binaries not redistributed",
+  "page_numbering": "1-based PDF viewer pages",
+  "files": [
+    {
+      "supplied_filename": "aula1_ident_linear (2).pdf",
+      "sha256": "e17e0494fa05538b84cdace18ffba480d65f45f146a9dba9a14cf228ae43b247",
+      "bytes": 2476640,
+      "pdf_pages": 47
+    },
+    {
+      "supplied_filename": "aula2.pdf",
+      "sha256": "deeb6cfe18fa46a523408837e25369ee4cf616dc385420e8aea9ed966f609599",
+      "bytes": 941772,
+      "pdf_pages": 34
+    },
+    {
+      "supplied_filename": "PID Adaptativo.pdf",
+      "sha256": "c9733ba038c5736838efe86cca638dacb7054705b11dca426d02f3a10a98f714",
+      "bytes": 22762,
+      "pdf_pages": 1
+    },
+    {
+      "supplied_filename": "61499_ED2_OVW (2).pdf",
+      "sha256": "20b2bc61351bbe69dfd5978f079093fb3f1c49818ba9892b61f915ffca7a4bfd",
+      "bytes": 430754,
+      "pdf_pages": 13
+    },
+    {
+      "supplied_filename": "state of the art 61499 (1).pdf",
+      "sha256": "d75601fef42a2641166fed25483ae3ff54da2097111a80e7b101f440946ee445",
+      "bytes": 1172160,
+      "pdf_pages": 14
+    },
+    {
+      "supplied_filename": "MPC_Under_IEC-61499_Using_Low-Cost_Devices_for_Oil_Pipeline_System.pdf",
+      "sha256": "514d6b0ed296399754af935a7b57f6f3e8b6077f0b02365200ff2a908ce1af55",
+      "bytes": 527380,
+      "pdf_pages": 6
+    },
+    {
+      "supplied_filename": "Towards_IEC_61499-Based_Distributed_Intelligent_Automation_A_Literature_Review (1).pdf",
+      "sha256": "247fbe0c6bfcdc0b94e7579f538916ff7f77edbd36cc9dbf2a32884ec3b4c483",
+      "bytes": 2615465,
+      "pdf_pages": 12
+    },
+    {
+      "supplied_filename": "Implementation_and_evaluation_of_event-based_PID_in_the_IEC-61499_standard.pdf",
+      "sha256": "2cbeb7b3b9f793f92dc9304e5dc9cf212c148eca15e96e6586ee883db25099ab",
+      "bytes": 1679763,
+      "pdf_pages": 7
+    },
+    {
+      "supplied_filename": "Experimental_Platform_for_Testing_Open_Process_Automation_Technologies_Based_on_OPC_UA_and_IEC_61499.pdf",
+      "sha256": "17b767381b9b906e780521b6e7783b7cfc93065e80a459ed8884bedf13f22b0c",
+      "bytes": 514507,
+      "pdf_pages": 5
+    },
+    {
+      "supplied_filename": "1-s2.0-S2405896324007298-main.pdf",
+      "sha256": "e88d3e0e8044af5e750d98291322d34bc60250c6a60fdd34ff818cc9cae5e48b",
+      "bytes": 1326163,
+      "pdf_pages": 6
+    },
+    {
+      "supplied_filename": "IA.pdf",
+      "sha256": "645798302555b6fc988598e8f1fec8997dddfa737e48ad1371a3505b2b26c24c",
+      "bytes": 617436,
+      "pdf_pages": 16
+    },
+    {
+      "supplied_filename": "aula3.pdf",
+      "sha256": "2d0685a43d755b39c3650d1fc653e4b86c41e1a730c786d19519b809e9c9676a",
+      "bytes": 777504,
+      "pdf_pages": 30
+    },
+    {
+      "supplied_filename": "Captura de tela 2026-09-25 135548.png",
+      "sha256": "6cd057d104e08fc7ec2547b280dc6fef96823acc41054fbe5ff0068018139ae5",
+      "bytes": 328585
+    },
+    {
+      "supplied_filename": "Material_Identificação_e_controle_adaptativo.zip",
+      "sha256": "1f7f7feaf41b28d7a0a15fb875e08e7b01fb123b2f03b5832a0753800b70dc14",
+      "bytes": 3441530
+    },
+    {
+      "supplied_filename": "Artigos_com_o_tema_do_mestrado.zip",
+      "sha256": "52c7e7ecb3dbe8fd6ab4b9aa2e912b872f146c8faff95aee7d93ff5bf17515d1",
+      "bytes": 6426494
+    }
+  ]
+}

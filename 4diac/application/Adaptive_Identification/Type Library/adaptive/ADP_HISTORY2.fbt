@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="ADP_HISTORY2" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event" />
+      <Event Name="REQ" Type="Event" />
+      <Event Name="COMMIT" Type="Event">
+        <With Var="Y_CURRENT" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="Y1" />
+        <With Var="Y2" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="Y1" />
+        <With Var="Y2" />
+      </Event>
+      <Event Name="ACK" Type="Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="Y_CURRENT" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="Y1" Type="LREAL" />
+      <VarDeclaration Name="Y2" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="H1" Type="LREAL" />
+      <VarDeclaration Name="H2" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="150" y="150" />
+      <ECState Name="INITIALIZE" x="600" y="150">
+        <ECAction Algorithm="INITIALIZE" Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="1050" y="150" />
+      <ECState Name="SNAPSHOT" x="150" y="450">
+        <ECAction Algorithm="SNAPSHOT" Output="CNF" />
+      </ECState>
+      <ECState Name="WAIT" x="600" y="450" />
+      <ECState Name="STORE" x="1050" y="450">
+        <ECAction Algorithm="COMMIT_SAMPLE" Output="ACK" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="INITIALIZE" Destination="READY" Condition="1" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="READY" Destination="SNAPSHOT" Condition="REQ" />
+      <ECTransition Source="SNAPSHOT" Destination="WAIT" Condition="1" />
+      <ECTransition Source="WAIT" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="WAIT" Destination="STORE" Condition="COMMIT" />
+      <ECTransition Source="STORE" Destination="READY" Condition="1" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="H1 := 0.0;&#10;H2 := 0.0;&#10;Y1 := 0.0;&#10;Y2 := 0.0;" />
+    </Algorithm>
+    <Algorithm Name="SNAPSHOT">
+      <ST Text="Y1 := H1;&#10;Y2 := H2;" />
+    </Algorithm>
+    <Algorithm Name="COMMIT_SAMPLE">
+      <ST Text="H2 := H1;&#10;H1 := Y_CURRENT;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

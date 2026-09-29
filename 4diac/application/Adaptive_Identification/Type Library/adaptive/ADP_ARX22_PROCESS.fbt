@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="ADP_ARX22_PROCESS" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event" />
+      <Event Name="REQ" Type="Event">
+        <With Var="Y1" />
+        <With Var="Y2" />
+        <With Var="U1" />
+        <With Var="U2" />
+        <With Var="B1" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="Y" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="Y" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="Y1" Type="LREAL" />
+      <VarDeclaration Name="Y2" Type="LREAL" />
+      <VarDeclaration Name="U1" Type="LREAL" />
+      <VarDeclaration Name="U2" Type="LREAL" />
+      <VarDeclaration Name="B1" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="Y" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars />
+    <ECC>
+      <ECState Name="START" x="150" y="150" />
+      <ECState Name="INITIALIZE" x="600" y="150">
+        <ECAction Algorithm="INITIALIZE" Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="1050" y="150" />
+      <ECState Name="EXECUTE" x="150" y="450">
+        <ECAction Algorithm="CALCULATE" Output="CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="INITIALIZE" Destination="READY" Condition="1" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="READY" Destination="EXECUTE" Condition="REQ" />
+      <ECTransition Source="EXECUTE" Destination="READY" Condition="1" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="Y := 0.0;" />
+    </Algorithm>
+    <Algorithm Name="CALCULATE">
+      <ST Text="Y := 1.2 * Y1 - 0.36 * Y2 + B1 * U1 + 0.06 * U2;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

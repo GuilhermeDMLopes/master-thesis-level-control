@@ -101,3 +101,11 @@ Desktop.ini
 !results/pi-offline-closed-loop/level-response.png
 !results/pi-offline-closed-loop/control-effort.png
 !results/pi-offline-closed-loop/error.png
+
+# Curated adaptive identification evidence (2026-09-26)
+!data/sample/adaptive/20260926/*.csv
+!results/adaptive/
+results/adaptive/*
+!results/adaptive/20260926/
+!results/adaptive/20260926/*.png
+!results/adaptive/20260926/*.json

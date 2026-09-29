@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<projectDescription>
+  <name>Adaptive_Identification</name>
+  <comment>Offline lecture identification</comment>
+  <projects />
+  <buildSpec />
+  <natures>
+    <nature>org.eclipse.fordiac.ide.systemmanagement.FordiacNature</nature>
+  </natures>
+</projectDescription>

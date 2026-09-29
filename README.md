@@ -14,7 +14,21 @@ This repository contains the software, engineering artifacts, automated tests, e
 
 The research objective is to develop, validate, and compare PI and MPC control strategies on a real level-control process while preserving reproducibility, operational safety, and the complete engineering history of the project.
 
-## Current Project Status
+## Active research phase: adaptive control (September 2026)
+
+The PI/MPC experiments below remain historical evidence. Following advisor review,
+the active development direction is now an indirect adaptive PID architecture:
+online RLS identification with forgetting, a separate tuning block, and event-driven
+IEC 61499 components. The physical test process and PID gain-update law remain open.
+The offline lecture examples have been reproduced; the new 4diac types are a prototype,
+not yet exported, compiled or executed in FORTE. No adaptive real-plant result is claimed.
+
+Start with [adaptive development status](docs/adaptive/README.md),
+[source/page traceability](docs/adaptive/references-and-traceability.md), and
+[4diac design and validation boundary](docs/adaptive/4diac-design.md).
+Development branch: `feature/adaptive-pid-iec61499`.
+
+## Historical PI/MPC Project Status
 
 The complete PLC-gateway-FORTE path, the fail-closed raw-count PI baseline, the final matched PI baseline, and the high-range MPC V4 implementation have been validated on the real plant. Under the common bounded 180 s protocol, MPC V4 reached and stabilized at the physically measured 15 cm target, while the matched PI reached 14.7 cm. Both runs maintained a healthy watchdog state and ended with independently verified zero output.
 
@@ -32,8 +46,7 @@ Validated checkpoints:
 | Final 15 cm target refinement | `82f0978` | V4 target refined from the observed 14 cm response to `SP_RAW=17000` |
 | Final mapped V4 application | `ca02fe7` | Mapped target and 4diac layout synchronized before the successful final run |
 
-The complete automated test suite contains **507 passing tests** after the final evidence closure. The validated repository state is preserved by the annotated tag `thesis-real-plant-validation-20260901`.
-final evidence closure.
+The historical evidence-closure checkpoint reported **507 passing tests**; current branch results are recorded separately in the adaptive development status. The validated repository state is preserved by the annotated tag `thesis-real-plant-validation-20260901`.
 
 The selected application is `MPC_REAL_RAW_SAFE_V4`, mapped to
 `FORTE_PC.ResRealRawMPCV4`. The exact generated module, custom FORTE runtime,
@@ -640,7 +653,7 @@ The final matched comparison has been completed and integrated into `main`:
 - documented the single-run and raw-to-centimetre offset limitations;
 - preserved the final repository state with the annotated tag `thesis-real-plant-validation-20260901`.
 
-The results support a descriptive engineering comparison rather than a statistical superiority claim. No additional PI tuning, model variant, or real-plant experiment is required.
+The results support a descriptive engineering comparison rather than a statistical superiority claim. Further PID review and adaptive identification are now part of the advisor-directed research phase.
 
 ## Git and Documentation Conventions
 
@@ -661,15 +674,16 @@ Use annotated or lightweight tags only for meaningful validated checkpoints.
 
 ## Current Priority
 
-The practical MPC implementation, the matched PI baseline, and the final real-plant PI-MPC comparison are complete. The current priority is limited to dissertation writing, academic review, and optional preparation of the repository for public release.
-
-No additional controller variants, PI tuning campaigns, model-identification stages, or real-plant experiments are planned. The repository should remain focused on preserving the validated evidence and supporting the dissertation.
+Reproduce the lecture identification examples, verify explicit event/sample ordering
+in the new offline 4diac prototype, and establish a fixed PID reference before enabling
+adaptation. The advisor laboratory session is planned for 2026-10-02. Preserve all
+historical PI/MPC applications and datasets. See `docs/adaptive/README.md`.
 
 ## M5F - High-range final MPC validation
 
 The additive V4 controller completed the final independently supervised 180 s real-plant validation. With `SP_RAW=17000` and `DAC_MAX=16000`, the level reached and stabilized at the physically measured 15 cm target. The maximum median overshoot was 0.506%, the final 30 s mean error was 151.55 raw, the watchdog remained healthy and independent post-run monitoring verified zero output. Full evidence is documented in `docs/experiments/mpc-v4-target17000-20260829-analysis.md`.
 
-## Final Conclusion
+## Historical PI/MPC Conclusion
 
 The project achieved its primary practical objective: implementing and
 validating a Model Predictive Controller on the real level-control plant using
@@ -686,18 +700,15 @@ independent post-shutdown observation verified disabled actuation and zero DAC.
 The complete engineering project, historical controller variants, final V4
 function blocks, exact custom FORTE runtime, generated C++ sources, experimental
 CSV files, physical observation, metrics, figures and automated acceptance
-tests are preserved in the repository. The complete offline suite passes 494
-tests, providing regression protection for the communication, controller,
-safety, evidence and reproducibility contracts.
+tests are preserved in the repository. The historical evidence-closure checkpoint reports 507 passing tests.
+The adaptive branch has additional tests and a separately recorded validation status.
 
 The practical MPC implementation, matched PI baseline and final real-plant
 comparison are complete. The PI reached 14.7 cm and the MPC V4 reached 15.0 cm
 under the common bounded 180 s protocol; both ended with healthy watchdog state
-and independently verified zero output. Based on the accepted evidence, no
-additional controller variant, model-identification campaign, PI tuning or
-real-plant experiment is required. The remaining work is limited to using the
-preserved metrics and figures in the dissertation and completing academic
-writing and review.
+and independently verified zero output. These results remain a descriptive historical comparison. Advisor review has
+reopened PID implementation questions and introduced the adaptive-control workstream;
+the historical results do not establish that no further experiments are needed.
 
 ## Final matched PI comparison
 
@@ -722,5 +733,4 @@ the raw-to-centimetre offset varied between sessions, the evidence supports an
 engineering comparison rather than a statistical superiority claim.
 
 Full metrics, figures, limitations and reproducibility paths are documented in
-`docs/experiments/pi-vs-mpc-v4-final-20260901-analysis.md`. No additional
-real-plant experiment or PI tuning campaign is required.
+`docs/experiments/pi-vs-mpc-v4-final-20260901-analysis.md`. Future PID investigation belongs to the separately documented adaptive phase.
