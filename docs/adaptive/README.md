@@ -2,6 +2,14 @@
 
 Checkpoint: 2026-09-29. Development branch: `feature/adaptive-pid-iec61499`.
 
+## Advisor update: 2026-10-11
+
+The immediate task is now a simple fixed PID based on two supplied articles and
+the advisor whiteboard. See the [source review and implementation contract](../pid/20261011-architecture-review.md).
+The anti-windup methods differ across those sources and need an explicit decision
+before finalizing the PID ST. Existing identification is retained as a separate
+experiment; no adaptive gain update is connected to the new PID design.
+
 ## Goal and current boundary
 
 Build the advisor's indirect adaptive PID structure with separate identification,
