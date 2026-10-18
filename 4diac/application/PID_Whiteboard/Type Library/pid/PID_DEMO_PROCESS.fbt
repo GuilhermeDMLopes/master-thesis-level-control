@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PID_DEMO_PROCESS" Comment="Offline prototype; see docs/pid/README.md; native validation pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-18" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event" />
+      <Event Name="REQ" Type="Event" />
+      <Event Name="APPLY" Type="Event">
+        <With Var="U" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="Y" />
+        <With Var="APPLIED_U" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="Y" />
+        <With Var="APPLIED_U" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="ACK" Type="Event">
+        <With Var="APPLIED_U" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="U" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="Y" Type="LREAL" />
+      <VarDeclaration Name="APPLIED_U" Type="LREAL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="Y_NEXT" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZE" x="2200" y="300">
+        <ECAction Algorithm="INITIALIZE" Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="4400" y="300" />
+      <ECState Name="STEP" x="2200" y="2300">
+        <ECAction Algorithm="STEP" />
+      </ECState>
+      <ECState Name="STEP_OK" x="2200" y="4200">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="LATCH" x="6600" y="2300">
+        <ECAction Algorithm="LATCH" />
+      </ECState>
+      <ECState Name="LATCH_OK" x="6600" y="4200">
+        <ECAction Output="ACK" />
+      </ECState>
+      <ECState Name="FAILED" x="300" y="2300">
+        <ECAction Algorithm="FAIL" Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" x="700" y="300" />
+      <ECTransition Source="START" Destination="FAILED" Condition="REQ" x="1900" y="300" />
+      <ECTransition Source="START" Destination="FAILED" Condition="APPLY" x="3100" y="300" />
+      <ECTransition Source="INITIALIZE" Destination="READY" Condition="1" x="4300" y="300" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" x="700" y="1400" />
+      <ECTransition Source="READY" Destination="STEP" Condition="REQ" x="1900" y="1400" />
+      <ECTransition Source="READY" Destination="LATCH" Condition="APPLY" x="3100" y="1400" />
+      <ECTransition Source="STEP" Destination="STEP_OK" Condition="VALID" x="4300" y="1400" />
+      <ECTransition Source="STEP" Destination="FAILED" Condition="NOT VALID" x="700" y="2500" />
+      <ECTransition Source="STEP_OK" Destination="READY" Condition="1" x="1900" y="2500" />
+      <ECTransition Source="LATCH" Destination="LATCH_OK" Condition="VALID" x="3100" y="2500" />
+      <ECTransition Source="LATCH" Destination="FAILED" Condition="NOT VALID" x="4300" y="2500" />
+      <ECTransition Source="LATCH_OK" Destination="READY" Condition="1" x="700" y="3600" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" x="1900" y="3600" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="Y := 0.0;&#10;APPLIED_U := 0.0;&#10;VALID := TRUE;" />
+    </Algorithm>
+    <Algorithm Name="STEP">
+      <ST Text="Y_NEXT := 0.9 * Y + 0.1 * APPLIED_U;&#10;VALID := (Y_NEXT &gt;= -1.0E100) AND (Y_NEXT &lt;= 1.0E100);&#10;IF VALID THEN&#10;    Y := Y_NEXT;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="LATCH">
+      <ST Text="VALID := (U &gt;= -1.0E100) AND (U &lt;= 1.0E100);&#10;IF VALID THEN&#10;    APPLIED_U := U;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="FAIL">
+      <ST Text="VALID := FALSE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-18",
+  "scope": "Offline local ST/ECC subset; no native FORTE, PLC, timing or concurrency test",
+  "command": "python -m unittest discover -s tests -p test_pid_whiteboard.py -v",
+  "test_methods_passed": 12,
+  "synthetic_trace_samples": 100,
+  "synthetic_first_two": [
+    {
+      "k": 1,
+      "time_s": 0.1,
+      "pv": 0.0,
+      "sp": 1.0,
+      "previous_applied_u": 0.0,
+      "mv": 2.025,
+      "error": 1.0,
+      "p": 1.0,
+      "i": 0.025,
+      "d": 1.0,
+      "raw": 2.025,
+      "flag": 1
+    },
+    {
+      "k": 2,
+      "time_s": 0.2,
+      "pv": 0.2025,
+      "sp": 1.0,
+      "previous_applied_u": 2.025,
+      "mv": 0.6649375,
+      "error": 0.7975,
+      "p": 0.7975,
+      "i": 0.0699375,
+      "d": -0.2025,
+      "raw": 0.6649375,
+      "flag": 1
+    }
+  ],
+  "synthetic_final": {
+    "k": 100,
+    "time_s": 10.0,
+    "pv": 0.9732477887220724,
+    "sp": 1.0,
+    "previous_applied_u": 0.9805407220008392,
+    "mv": 0.981112810300077,
+    "error": 0.026752211277927596,
+    "p": 0.026752211277927596,
+    "i": 0.9551709249420124,
+    "d": -0.0008103259198629642,
+    "raw": 0.981112810300077,
+    "flag": 1
+  },
+  "files": [
+    {
+      "path": "4diac/application/PID_Whiteboard/.project",
+      "sha256": "0291db177cf52b1345185ca457ee78105e814ca786246d5ffd49786e1d98380d"
+    },
+    {
+      "path": "4diac/application/PID_Whiteboard/PID_Whiteboard.sys",
+      "sha256": "8836b1da1860db7227541e3de2be859f123bfa1eb15aadb0f04618f843b81114"
+    },
+    {
+      "path": "4diac/application/PID_Whiteboard/Type Library/events/E_CYCLE.fbt",
+      "sha256": "3cc87f7979b9a833994f1f2d0cf2c9546f19605a33e497af4fb58f812f717386"
+    },
+    {
+      "path": "4diac/application/PID_Whiteboard/Type Library/events/E_DELAY.fbt",
+      "sha256": "3c4e4c94f9d3a7201e261d450aeacf6b3e9b43445e1f91437195120fbbe88a32"
+    },
+    {
+      "path": "4diac/application/PID_Whiteboard/Type Library/pid/PID_DEMO_PROCESS.fbt",
+      "sha256": "ccc11e716b3ce6312986b63174905b1e2e009a6f4f8ec4d9fb2748749f815f81"
+    },
+    {
+      "path": "4diac/application/PID_Whiteboard/Type Library/pid/PID_FLAG.fbt",
+      "sha256": "30b63c4e2f6b4f53e3835da9d6f497852389ea2e27b9fa37c5d5b2d787a01da6"
+    },
+    {
+      "path": "scripts/verify_pid_whiteboard.py",
+      "sha256": "b497ffed539d4ea572aac1733c389731556e822aa8423b28799706f68d12a6a7"
+    },
+    {
+      "path": "tests/test_pid_whiteboard.py",
+      "sha256": "4ad605ab82a03a56f2d42f3697400d97e98d671772cfa6b5ef63316395f0f83c"
+    }
+  ]
+}

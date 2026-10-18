@@ -94,3 +94,11 @@ Separately confirm the exact adaptive PID tuning rule from the teaching scripts 
 self-tuning video transcript. Introduce fixed PID, estimator observation, model/gain
 validation and only then gain adaptation. Keep evidence and development stages in
 small English commits; do not change the historical validation tag.
+
+## 2026-10-18: whiteboard PID implementation
+
+The flag PID and a separate synthetic three-block application are now available.
+See [PID implementation, source decisions and verification](../pid/README.md).
+Twelve offline test methods passed; native FORTE validation remains pending.
+The project will develop the model-to-PID tuning rule; the identifier and tuner
+remain separate responsibilities and are not yet connected to the PID.

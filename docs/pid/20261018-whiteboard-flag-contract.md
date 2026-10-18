@@ -1,5 +1,10 @@
 # Advisor whiteboard contract — flag PID and adaptation
 Date: 2026-10-18. Status: design decision; no new native FORTE validation.
+
+> Subsequent clarification: the project will select and implement the tuning rule;
+> no advisor formula will be supplied. See [implementation and verification](README.md).
+> The source-gap section below records the earlier checkpoint, not a requirement
+> to wait for an externally supplied formula.
 This decision supersedes the pending anti-windup choice and fixed-only gain interface
 in [the source review](20261011-architecture-review.md). Its source/page analysis remains applicable.
 
@@ -83,3 +88,4 @@ Verify P/I/D arithmetic, first sample, strict bounds, delayed flag and saturatio
 recovery limitation, gain-triplet updates without state reset, one CNF per accepted
 REQ, native export/build, and event/timing traces. No native runtime or plant
 validation is claimed by this document.
+

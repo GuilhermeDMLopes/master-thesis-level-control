@@ -1,5 +1,9 @@
 # Fixed PID: source review and implementation contract
 
+> Historical review. The anti-windup choice and gain-update interface are superseded
+> by [the flag contract](20261018-whiteboard-flag-contract.md). Current implementation
+> and the user-authorized tuning-method development are documented in [README](README.md).
+
 Date: 2026-10-11. Status: reviewed design, not a newly implemented or deployed PID.
 Current target: 4diac IDE 2.0.1 (build 2023-10-23_0926), as reported by the user.
 The corresponding FORTE build must be identified independently; IDE and runtime
