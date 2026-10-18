@@ -2,7 +2,7 @@
 
 Checkpoint: 2026-10-18. Branch: `feature/adaptive-pid-iec61499`.
 **Implemented:** flag PID, gain-update event, synthetic process, offline application,
-local ST/ECC subset replay and 12 automated tests.
+local ST/ECC subset replay and 13 automated tests.
 **Not validated:** 4diac 2.0.1 export, native FORTE build/runtime, event timing or a
 physical plant. No claim of complete IEC 61499 conformity or automatic tuning.
 
@@ -208,7 +208,7 @@ Get-ChildItem "4diac\application\PID_Whiteboard\Type Library\pid" -Filter *.fbt
 
 ## Verification and next gate
 
-12 unittest methods passed on the actual local FBT algorithms through the limited
+13 unittest methods passed on the actual local FBT algorithms through the limited
 interpreter: P/I/D hand calculations, first sample, upper/lower/exact limits,
 delayed flag and known freeze case, gain latching/state preservation, reset,
 invalid inputs/configuration/arithmetic, simulated input application, hand-derived
@@ -221,3 +221,25 @@ Use the existing MMQE only with consistent model order and applied-input history
 The later architecture is Identifier.CNF -> Tuner.REQ -> PID.SET_GAINS (via tuner
 CNF), with coherent model/gain data and an explicit adaptation schedule. Do not
 claim this branch is implemented by the current two custom FBs.
+
+## 4diac 2.0.1 export correction (2026-10-18)
+
+The user reached native type export and reported 40 errors, all pointing to the
+E100 token in untyped 1.0E100 guard literals. The prior offline Python checks did
+not detect this exporter-specific lexical issue. Both FBTs now spell these
+constants as 1.0E+100 (explicit positive exponent sign). The numeric value,
+PID equations and flag behavior are unchanged. An additional regression test
+checks this spelling, bringing the offline suite to 13 methods. This is not a
+native parser test: successful re-export and compilation still require evidence.
+
+Close the export dialog, update the branch, refresh PID_Whiteboard with F5 and
+reopen the types if already open. Export both custom types again with FORTE 1.x
+NG and CMakeLists.txt. Confirm replacement of any partial generated files from
+the failed export. Do not compile a partially generated earlier export.
+
+User-reported build environment: original FORTE sources exist at
+C:\Users\guilh\4diac\4diac-forte, revision
+7c8b6296227fa292c13d71d2958a404c6db03e53 (2.0.1-7, locally modified).
+Visual Studio Community 2026 with C++ tools is installed; CMake is 4.2.0-rc1.
+The old reproduction build source directory is absent. Preserve the original
+source modifications; prepare a separate build after successful export.

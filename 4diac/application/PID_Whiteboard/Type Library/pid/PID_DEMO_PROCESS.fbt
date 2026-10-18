@@ -82,10 +82,10 @@
       <ST Text="Y := 0.0;&#10;APPLIED_U := 0.0;&#10;VALID := TRUE;" />
     </Algorithm>
     <Algorithm Name="STEP">
-      <ST Text="Y_NEXT := 0.9 * Y + 0.1 * APPLIED_U;&#10;VALID := (Y_NEXT &gt;= -1.0E100) AND (Y_NEXT &lt;= 1.0E100);&#10;IF VALID THEN&#10;    Y := Y_NEXT;&#10;END_IF;" />
+      <ST Text="Y_NEXT := 0.9 * Y + 0.1 * APPLIED_U;&#10;VALID := (Y_NEXT &gt;= -1.0E+100) AND (Y_NEXT &lt;= 1.0E+100);&#10;IF VALID THEN&#10;    Y := Y_NEXT;&#10;END_IF;" />
     </Algorithm>
     <Algorithm Name="LATCH">
-      <ST Text="VALID := (U &gt;= -1.0E100) AND (U &lt;= 1.0E100);&#10;IF VALID THEN&#10;    APPLIED_U := U;&#10;END_IF;" />
+      <ST Text="VALID := (U &gt;= -1.0E+100) AND (U &lt;= 1.0E+100);&#10;IF VALID THEN&#10;    APPLIED_U := U;&#10;END_IF;" />
     </Algorithm>
     <Algorithm Name="FAIL">
       <ST Text="VALID := FALSE;" />

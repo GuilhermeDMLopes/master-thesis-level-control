@@ -2,7 +2,7 @@
   "date": "2026-10-18",
   "scope": "Offline local ST/ECC subset; no native FORTE, PLC, timing or concurrency test",
   "command": "python -m unittest discover -s tests -p test_pid_whiteboard.py -v",
-  "test_methods_passed": 12,
+  "test_methods_passed": 13,
   "synthetic_trace_samples": 100,
   "synthetic_first_two": [
     {
@@ -67,11 +67,11 @@
     },
     {
       "path": "4diac/application/PID_Whiteboard/Type Library/pid/PID_DEMO_PROCESS.fbt",
-      "sha256": "ccc11e716b3ce6312986b63174905b1e2e009a6f4f8ec4d9fb2748749f815f81"
+      "sha256": "85c6106b9bb7127d4fe4e85465a5bde1479475866293b76e94b8507a01165730"
     },
     {
       "path": "4diac/application/PID_Whiteboard/Type Library/pid/PID_FLAG.fbt",
-      "sha256": "30b63c4e2f6b4f53e3835da9d6f497852389ea2e27b9fa37c5d5b2d787a01da6"
+      "sha256": "40e848da793aca75fd68263f8ead96052dfe0855d7433f4e2fbb8498ec71c09a"
     },
     {
       "path": "scripts/verify_pid_whiteboard.py",
@@ -79,7 +79,8 @@
     },
     {
       "path": "tests/test_pid_whiteboard.py",
-      "sha256": "4ad605ab82a03a56f2d42f3697400d97e98d671772cfa6b5ef63316395f0f83c"
+      "sha256": "4cfeecdaa0014ca58b6e82a9c71d442ce174fcc6c96d6e20c8fe0c588a754be5"
     }
-  ]
+  ],
+  "export_status": "User reported 40 parser errors at E100 in IDE 2.0.1. Explicit positive exponent sign correction made; native re-export pending."
 }

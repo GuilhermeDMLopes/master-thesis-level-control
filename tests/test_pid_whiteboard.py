@@ -18,6 +18,13 @@ class WhiteboardPIDTests(unittest.TestCase):
         self.assertEqual(b.state, 'READY')
         return b.values
 
+    def test_scientific_literals_use_explicit_exponent_sign(self):
+        # 4diac 2.0.1 exporter reported E100 as an extraneous token.
+        for path in TYPES.glob('*.fbt'):
+            text = path.read_text()
+            self.assertNotIn('1.0E100', text)
+            self.assertIn('1.0E+100', text)
+
     def test_proportional(self):
         b = self.make(KP=2.)
         self.assertEqual(self.sample(b, 3.)['MV'], 6.)
