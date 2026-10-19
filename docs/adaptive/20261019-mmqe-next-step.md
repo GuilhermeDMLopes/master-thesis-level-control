@@ -20,14 +20,14 @@ attributed to the lectures or articles at this checkpoint.
 
 | Block | Responsibility |
 |---|---|
-| `ADP_REPLAY100` | Replay the archived input and its delays; select the simulated coefficient change. |
-| `ADP_HISTORY2` | Snapshot the two previous outputs; commit the new output after estimation. |
-| `ADP_ARX22_PROCESS` | Calculate the lecture's simulated output. |
-| `ADP_RLS4` | Estimate four coefficients using measured output and delayed inputs/outputs. |
-| `ADP_IDENTIFICATION` | Composite wiring of the blocks above; no additional control algorithm. |
+| `INPUT_SEQUENCE_REPLAY` | InputSequence the archived input and its delays; select the simulated coefficient change. |
+| `OUTPUT_HISTORY` | Snapshot the two previous outputs; commit the new output after estimation. |
+| `SECOND_ORDER_PROCESS` | Calculate the lecture's simulated output. |
+| `RLS_PARAMETER_ESTIMATOR` | Estimate four coefficients using measured output and delayed inputs/outputs. |
+| `PROCESS_IDENTIFICATION` | Composite wiring of the blocks above; no additional control algorithm. |
 | `E_CYCLE` | Generate periodic execution events. |
 
-Each sample follows Replay -> History snapshot -> Process -> Estimator -> History
+Each sample follows InputSequence -> OutputHistory snapshot -> SimulatedProcess -> ParameterEstimator -> OutputHistory
 commit -> completion. Updating history before estimation would shift the regression
 vector and identify the wrong equation. The implementation uses event/data WITH
 associations and explicit ECCs; this is not a certification of IEC 61499 compliance.
@@ -37,7 +37,7 @@ The simulated equation is:
 `y(k) = 1.2*y(k-1) - 0.36*y(k-2) + b1*u(k-1) + 0.06*u(k-2)`.
 
 The estimator receives `phi=[y(k-1), y(k-2), u(k-1), u(k-2)]` and `y(k)`.
-It does not receive the true coefficients. Its outputs T1..T4 estimate
+It does not receive the true coefficients. Its outputs EST_OUTPUT_COEFFICIENT_1..EST_INPUT_COEFFICIENT_2 estimate
 `[1.2, -0.36, b1, 0.06]`. This second-order lecture process differs from the
 first-order `PID_DEMO_PROCESS`; do not connect the two experiments yet.
 
@@ -46,32 +46,32 @@ first-order `PID_DEMO_PROCESS`; do not connect the two experiments yet.
 1. Update the feature branch while preserving local changes. Import/open the
    separate project `4diac/application/Adaptive_Identification` in 4diac 2.0.1.
 2. Refresh the project and inspect Problems. In `Identification_Offline`, set
-   Experiment `CHANGE=FALSE`, `LAMBDA=1.0`, `P0=10000.0`; Cycle `DT=T#100ms`.
+   IdentificationTest `ENABLE_PROCESS_CHANGE=FALSE`, `FORGETTING_FACTOR=1.0`, `INITIAL_COVARIANCE=10000.0`; SamplingClock `DT=T#100ms`.
    The existing source defaults use a changed process and lambda=0.8, so explicitly
    change them for this first experiment. Save the project.
-3. Export the four basic types `ADP_REPLAY100`, `ADP_HISTORY2`,
-   `ADP_ARX22_PROCESS`, `ADP_RLS4` to a new external-module folder. Keep
-   `ADP_IDENTIFICATION` in the IDE type library as the composite network.
+3. Export the four basic types `INPUT_SEQUENCE_REPLAY`, `OUTPUT_HISTORY`,
+   `SECOND_ORDER_PROCESS`, `RLS_PARAMETER_ESTIMATOR` to a new external-module folder. Keep
+   `PROCESS_IDENTIFICATION` in the IDE type library as the composite network.
 4. Check the export messages and generated C++ before building. The existing PID
    runtime is not evidence that the ADP types are installed. A separate native
    build/module configuration and device/resource mapping are still required.
-5. After deployment is prepared, initialize the experiment once. Observe K,
-   T1..T4, Y_HAT, ERROR and VALID. Let 100 samples finish. Record the terminal
+5. After deployment is prepared, initialize the experiment once. Observe SAMPLE_INDEX,
+   EST_OUTPUT_COEFFICIENT_1..EST_INPUT_COEFFICIENT_2, PREDICTED_OUTPUT, PREDICTION_ERROR and ESTIMATION_VALID. Let 100 samples finish. Record the terminal
    values and the completion event. Do not repeatedly initialize mid-experiment.
 
 The 100 ms timer paces the demonstration; it does not establish the sampling time
-of a physical plant. `VALID` reports numerical acceptance, not model accuracy.
+of a physical plant. `ESTIMATION_VALID` reports numerical acceptance, not model accuracy.
 
 ## Expected comparisons (offline reference, not native measurements)
 
-| CHANGE | lambda | T1 | T2 | T3 | T4 |
+| ENABLE_PROCESS_CHANGE | lambda | EST_OUTPUT_COEFFICIENT_1 | EST_OUTPUT_COEFFICIENT_2 | EST_INPUT_COEFFICIENT_1 | EST_INPUT_COEFFICIENT_2 |
 |---|---:|---:|---:|---:|---:|
 | FALSE | 1.0 | 1.198251 | -0.358444 | 0.100004 | 0.060200 |
 | TRUE | 1.0 | 1.598929 | -0.646396 | 0.191907 | -0.074122 |
 | TRUE | 0.8 | 1.200227 | -0.360178 | 0.399971 | 0.059895 |
 | TRUE | 0.6 | 1.200000 | -0.360000 | 0.400000 | 0.060000 |
 
-With CHANGE=TRUE, b1 changes from 0.1 to 0.4 at sample 51. Smaller lambda discounts
+With ENABLE_PROCESS_CHANGE=TRUE, b1 changes from 0.1 to 0.4 at sample 51. Smaller lambda discounts
 old data faster in this noiseless example. It is not evidence that lambda=0.6 is
 best on the plant. Run each case from a fresh initialization; assess the trajectory
 as well as the final coefficients.

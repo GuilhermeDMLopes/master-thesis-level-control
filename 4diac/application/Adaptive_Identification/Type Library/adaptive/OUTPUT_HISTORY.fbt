@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<FBType Name="ADP_HISTORY2" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+<FBType Name="OUTPUT_HISTORY" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
   <Identification Standard="61499-2" />
   <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
   <InterfaceList>
@@ -7,26 +7,26 @@
       <Event Name="INIT" Type="Event" />
       <Event Name="REQ" Type="Event" />
       <Event Name="COMMIT" Type="Event">
-        <With Var="Y_CURRENT" />
+        <With Var="CURRENT_OUTPUT" />
       </Event>
     </EventInputs>
     <EventOutputs>
       <Event Name="INITO" Type="Event">
-        <With Var="Y1" />
-        <With Var="Y2" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
       </Event>
       <Event Name="CNF" Type="Event">
-        <With Var="Y1" />
-        <With Var="Y2" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
       </Event>
       <Event Name="ACK" Type="Event" />
     </EventOutputs>
     <InputVars>
-      <VarDeclaration Name="Y_CURRENT" Type="LREAL" />
+      <VarDeclaration Name="CURRENT_OUTPUT" Type="LREAL" />
     </InputVars>
     <OutputVars>
-      <VarDeclaration Name="Y1" Type="LREAL" />
-      <VarDeclaration Name="Y2" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
     </OutputVars>
   </InterfaceList>
   <BasicFB>
@@ -57,13 +57,13 @@
       <ECTransition Source="STORE" Destination="READY" Condition="1" />
     </ECC>
     <Algorithm Name="INITIALIZE">
-      <ST Text="H1 := 0.0;&#10;H2 := 0.0;&#10;Y1 := 0.0;&#10;Y2 := 0.0;" />
+      <ST Text="H1 := 0.0;&#10;H2 := 0.0;&#10;OUTPUT_PREVIOUS_1 := 0.0;&#10;OUTPUT_PREVIOUS_2 := 0.0;" />
     </Algorithm>
     <Algorithm Name="SNAPSHOT">
-      <ST Text="Y1 := H1;&#10;Y2 := H2;" />
+      <ST Text="OUTPUT_PREVIOUS_1 := H1;&#10;OUTPUT_PREVIOUS_2 := H2;" />
     </Algorithm>
     <Algorithm Name="COMMIT_SAMPLE">
-      <ST Text="H2 := H1;&#10;H1 := Y_CURRENT;" />
+      <ST Text="H2 := H1;&#10;H1 := CURRENT_OUTPUT;" />
     </Algorithm>
   </BasicFB>
 </FBType>

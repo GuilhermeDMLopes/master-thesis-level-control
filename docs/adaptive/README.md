@@ -1,5 +1,7 @@
 # Adaptive control workstream
 
+**Interface update:** [descriptive block and port names](20261019-descriptive-ports.md). Older checkpoints below retain their historical names.
+
 **Next step (2026-10-19):** [MMQE validation guide](20261019-mmqe-next-step.md). Identification native execution remains pending. [Selected native PID captures](../pid/20261019-selected-evidence.md) explain the preceding checks. On 2026-10-19, 17 identification tests and 13 PID tests passed offline; all four archived identification cases were reproduced.
 
 Checkpoint: 2026-09-29. Development branch: `feature/adaptive-pid-iec61499`.

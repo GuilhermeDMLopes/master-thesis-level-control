@@ -78,41 +78,41 @@ def test_archived_math_and_batch_solution(name,lam,change):
 
 @pytest.mark.parametrize('name,lam,change',CASES)
 def test_actual_st_algorithms_match_archived_samples(name,lam,change):
-    replay,history,plant,rls=[STBlock(n) for n in ['ADP_REPLAY100','ADP_HISTORY2','ADP_ARX22_PROCESS','ADP_RLS4']]
-    replay.values['CHANGE']=change;rls.values.update(LAMBDA=lam,P0=10000.)
+    replay,history,plant,rls=[STBlock(n) for n in ['INPUT_SEQUENCE_REPLAY','OUTPUT_HISTORY','SECOND_ORDER_PROCESS','RLS_PARAMETER_ESTIMATOR']]
+    replay.values['ENABLE_PROCESS_CHANGE']=change;rls.values.update(FORGETTING_FACTOR=lam,INITIAL_COVARIANCE=10000.)
     for b in (replay,history,plant,rls):assert b.trigger('INIT')==['INITO']
     expected=np.loadtxt(DATA/(name+'.csv'),delimiter=',',skiprows=1)
     for row in expected:
         assert replay.trigger('REQ')==['CNF'];assert history.trigger('REQ')==['CNF']
-        plant.values.update({k:history.values[k] for k in ['Y1','Y2']})
-        plant.values.update({k:replay.values[k] for k in ['U1','U2','B1']})
+        plant.values.update({k:history.values[k] for k in ['OUTPUT_PREVIOUS_1','OUTPUT_PREVIOUS_2']})
+        plant.values.update({k:replay.values[k] for k in ['INPUT_PREVIOUS_1','INPUT_PREVIOUS_2','TRUE_INPUT_COEFFICIENT']})
         assert plant.trigger('REQ')==['CNF']
-        rls.values.update(Y=plant.values['Y'],F1=history.values['Y1'],F2=history.values['Y2'],F3=replay.values['U1'],F4=replay.values['U2'])
+        rls.values.update(PROCESS_OUTPUT=plant.values['PROCESS_OUTPUT'],OUTPUT_PREVIOUS_1=history.values['OUTPUT_PREVIOUS_1'],OUTPUT_PREVIOUS_2=history.values['OUTPUT_PREVIOUS_2'],INPUT_PREVIOUS_1=replay.values['INPUT_PREVIOUS_1'],INPUT_PREVIOUS_2=replay.values['INPUT_PREVIOUS_2'])
         assert rls.trigger('REQ')==['CNF']
-        actual=[replay.values['K'],replay.values['U1'],replay.values['U2'],plant.values['Y'],rls.values['Y_HAT'],rls.values['ERROR']]+[rls.values[f'T{i}'] for i in range(1,5)]
+        actual=[replay.values['SAMPLE_INDEX'],replay.values['INPUT_PREVIOUS_1'],replay.values['INPUT_PREVIOUS_2'],plant.values['PROCESS_OUTPUT'],rls.values['PREDICTED_OUTPUT'],rls.values['PREDICTION_ERROR']]+[rls.values[n] for n in ['EST_OUTPUT_COEFFICIENT_1','EST_OUTPUT_COEFFICIENT_2','EST_INPUT_COEFFICIENT_1','EST_INPUT_COEFFICIENT_2']]
         np.testing.assert_allclose(actual,row[[0,2,3,4,5,6,7,8,9,10]],atol=1e-8,rtol=1e-8)
-        history.values['Y_CURRENT']=plant.values['Y'];assert history.trigger('COMMIT')==['ACK']
-    assert replay.trigger('REQ')==['DONE'];assert replay.values['K']==100
+        history.values['CURRENT_OUTPUT']=plant.values['PROCESS_OUTPUT'];assert history.trigger('COMMIT')==['ACK']
+    assert replay.trigger('REQ')==['DONE'];assert replay.values['SAMPLE_INDEX']==100
     for b in (replay,history,plant,rls):assert b.trigger('INIT')==['INITO']
-    assert history.values['Y1']==0 and replay.values['K']==0 and rls.values['T1']==0
+    assert history.values['OUTPUT_PREVIOUS_1']==0 and replay.values['SAMPLE_INDEX']==0 and rls.values['EST_OUTPUT_COEFFICIENT_1']==0
 
 @pytest.mark.parametrize('bad',[0.,-1.,1.1,float('nan'),float('inf')])
 def test_invalid_forgetting_rejected(bad):
     with pytest.raises(ValueError):RLS4(bad)
-    b=STBlock('ADP_RLS4');b.values.update(LAMBDA=bad,P0=10000.)
+    b=STBlock('RLS_PARAMETER_ESTIMATOR');b.values.update(FORGETTING_FACTOR=bad,INITIAL_COVARIANCE=10000.)
     assert b.trigger('INIT')==['ERR'];assert b.trigger('REQ')==[]
 
 
 def test_rls_failed_input_preserves_state_and_requires_init():
-    b=STBlock('ADP_RLS4');b.values.update(LAMBDA=.8,P0=10000.)
+    b=STBlock('RLS_PARAMETER_ESTIMATOR');b.values.update(FORGETTING_FACTOR=.8,INITIAL_COVARIANCE=10000.)
     assert b.trigger('INIT')==['INITO']
-    old={k:v for k,v in b.values.items() if re.fullmatch(r'T[1-4]|P[1-4][1-4]',k)}
-    b.values['Y']=float('nan');assert b.trigger('REQ')==['ERR']
+    old={k:v for k,v in b.values.items() if re.fullmatch(r'EST_(?:OUTPUT|INPUT)_COEFFICIENT_[12]|P[1-4][1-4]',k)}
+    b.values['PROCESS_OUTPUT']=float('nan');assert b.trigger('REQ')==['ERR']
     assert old=={k:b.values[k] for k in old};assert b.trigger('REQ')==[]
 
 
 def test_composite_connections_and_with_contracts():
-    r=ET.parse(TYPES/'ADP_IDENTIFICATION.fbt').getroot()
+    r=ET.parse(TYPES/'PROCESS_IDENTIFICATION.fbt').getroot()
     fbs={b.get('Name'):ET.parse(TYPES/(b.get('Type')+'.fbt')).getroot() for b in r.findall('FBNetwork/FB')}
     def resolve(endpoint,kind,source):
         if '.' in endpoint:
@@ -131,9 +131,9 @@ def test_composite_connections_and_with_contracts():
             for ev in node.findall('InterfaceList/Event'+direction+'s/Event'):
                 assert {w.get('Var') for w in ev.findall('With')}<=vs
     edges={(c.get('Source'),c.get('Destination')) for c in r.findall('FBNetwork/EventConnections/Connection')}
-    assert ('Estimator.CNF','History.COMMIT') in edges
-    assert ('History.ACK','CNF') in edges
-    assert ('Process.CNF','Estimator.REQ') in edges
+    assert ('ParameterEstimator.CNF','OutputHistory.COMMIT') in edges
+    assert ('OutputHistory.ACK','CNF') in edges
+    assert ('SimulatedProcess.CNF','ParameterEstimator.REQ') in edges
 
 
 def test_archived_evidence_matches_original_byte_manifest():

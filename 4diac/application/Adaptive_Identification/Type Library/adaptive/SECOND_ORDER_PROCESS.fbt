@@ -1,35 +1,35 @@
 <?xml version='1.0' encoding='utf-8'?>
-<FBType Name="ADP_ARX22_PROCESS" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+<FBType Name="SECOND_ORDER_PROCESS" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
   <Identification Standard="61499-2" />
   <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
   <InterfaceList>
     <EventInputs>
       <Event Name="INIT" Type="Event" />
       <Event Name="REQ" Type="Event">
-        <With Var="Y1" />
-        <With Var="Y2" />
-        <With Var="U1" />
-        <With Var="U2" />
-        <With Var="B1" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+        <With Var="TRUE_INPUT_COEFFICIENT" />
       </Event>
     </EventInputs>
     <EventOutputs>
       <Event Name="INITO" Type="Event">
-        <With Var="Y" />
+        <With Var="PROCESS_OUTPUT" />
       </Event>
       <Event Name="CNF" Type="Event">
-        <With Var="Y" />
+        <With Var="PROCESS_OUTPUT" />
       </Event>
     </EventOutputs>
     <InputVars>
-      <VarDeclaration Name="Y1" Type="LREAL" />
-      <VarDeclaration Name="Y2" Type="LREAL" />
-      <VarDeclaration Name="U1" Type="LREAL" />
-      <VarDeclaration Name="U2" Type="LREAL" />
-      <VarDeclaration Name="B1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="TRUE_INPUT_COEFFICIENT" Type="LREAL" />
     </InputVars>
     <OutputVars>
-      <VarDeclaration Name="Y" Type="LREAL" />
+      <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
     </OutputVars>
   </InterfaceList>
   <BasicFB>
@@ -50,10 +50,10 @@
       <ECTransition Source="EXECUTE" Destination="READY" Condition="1" />
     </ECC>
     <Algorithm Name="INITIALIZE">
-      <ST Text="Y := 0.0;" />
+      <ST Text="PROCESS_OUTPUT := 0.0;" />
     </Algorithm>
     <Algorithm Name="CALCULATE">
-      <ST Text="Y := 1.2 * Y1 - 0.36 * Y2 + B1 * U1 + 0.06 * U2;" />
+      <ST Text="PROCESS_OUTPUT := 1.2 * OUTPUT_PREVIOUS_1 - 0.36 * OUTPUT_PREVIOUS_2 + TRUE_INPUT_COEFFICIENT * INPUT_PREVIOUS_1 + 0.06 * INPUT_PREVIOUS_2;" />
     </Algorithm>
   </BasicFB>
 </FBType>

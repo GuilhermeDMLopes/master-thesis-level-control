@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PROCESS_IDENTIFICATION" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="ENABLE_PROCESS_CHANGE" />
+        <With Var="FORGETTING_FACTOR" />
+        <With Var="INITIAL_COVARIANCE" />
+      </Event>
+      <Event Name="REQ" Type="Event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="ESTIMATION_VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="SAMPLE_INDEX" />
+        <With Var="PROCESS_OUTPUT" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+        <With Var="TRUE_INPUT_COEFFICIENT" />
+        <With Var="EST_OUTPUT_COEFFICIENT_1" />
+        <With Var="EST_OUTPUT_COEFFICIENT_2" />
+        <With Var="EST_INPUT_COEFFICIENT_1" />
+        <With Var="EST_INPUT_COEFFICIENT_2" />
+        <With Var="PREDICTED_OUTPUT" />
+        <With Var="PREDICTION_ERROR" />
+        <With Var="ESTIMATION_VALID" />
+      </Event>
+      <Event Name="DONE" Type="Event" />
+      <Event Name="ERR" Type="Event">
+        <With Var="ESTIMATION_VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="ENABLE_PROCESS_CHANGE" Type="BOOL" InitialValue="FALSE" />
+      <VarDeclaration Name="FORGETTING_FACTOR" Type="LREAL" InitialValue="1.0" />
+      <VarDeclaration Name="INITIAL_COVARIANCE" Type="LREAL" InitialValue="10000.0" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="SAMPLE_INDEX" Type="UINT" />
+      <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="TRUE_INPUT_COEFFICIENT" Type="LREAL" />
+      <VarDeclaration Name="EST_OUTPUT_COEFFICIENT_1" Type="LREAL" />
+      <VarDeclaration Name="EST_OUTPUT_COEFFICIENT_2" Type="LREAL" />
+      <VarDeclaration Name="EST_INPUT_COEFFICIENT_1" Type="LREAL" />
+      <VarDeclaration Name="EST_INPUT_COEFFICIENT_2" Type="LREAL" />
+      <VarDeclaration Name="PREDICTED_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="PREDICTION_ERROR" Type="LREAL" />
+      <VarDeclaration Name="ESTIMATION_VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB Name="InputSequence" Type="INPUT_SEQUENCE_REPLAY" x="400" y="200" />
+    <FB Name="OutputHistory" Type="OUTPUT_HISTORY" x="2100" y="200" />
+    <FB Name="SimulatedProcess" Type="SECOND_ORDER_PROCESS" x="2100" y="1600" />
+    <FB Name="ParameterEstimator" Type="RLS_PARAMETER_ESTIMATOR" x="400" y="1600" />
+    <EventConnections>
+      <Connection Source="INIT" Destination="InputSequence.INIT" />
+      <Connection Source="InputSequence.INITO" Destination="OutputHistory.INIT" />
+      <Connection Source="OutputHistory.INITO" Destination="SimulatedProcess.INIT" />
+      <Connection Source="SimulatedProcess.INITO" Destination="ParameterEstimator.INIT" />
+      <Connection Source="ParameterEstimator.INITO" Destination="INITO" />
+      <Connection Source="REQ" Destination="InputSequence.REQ" />
+      <Connection Source="InputSequence.CNF" Destination="OutputHistory.REQ" />
+      <Connection Source="OutputHistory.CNF" Destination="SimulatedProcess.REQ" />
+      <Connection Source="SimulatedProcess.CNF" Destination="ParameterEstimator.REQ" />
+      <Connection Source="ParameterEstimator.CNF" Destination="OutputHistory.COMMIT" />
+      <Connection Source="OutputHistory.ACK" Destination="CNF" />
+      <Connection Source="InputSequence.DONE" Destination="DONE" />
+      <Connection Source="ParameterEstimator.ERR" Destination="ERR" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="ENABLE_PROCESS_CHANGE" Destination="InputSequence.ENABLE_PROCESS_CHANGE" />
+      <Connection Source="FORGETTING_FACTOR" Destination="ParameterEstimator.FORGETTING_FACTOR" />
+      <Connection Source="INITIAL_COVARIANCE" Destination="ParameterEstimator.INITIAL_COVARIANCE" />
+      <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="ParameterEstimator.PROCESS_OUTPUT" />
+      <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="OutputHistory.CURRENT_OUTPUT" />
+      <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="PROCESS_OUTPUT" />
+      <Connection Source="InputSequence.INPUT_PREVIOUS_1" Destination="SimulatedProcess.INPUT_PREVIOUS_1" />
+      <Connection Source="InputSequence.INPUT_PREVIOUS_1" Destination="INPUT_PREVIOUS_1" />
+      <Connection Source="InputSequence.INPUT_PREVIOUS_2" Destination="SimulatedProcess.INPUT_PREVIOUS_2" />
+      <Connection Source="InputSequence.INPUT_PREVIOUS_2" Destination="INPUT_PREVIOUS_2" />
+      <Connection Source="InputSequence.TRUE_INPUT_COEFFICIENT" Destination="SimulatedProcess.TRUE_INPUT_COEFFICIENT" />
+      <Connection Source="InputSequence.TRUE_INPUT_COEFFICIENT" Destination="TRUE_INPUT_COEFFICIENT" />
+      <Connection Source="InputSequence.SAMPLE_INDEX" Destination="SAMPLE_INDEX" />
+      <Connection Source="OutputHistory.OUTPUT_PREVIOUS_1" Destination="SimulatedProcess.OUTPUT_PREVIOUS_1" />
+      <Connection Source="OutputHistory.OUTPUT_PREVIOUS_1" Destination="ParameterEstimator.OUTPUT_PREVIOUS_1" />
+      <Connection Source="OutputHistory.OUTPUT_PREVIOUS_2" Destination="SimulatedProcess.OUTPUT_PREVIOUS_2" />
+      <Connection Source="OutputHistory.OUTPUT_PREVIOUS_2" Destination="ParameterEstimator.OUTPUT_PREVIOUS_2" />
+      <Connection Source="InputSequence.INPUT_PREVIOUS_1" Destination="ParameterEstimator.INPUT_PREVIOUS_1" />
+      <Connection Source="InputSequence.INPUT_PREVIOUS_2" Destination="ParameterEstimator.INPUT_PREVIOUS_2" />
+      <Connection Source="ParameterEstimator.EST_OUTPUT_COEFFICIENT_1" Destination="EST_OUTPUT_COEFFICIENT_1" />
+      <Connection Source="ParameterEstimator.EST_OUTPUT_COEFFICIENT_2" Destination="EST_OUTPUT_COEFFICIENT_2" />
+      <Connection Source="ParameterEstimator.EST_INPUT_COEFFICIENT_1" Destination="EST_INPUT_COEFFICIENT_1" />
+      <Connection Source="ParameterEstimator.EST_INPUT_COEFFICIENT_2" Destination="EST_INPUT_COEFFICIENT_2" />
+      <Connection Source="ParameterEstimator.PREDICTED_OUTPUT" Destination="PREDICTED_OUTPUT" />
+      <Connection Source="ParameterEstimator.PREDICTION_ERROR" Destination="PREDICTION_ERROR" />
+      <Connection Source="ParameterEstimator.ESTIMATION_VALID" Destination="ESTIMATION_VALID" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>
