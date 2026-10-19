@@ -1,0 +1,89 @@
+{
+  "scope": "Offline candidate; fixed-gain pole checks and prescribed gain switch. No online RLS, ST, FORTE or physical validation.",
+  "design": {
+    "sample_s": 0.1,
+    "target_pole_triplet": [
+      0.7,
+      0.7,
+      0.7
+    ],
+    "limits": [
+      0,
+      10
+    ],
+    "process_change_sample": 151,
+    "prescribed_gain_update_sample": 171
+  },
+  "nominal_before": {
+    "gains": [
+      0.45882339553937435,
+      1.6381884387801722,
+      0.016705052344105673
+    ],
+    "remaining_pole": 0.02922166590805656,
+    "max_pole_modulus": 0.7000032279133985,
+    "polynomial_residual": 5.551115123125783e-17
+  },
+  "nominal_after": {
+    "gains": [
+      0.15516028902910722,
+      0.5822613474455592,
+      0.004572867901485872
+    ],
+    "remaining_pole": 0.007999185833502984,
+    "max_pole_modulus": 0.7000021476435476,
+    "polynomial_residual": 4.336808689942018e-19
+  },
+  "estimated_after_lambda08": {
+    "gains": [
+      0.15527937687971063,
+      0.5824050142670665,
+      0.004607170837507969
+    ],
+    "remaining_pole": 0.008045041153852562,
+    "max_pole_modulus": 0.7000016529731738,
+    "polynomial_residual": 4.336808689942018e-19
+  },
+  "runs": {
+    "fixed_process": {
+      "final_output": 1.0,
+      "max_output": 1.0,
+      "final_error": 0.0,
+      "iae_sample_units": 6.104303853741145,
+      "saturated_samples": 0,
+      "max_command": 1.0000000000000004
+    },
+    "changed_process_fixed_gains": {
+      "final_output": 1.0000000000000002,
+      "max_output": 1.7069180466846716,
+      "final_error": -2.220446049250313e-16,
+      "iae_sample_units": 10.142035222058977,
+      "saturated_samples": 0,
+      "max_command": 1.0000000000000004
+    },
+    "changed_process_prescribed_retuning": {
+      "final_output": 1.0000000000000002,
+      "max_output": 1.7069180466846716,
+      "final_error": -2.220446049250313e-16,
+      "iae_sample_units": 13.989275162354103,
+      "saturated_samples": 0,
+      "max_command": 1.0000000000000004
+    },
+    "changed_process_estimated_retuning": {
+      "final_output": 0.9999999999999998,
+      "max_output": 1.7069180466846716,
+      "final_error": 2.220446049250313e-16,
+      "iae_sample_units": 13.987801576078589,
+      "saturated_samples": 0,
+      "max_command": 1.0000000000000004
+    },
+    "saturation_stress_sp20": {
+      "final_output": 9.999999999999995,
+      "max_output": 9.999999999999996,
+      "final_error": 10.000000000000005,
+      "iae_sample_units": 3044.854609899474,
+      "saturated_samples": 298,
+      "max_command": 10.0
+    }
+  }
+}
