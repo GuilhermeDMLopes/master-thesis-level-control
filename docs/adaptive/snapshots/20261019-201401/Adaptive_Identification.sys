@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System Name="Adaptive_Identification" Comment="Offline only; native export and runtime validation pending">
+	<Application Name="Identification_Offline" Comment="">
+		<SubAppNetwork>
+			<FB Name="SamplingClock" Type="E_CYCLE" Comment="" x="300.0" y="300.0">
+				<Parameter Name="DT" Value="T#100ms"/>
+			</FB>
+			<FB Name="IdentificationTest" Type="PROCESS_IDENTIFICATION" Comment="" x="2200.0" y="300.0">
+				<Parameter Name="ENABLE_PROCESS_CHANGE" Value="FALSE"/>
+				<Parameter Name="FORGETTING_FACTOR" Value="1.0"/>
+				<Parameter Name="INITIAL_COVARIANCE" Value="10000.0"/>
+			</FB>
+			<EventConnections>
+				<Connection Source="IdentificationTest.INITO" Destination="SamplingClock.START" Comment="" dx1="80.0" dx2="80.0" dy="160.0"/>
+				<Connection Source="SamplingClock.EO" Destination="IdentificationTest.REQ" Comment="" dx1="626.6666666666667"/>
+				<Connection Source="IdentificationTest.DONE" Destination="SamplingClock.STOP" Comment="" dx1="80.0" dx2="80.0" dy="-46.66666666666667"/>
+				<Connection Source="IdentificationTest.ERR" Destination="SamplingClock.STOP" Comment="" dx1="80.0" dx2="80.0" dy="-100.0"/>
+			</EventConnections>
+		</SubAppNetwork>
+	</Application>
+	<Device Name="LocalIdentification" Type="FORTE_PC" Comment="" x="3533.3333333333335" y="1046.6666666666667">
+		<Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;"/>
+		<Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" Comment="device profile"/>
+		<Attribute Name="Color" Type="STRING" Value="255,190,111" Comment="color"/>
+		<Resource Name="EMB_RES" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+			<FBNetwork>
+				<FB Name="IdentificationTest" Type="PROCESS_IDENTIFICATION" Comment="" x="2200.0" y="300.0">
+					<Parameter Name="ENABLE_PROCESS_CHANGE" Value="FALSE"/>
+					<Parameter Name="FORGETTING_FACTOR" Value="1.0"/>
+					<Parameter Name="INITIAL_COVARIANCE" Value="10000.0"/>
+				</FB>
+				<FB Name="SamplingClock" Type="E_CYCLE" Comment="" x="300.0" y="300.0">
+					<Parameter Name="DT" Value="T#100ms"/>
+				</FB>
+				<EventConnections>
+					<Connection Source="IdentificationTest.INITO" Destination="SamplingClock.START" Comment="" dx1="80.0" dx2="80.0" dy="160.0"/>
+					<Connection Source="IdentificationTest.DONE" Destination="SamplingClock.STOP" Comment="" dx1="80.0" dx2="80.0" dy="-46.66666666666667"/>
+					<Connection Source="IdentificationTest.ERR" Destination="SamplingClock.STOP" Comment="" dx1="80.0" dx2="80.0" dy="-100.0"/>
+					<Connection Source="SamplingClock.EO" Destination="IdentificationTest.REQ" Comment="" dx1="626.6666666666667"/>
+				</EventConnections>
+			</FBNetwork>
+		</Resource>
+	</Device>
+	<Mapping From="Identification_Offline.IdentificationTest" To="LocalIdentification.EMB_RES.IdentificationTest"/>
+	<Mapping From="Identification_Offline.SamplingClock" To="LocalIdentification.EMB_RES.SamplingClock"/>
+</System>
