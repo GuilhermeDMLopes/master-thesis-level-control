@@ -12,7 +12,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $ForteSource "CMakeLists.txt"))) { t
 & git -C $ForteSource cat-file -e "$revision^{commit}"
 if ($LASTEXITCODE -ne 0) { throw "Expected FORTE commit unavailable." }
 $files = @{}
-foreach ($name in @("INPUT_SEQUENCE_REPLAY.cpp", "INPUT_SEQUENCE_REPLAY.h", "OUTPUT_HISTORY.cpp", "OUTPUT_HISTORY.h", "SECOND_ORDER_PROCESS.cpp", "SECOND_ORDER_PROCESS.h", "RLS_PARAMETER_ESTIMATOR.cpp", "RLS_PARAMETER_ESTIMATOR.h")) {
+foreach ($name in @("INPUT_SEQUENCE_REPLAY.cpp", "INPUT_SEQUENCE_REPLAY.h", "OUTPUT_HISTORY.cpp", "OUTPUT_HISTORY.h", "SECOND_ORDER_PROCESS.cpp", "SECOND_ORDER_PROCESS.h", "RLS_PARAMETER_ESTIMATOR.cpp", "RLS_PARAMETER_ESTIMATOR.h", "PROCESS_IDENTIFICATION.cpp", "PROCESS_IDENTIFICATION.h")) {
     $exportMatches = @(Get-ChildItem -LiteralPath $ExportDirectory -Recurse -File -Filter $name)
     if ($exportMatches.Count -ne 1) { throw "Expected exactly one exported $name; found $($exportMatches.Count)." }
     if ($exportMatches[0].Length -eq 0) { throw "Empty export: $name" }
@@ -60,7 +60,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "CMake configuration failed. See $log" }
     & cmake --build $build --config Debug --parallel 4
     if ($LASTEXITCODE -ne 0) { throw "Compilation failed. See $log" }
-    foreach ($name in @("INPUT_SEQUENCE_REPLAY", "OUTPUT_HISTORY", "SECOND_ORDER_PROCESS", "RLS_PARAMETER_ESTIMATOR")) {
+    foreach ($name in @("INPUT_SEQUENCE_REPLAY", "OUTPUT_HISTORY", "SECOND_ORDER_PROCESS", "RLS_PARAMETER_ESTIMATOR", "PROCESS_IDENTIFICATION")) {
         $objects = @(Get-ChildItem -LiteralPath $build -Recurse -File -Filter "$name.obj")
         if ($objects.Count -eq 0) { throw "No compiled object found for $name." }
     }

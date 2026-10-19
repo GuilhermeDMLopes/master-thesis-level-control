@@ -1,3 +1,5 @@
+> Deployment correction: [export and compile the composite too](20261019-composite-deployment-fix.md). The observed downloader creates PROCESS_IDENTIFICATION as a native type.
+
 # Next step: validate the identifier separately
 
 Checkpoint: 2026-10-19. This guide follows the native PID checks in
