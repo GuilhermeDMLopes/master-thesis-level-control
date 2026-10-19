@@ -1,5 +1,7 @@
 # Adaptive control workstream
 
+**Next step (2026-10-19):** [MMQE validation guide](20261019-mmqe-next-step.md). Identification native execution remains pending. [Selected native PID captures](../pid/20261019-selected-evidence.md) explain the preceding checks. On 2026-10-19, 17 identification tests and 13 PID tests passed offline; all four archived identification cases were reproduced.
+
 Checkpoint: 2026-09-29. Development branch: `feature/adaptive-pid-iec61499`.
 
 ## Advisor update: 2026-10-11
@@ -60,7 +62,7 @@ The standard E_CYCLE type is reused from the existing repository.
 | Adaptive closed-loop comparison | Pending |
 | Adaptive-control publication novelty | Not established |
 
-The targeted suite currently contains 16 passing tests. These checks include a
+At the 2026-09-29 checkpoint, the targeted suite contained 16 passing tests. These checks include a
 limited interpreter of the actual ST text, not native IEC language/runtime testing.
 Full local suite on Linux / Python 3.12: **520 passed, 3 failed** on 2026-09-29.
 All three failures reproduce unchanged in a clean worktree of the base commit

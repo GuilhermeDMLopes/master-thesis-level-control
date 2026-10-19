@@ -147,3 +147,10 @@ def test_archived_evidence_matches_original_byte_manifest():
         payload = (root / entry['path']).read_bytes()
         assert len(payload) == entry['bytes'], entry['path']
         assert hashlib.sha256(payload).hexdigest() == entry['sha256'], entry['path']
+
+
+def test_scientific_literals_have_explicit_exponent_sign():
+    for path in TYPES.glob("*.fbt"):
+        for st in ET.parse(path).getroot().findall(".//ST"):
+            assert not re.search(r"\b\d+(?:\.\d+)?[Ee]\d+", st.get("Text", "")), path.name
+    assert "1.0E100" not in (ROOT / "scripts/generate_adaptive_4diac.py").read_text()

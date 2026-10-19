@@ -79,23 +79,23 @@ def main():
     init=['VALID := FALSE;','Y_HAT := 0.0;','ERROR := 0.0;','LAMBDA_ACTIVE := LAMBDA;']
     init+= [f'T{i} := 0.0;' for i in range(1,5)]
     init+= [f'P{i}{j} := 0.0;' for i in range(1,5) for j in range(1,5)]
-    init+=['IF (LAMBDA > 0.0) AND (LAMBDA <= 1.0) AND (P0 > 0.0) AND (P0 <= 1.0E100) THEN']
+    init+=['IF (LAMBDA > 0.0) AND (LAMBDA <= 1.0) AND (P0 > 0.0) AND (P0 <= 1.0E+100) THEN']
     init += [f'P{i}{i} := P0;' for i in range(1,5)]+['VALID := TRUE;','END_IF;']
     st=['VALID := FALSE;']
-    finite=' AND '.join(f'({s} >= -1.0E100) AND ({s} <= 1.0E100)' for s in ['Y','F1','F2','F3','F4'])
+    finite=' AND '.join(f'({s} >= -1.0E+100) AND ({s} <= 1.0E+100)' for s in ['Y','F1','F2','F3','F4'])
     st += ['IF '+finite+' THEN']
     st+= ['Y_HAT := '+' + '.join(f'F{i} * T{i}' for i in range(1,5))+';','ERROR := Y - Y_HAT;']
     st+= [f'V{i} := '+' + '.join(f'P{i}{j} * F{j}' for j in range(1,5))+';' for i in range(1,5)]
     st+= [f'R{j} := '+' + '.join(f'F{i} * P{i}{j}' for i in range(1,5))+';' for j in range(1,5)]
     st+= ['DEN := LAMBDA_ACTIVE + '+' + '.join(f'F{i} * V{i}' for i in range(1,5))+';',
-          'IF (DEN > 1.0E-100) AND (DEN <= 1.0E100) THEN']
+          'IF (DEN > 1.0E-100) AND (DEN <= 1.0E+100) THEN']
     st+= [f'G{i} := V{i} / DEN;' for i in range(1,5)]
     st+= [f'N{i} := T{i} + G{i} * ERROR;' for i in range(1,5)]
     st+= [f'C{i}{j} := (P{i}{j} - G{i} * R{j}) / LAMBDA_ACTIVE;' for i in range(1,5) for j in range(1,5)]
     for i in range(1,5):
         for j in range(i+1,5):st += [f'C{i}{j} := (C{i}{j} + C{j}{i}) / 2.0;',f'C{j}{i} := C{i}{j};']
     candidates=[f'N{i}' for i in range(1,5)]+[f'C{i}{j}' for i in range(1,5) for j in range(1,5)]
-    finite=' AND '.join(f'({s} >= -1.0E100) AND ({s} <= 1.0E100)' for s in candidates)
+    finite=' AND '.join(f'({s} >= -1.0E+100) AND ({s} <= 1.0E+100)' for s in candidates)
     st+=['IF '+finite+' THEN']+[f'T{i} := N{i};' for i in range(1,5)]+[f'P{i}{j} := C{i}{j};' for i in range(1,5) for j in range(1,5)]+['VALID := TRUE;','END_IF;','END_IF;','END_IF;']
     outs=[('T1',),('T2',),('T3',),('T4',),('Y_HAT',),('ERROR',),('VALID','BOOL')]
     intern=[(s,) for s in ['LAMBDA_ACTIVE','DEN']+[f'{p}{i}' for p in ['V','R','G','N'] for i in range(1,5)]+[f'{p}{i}{j}' for p in ['P','C'] for i in range(1,5) for j in range(1,5)]]
