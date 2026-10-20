@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PID_FLAG_STATE_ACCESS" Comment="Experimental read-only state interface; original PID arithmetic unchanged; native validation pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-20" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="KP" />
+        <With Var="KI" />
+        <With Var="KD" />
+        <With Var="TS_S" />
+        <With Var="U_MIN" />
+        <With Var="U_MAX" />
+      </Event>
+      <Event Name="REQ" Type="Event">
+        <With Var="SP" />
+        <With Var="PV" />
+      </Event>
+      <Event Name="SET_GAINS" Type="Event">
+        <With Var="KP" />
+        <With Var="KI" />
+        <With Var="KD" />
+      </Event>
+      <Event Name="READ_STATE" Type="Event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="MV" />
+        <With Var="ERROR" />
+        <With Var="P_TERM" />
+        <With Var="I_TERM" />
+        <With Var="D_TERM" />
+        <With Var="RAW" />
+        <With Var="FLAG" />
+        <With Var="SATURATED" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="MV" />
+        <With Var="ERROR" />
+        <With Var="P_TERM" />
+        <With Var="I_TERM" />
+        <With Var="D_TERM" />
+        <With Var="RAW" />
+        <With Var="FLAG" />
+        <With Var="SATURATED" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="GAINS_CNF" Type="Event">
+        <With Var="VALID" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+      <Event Name="STATE_CNF" Type="Event">
+        <With Var="ACTIVE_PROPORTIONAL_GAIN" />
+        <With Var="ACTIVE_INTEGRAL_GAIN" />
+        <With Var="ACTIVE_DERIVATIVE_GAIN" />
+        <With Var="ACTIVE_SAMPLE_TIME_S" />
+        <With Var="ACTIVE_OUTPUT_MIN" />
+        <With Var="ACTIVE_OUTPUT_MAX" />
+        <With Var="INTEGRAL_MEMORY" />
+        <With Var="PREVIOUS_ERROR" />
+        <With Var="INTEGRATION_ENABLED" />
+      </Event>
+      <Event Name="STATE_ERR" Type="Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="KP" Type="LREAL" />
+      <VarDeclaration Name="KI" Type="LREAL" />
+      <VarDeclaration Name="KD" Type="LREAL" />
+      <VarDeclaration Name="TS_S" Type="LREAL" />
+      <VarDeclaration Name="U_MIN" Type="LREAL" />
+      <VarDeclaration Name="U_MAX" Type="LREAL" />
+      <VarDeclaration Name="SP" Type="LREAL" />
+      <VarDeclaration Name="PV" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="MV" Type="LREAL" />
+      <VarDeclaration Name="ERROR" Type="LREAL" />
+      <VarDeclaration Name="P_TERM" Type="LREAL" />
+      <VarDeclaration Name="I_TERM" Type="LREAL" />
+      <VarDeclaration Name="D_TERM" Type="LREAL" />
+      <VarDeclaration Name="RAW" Type="LREAL" />
+      <VarDeclaration Name="FLAG" Type="BOOL" />
+      <VarDeclaration Name="SATURATED" Type="BOOL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+      <VarDeclaration Name="ACTIVE_PROPORTIONAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="ACTIVE_INTEGRAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="ACTIVE_DERIVATIVE_GAIN" Type="LREAL" />
+      <VarDeclaration Name="ACTIVE_SAMPLE_TIME_S" Type="LREAL" />
+      <VarDeclaration Name="ACTIVE_OUTPUT_MIN" Type="LREAL" />
+      <VarDeclaration Name="ACTIVE_OUTPUT_MAX" Type="LREAL" />
+      <VarDeclaration Name="INTEGRAL_MEMORY" Type="LREAL" />
+      <VarDeclaration Name="PREVIOUS_ERROR" Type="LREAL" />
+      <VarDeclaration Name="INTEGRATION_ENABLED" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="KP_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="KI_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="KD_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="TS_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="LOW" Type="LREAL" />
+      <VarDeclaration Name="HIGH" Type="LREAL" />
+      <VarDeclaration Name="I_MEMORY" Type="LREAL" />
+      <VarDeclaration Name="E_PREV" Type="LREAL" />
+      <VarDeclaration Name="E_NEXT" Type="LREAL" />
+      <VarDeclaration Name="I_NEXT" Type="LREAL" />
+      <VarDeclaration Name="D_NEXT" Type="LREAL" />
+      <VarDeclaration Name="P_NEXT" Type="LREAL" />
+      <VarDeclaration Name="IT_NEXT" Type="LREAL" />
+      <VarDeclaration Name="DT_NEXT" Type="LREAL" />
+      <VarDeclaration Name="RAW_NEXT" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="FAILED_READ_REJECTED" x="8500" y="6200">
+        <ECAction Output="STATE_ERR" />
+      </ECState>
+      <ECState Name="START_READ_REJECTED" x="8500" y="4400">
+        <ECAction Output="STATE_ERR" />
+      </ECState>
+      <ECState Name="PUBLISH_STATE" x="8500" y="2500">
+        <ECAction Algorithm="COPY_STATE" Output="STATE_CNF" />
+      </ECState>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZE" x="2200" y="300">
+        <ECAction Algorithm="INITIALIZE" />
+      </ECState>
+      <ECState Name="INIT_OK" x="4400" y="300">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="4400" y="2500" />
+      <ECState Name="CALCULATE" x="2200" y="2500">
+        <ECAction Algorithm="CALCULATE" />
+      </ECState>
+      <ECState Name="SAMPLE_OK" x="2200" y="4400">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="GAINS" x="6600" y="2500">
+        <ECAction Algorithm="UPDATE_GAINS" />
+      </ECState>
+      <ECState Name="GAINS_OK" x="6600" y="4400">
+        <ECAction Output="GAINS_CNF" />
+      </ECState>
+      <ECState Name="FAILED" x="300" y="2500">
+        <ECAction Algorithm="FAIL" Output="ERR" />
+      </ECState>
+      <ECState Name="FAILED_IDLE" x="10500" y="6200" />
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" x="700" y="300" />
+      <ECTransition Source="START" Destination="FAILED" Condition="REQ" x="1900" y="300" />
+      <ECTransition Source="START" Destination="FAILED" Condition="SET_GAINS" x="3100" y="300" />
+      <ECTransition Source="INITIALIZE" Destination="INIT_OK" Condition="VALID" x="4300" y="300" />
+      <ECTransition Source="INITIALIZE" Destination="FAILED" Condition="NOT VALID" x="700" y="1400" />
+      <ECTransition Source="INIT_OK" Destination="READY" Condition="1" x="1900" y="1400" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" x="3100" y="1400" />
+      <ECTransition Source="READY" Destination="GAINS" Condition="SET_GAINS" x="4300" y="1400" />
+      <ECTransition Source="READY" Destination="CALCULATE" Condition="REQ" x="700" y="2500" />
+      <ECTransition Source="CALCULATE" Destination="SAMPLE_OK" Condition="VALID" x="1900" y="2500" />
+      <ECTransition Source="CALCULATE" Destination="FAILED" Condition="NOT VALID" x="3100" y="2500" />
+      <ECTransition Source="SAMPLE_OK" Destination="READY" Condition="1" x="4300" y="2500" />
+      <ECTransition Source="GAINS" Destination="GAINS_OK" Condition="VALID" x="700" y="3600" />
+      <ECTransition Source="GAINS" Destination="FAILED" Condition="NOT VALID" x="1900" y="3600" />
+      <ECTransition Source="GAINS_OK" Destination="READY" Condition="1" x="3100" y="3600" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" x="4300" y="3600" />
+      <ECTransition Source="START" Destination="START_READ_REJECTED" Condition="READ_STATE" x="8000" y="300" />
+      <ECTransition Source="START_READ_REJECTED" Destination="START" Condition="1" x="8000" y="500" />
+      <ECTransition Source="FAILED" Destination="FAILED_READ_REJECTED" Condition="READ_STATE" x="8000" y="300" />
+      <ECTransition Source="FAILED_READ_REJECTED" Destination="FAILED_IDLE" Condition="1" x="8000" y="500" />
+      <ECTransition Source="FAILED_IDLE" Destination="INITIALIZE" Condition="INIT" x="10000" y="500" />
+      <ECTransition Source="FAILED_IDLE" Destination="FAILED_READ_REJECTED" Condition="READ_STATE" x="10000" y="700" />
+      <ECTransition Source="READY" Destination="PUBLISH_STATE" Condition="READ_STATE" x="7000" y="2500" />
+      <ECTransition Source="PUBLISH_STATE" Destination="READY" Condition="1" x="7000" y="2700" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="VALID := (KP &gt;= -1.0E+100) AND (KP &lt;= 1.0E+100) AND (KI &gt;= -1.0E+100) AND (KI &lt;= 1.0E+100) AND (KD &gt;= -1.0E+100) AND (KD &lt;= 1.0E+100) AND (TS_S &gt;= -1.0E+100) AND (TS_S &lt;= 1.0E+100) AND (U_MIN &gt;= -1.0E+100) AND (U_MIN &lt;= 1.0E+100) AND (U_MAX &gt;= -1.0E+100) AND (U_MAX &lt;= 1.0E+100) AND (TS_S &gt; 0.0) AND (U_MIN &lt; U_MAX);&#10;IF VALID THEN&#10;    KP_ACTIVE := KP;&#10;    KI_ACTIVE := KI;&#10;    KD_ACTIVE := KD;&#10;    TS_ACTIVE := TS_S;&#10;    LOW := U_MIN;&#10;    HIGH := U_MAX;&#10;    I_MEMORY := 0.0;&#10;    E_PREV := 0.0;&#10;    FLAG := TRUE;&#10;    MV := 0.0;&#10;    RAW := 0.0;&#10;    ERROR := 0.0;&#10;    P_TERM := 0.0;&#10;    I_TERM := 0.0;&#10;    D_TERM := 0.0;&#10;    SATURATED := FALSE;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="CALCULATE">
+      <ST Text="VALID := (SP &gt;= -1.0E+100) AND (SP &lt;= 1.0E+100) AND (PV &gt;= -1.0E+100) AND (PV &lt;= 1.0E+100);&#10;IF VALID THEN&#10;    E_NEXT := SP - PV;&#10;    I_NEXT := I_MEMORY;&#10;    IF FLAG THEN&#10;        I_NEXT := I_MEMORY + (TS_ACTIVE / 2.0) * (E_NEXT + E_PREV);&#10;    END_IF;&#10;    D_NEXT := (E_NEXT - E_PREV) / TS_ACTIVE;&#10;    P_NEXT := KP_ACTIVE * E_NEXT;&#10;    IT_NEXT := KI_ACTIVE * I_NEXT;&#10;    DT_NEXT := KD_ACTIVE * D_NEXT;&#10;    RAW_NEXT := P_NEXT + IT_NEXT + DT_NEXT;&#10;    VALID := (E_NEXT &gt;= -1.0E+100) AND (E_NEXT &lt;= 1.0E+100) AND (I_NEXT &gt;= -1.0E+100) AND (I_NEXT &lt;= 1.0E+100) AND (D_NEXT &gt;= -1.0E+100) AND (D_NEXT &lt;= 1.0E+100) AND (P_NEXT &gt;= -1.0E+100) AND (P_NEXT &lt;= 1.0E+100) AND (IT_NEXT &gt;= -1.0E+100) AND (IT_NEXT &lt;= 1.0E+100) AND (DT_NEXT &gt;= -1.0E+100) AND (DT_NEXT &lt;= 1.0E+100) AND (RAW_NEXT &gt;= -1.0E+100) AND (RAW_NEXT &lt;= 1.0E+100);&#10;    IF VALID THEN&#10;        MV := RAW_NEXT;&#10;        FLAG := TRUE;&#10;        SATURATED := FALSE;&#10;        IF RAW_NEXT &gt; HIGH THEN&#10;            MV := HIGH;&#10;            FLAG := FALSE;&#10;            SATURATED := TRUE;&#10;        END_IF;&#10;        IF RAW_NEXT &lt; LOW THEN&#10;            MV := LOW;&#10;            FLAG := FALSE;&#10;            SATURATED := TRUE;&#10;        END_IF;&#10;        I_MEMORY := I_NEXT;&#10;        E_PREV := E_NEXT;&#10;        ERROR := E_NEXT;&#10;        P_TERM := P_NEXT;&#10;        I_TERM := IT_NEXT;&#10;        D_TERM := DT_NEXT;&#10;        RAW := RAW_NEXT;&#10;    END_IF;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="UPDATE_GAINS">
+      <ST Text="VALID := (KP &gt;= -1.0E+100) AND (KP &lt;= 1.0E+100) AND (KI &gt;= -1.0E+100) AND (KI &lt;= 1.0E+100) AND (KD &gt;= -1.0E+100) AND (KD &lt;= 1.0E+100);&#10;IF VALID THEN&#10;    KP_ACTIVE := KP;&#10;    KI_ACTIVE := KI;&#10;    KD_ACTIVE := KD;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="FAIL">
+      <ST Text="VALID := FALSE;" />
+    </Algorithm>
+    <Algorithm Name="COPY_STATE">
+      <ST Text="ACTIVE_PROPORTIONAL_GAIN := KP_ACTIVE;&#10;ACTIVE_INTEGRAL_GAIN := KI_ACTIVE;&#10;ACTIVE_DERIVATIVE_GAIN := KD_ACTIVE;&#10;ACTIVE_SAMPLE_TIME_S := TS_ACTIVE;&#10;ACTIVE_OUTPUT_MIN := LOW;&#10;ACTIVE_OUTPUT_MAX := HIGH;&#10;INTEGRAL_MEMORY := I_MEMORY;&#10;PREVIOUS_ERROR := E_PREV;&#10;INTEGRATION_ENABLED := FLAG;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

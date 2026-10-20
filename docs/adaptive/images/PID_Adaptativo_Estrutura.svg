@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+<defs><marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#315477"/></marker></defs>
+<rect width="1200" height="850" fill="#ffffff"/>
+<text x="40" y="47" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#20344b" font-weight="bold">PID adaptativo: quem calcula, quem identifica e quem ajusta</text>
+<text x="40" y="78" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="normal">Estrutura do quadro, com detalhamento proposto para a aplicação gradual dos ganhos.</text>
+<text x="40" y="115" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="bold">1  FLUXO DE CONTROLE E ADAPTAÇÃO</text>
+<rect x="40" y="155" width="190" height="100" rx="10" fill="#edf4fb" stroke="#7793ad" stroke-width="1.5"/>
+<text x="56" y="183" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#20344b" font-weight="bold">Referência</text>
+<text x="56" y="209" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Valor desejado</text>
+<text x="56" y="232" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Ex.: nível ou tensão</text>
+<rect x="340" y="155" width="285" height="100" rx="10" fill="#edf4fb" stroke="#7793ad" stroke-width="1.5"/>
+<text x="356" y="183" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#20344b" font-weight="bold">PID com flag</text>
+<text x="356" y="209" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Calcula o comando u</text>
+<text x="356" y="232" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Preserva a memória integral</text>
+<rect x="810" y="155" width="300" height="100" rx="10" fill="#edf4fb" stroke="#7793ad" stroke-width="1.5"/>
+<text x="826" y="183" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#20344b" font-weight="bold">Processo</text>
+<text x="826" y="209" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Recebe o comando aplicado</text>
+<text x="826" y="232" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Produz a saída medida y</text>
+<polyline points="230,205 340,205" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<polyline points="625,205 810,205" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="650" y="188" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">comando u</text>
+<polyline points="960,255 960,285 485,285 485,255" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="615" y="277" font-family="DejaVu Sans, sans-serif" font-size="15" fill="#20344b" font-weight="normal">realimentação: saída y</text>
+<rect x="810" y="350" width="300" height="120" rx="10" fill="#edf4fb" stroke="#7793ad" stroke-width="1.5"/>
+<text x="826" y="378" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#20344b" font-weight="bold">Identificador MMQE</text>
+<text x="826" y="404" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Lê y e histórico de u aplicado</text>
+<text x="826" y="427" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Estima os coeficientes</text>
+<text x="826" y="450" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">do modelo do processo</text>
+<polyline points="1090,255 1140,255 1140,410 1110,410" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="1010" y="330" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#20344b" font-weight="normal">dados alinhados</text>
+<rect x="430" y="350" width="300" height="120" rx="10" fill="#edf4fb" stroke="#7793ad" stroke-width="1.5"/>
+<text x="446" y="378" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#20344b" font-weight="bold">CALCULA: sintonia</text>
+<text x="446" y="404" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Modelo + resposta desejada</text>
+<text x="446" y="427" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">→ KP, KI e KD desejados</text>
+<text x="446" y="450" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">A cada 10 amostras, na proposta</text>
+<polyline points="810,410 730,410" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="40" y="350" width="300" height="120" rx="10" fill="#edf4fb" stroke="#7793ad" stroke-width="1.5"/>
+<text x="56" y="378" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#20344b" font-weight="bold">Transição dos ganhos</text>
+<text x="56" y="404" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Aplica pequenos passos</text>
+<text x="56" y="427" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Evita troca brusca de ganhos</text>
+<text x="56" y="450" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Detalhamento proposto</text>
+<polyline points="430,410 340,410" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<polyline points="190,350 190,310 370,310 370,255" fill="none" stroke="#315477" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="42" y="502" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="bold">Sintonia já é o cálculo de KP, KI e KD. A transição apenas controla como aplicá-los ao PID.</text>
+<text x="40" y="550" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="bold">2  ORDEM PROPOSTA DOS EVENTOS EM CADA AMOSTRA</text>
+<text x="55" y="585" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="normal">1. Obter a medição e o histórico do comando realmente aplicado; atualizar o MMQE.</text>
+<text x="55" y="614" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="normal">2. Se o contador atingir 10 amostras: calcular e verificar novos ganhos-alvo.</text>
+<text x="55" y="643" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="normal">3. Consultar o estado do PID e calcular o pequeno passo de atualização permitido.</text>
+<text x="55" y="672" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="normal">4. Enviar os três ganhos por SET_GAINS; aguardar GAINS_CNF; então disparar REQ.</text>
+<text x="55" y="701" font-family="DejaVu Sans, sans-serif" font-size="17" fill="#20344b" font-weight="normal">5. PID conclui por CNF; aplicar o comando e confirmar antes de iniciar outra transação.</text>
+<text x="40" y="754" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Um relógio de 100 ms; sintonia solicitada a cada 1 s. Valores de teste, não exigências da IEC 61499.</text>
+<text x="40" y="784" font-family="DejaVu Sans, sans-serif" font-size="16" fill="#20344b" font-weight="normal">Estado: simulação Python realizada. Integração completa, temporização e novos blocos nativos pendentes.</text>
+<text x="40" y="819" font-family="DejaVu Sans, sans-serif" font-size="14" fill="#607080" font-weight="normal">20/10/2026 • Esquema explicativo; não é uma reprodução literal da fotografia do quadro.</text>
+</svg>
