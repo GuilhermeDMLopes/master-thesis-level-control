@@ -1,0 +1,46 @@
+{
+  "scope": "Actual PID/RLS/tuner FBT ST/ECC subset replay; Python serial orchestration and synthetic plant; no native FORTE validation; fixed PID gains from nominal model",
+  "sample_time_s": 0.1,
+  "forgetting_factor": 0.8,
+  "guard_updates": true,
+  "runs": {
+    "constant_reference": {
+      "samples": 400,
+      "iae_seconds": 1.014203522205899,
+      "final_measurement": 1.0,
+      "last_estimate": [
+        1.8445565717028618,
+        -0.8453002181092598,
+        0.9914058148811011,
+        -0.9892677839583198
+      ],
+      "first_estimator_failure": null,
+      "max_covariance_entry": 66717778.56414617,
+      "minimum_covariance_eigenvalue": 0.04367619922538747,
+      "candidate_only": 1,
+      "quality_rejected": 0,
+      "tuner_rejected": 6,
+      "update_held": 276,
+      "identical_to_observer_disabled": true
+    },
+    "changing_reference": {
+      "samples": 400,
+      "iae_seconds": 1.511406816099983,
+      "final_measurement": 0.8000000008429803,
+      "last_estimate": [
+        1.2000000000000195,
+        -0.3600000000000176,
+        0.4000000000000039,
+        0.059999999999990075
+      ],
+      "first_estimator_failure": null,
+      "max_covariance_entry": 110267877.22124049,
+      "minimum_covariance_eigenvalue": 0.047379276950994136,
+      "candidate_only": 32,
+      "quality_rejected": 0,
+      "tuner_rejected": 4,
+      "update_held": 0,
+      "identical_to_observer_disabled": true
+    }
+  }
+}

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="IDENTIFICATION_UPDATE_GATE" Comment="Experimental; offline checks only; native export/runtime pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-20" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="REQ" Type="Event">
+        <With Var="PROCESS_OUTPUT" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+        <With Var="UPDATE_ALLOWED" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="UPDATE" Type="Event">
+        <With Var="LATCHED_PROCESS_OUTPUT" />
+        <With Var="LATCHED_OUTPUT_PREVIOUS_1" />
+        <With Var="LATCHED_OUTPUT_PREVIOUS_2" />
+        <With Var="LATCHED_INPUT_PREVIOUS_1" />
+        <With Var="LATCHED_INPUT_PREVIOUS_2" />
+      </Event>
+      <Event Name="HOLD" Type="Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="UPDATE_ALLOWED" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="LATCHED_PROCESS_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="LATCHED_OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="LATCHED_OUTPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="LATCHED_INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="LATCHED_INPUT_PREVIOUS_2" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="ALLOW_CAPTURED" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="CAPTURE" x="2200" y="300">
+        <ECAction Algorithm="CAPTURE" />
+      </ECState>
+      <ECState Name="FORWARD" x="4100" y="300">
+        <ECAction Output="UPDATE" />
+      </ECState>
+      <ECState Name="PAUSE" x="6000" y="300">
+        <ECAction Output="HOLD" />
+      </ECState>
+      <ECTransition Source="START" Destination="CAPTURE" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="CAPTURE" Destination="FORWARD" Condition="ALLOW_CAPTURED" x="500" y="500" />
+      <ECTransition Source="CAPTURE" Destination="PAUSE" Condition="NOT ALLOW_CAPTURED" x="500" y="500" />
+      <ECTransition Source="FORWARD" Destination="START" Condition="1" x="500" y="500" />
+      <ECTransition Source="PAUSE" Destination="START" Condition="1" x="500" y="500" />
+    </ECC>
+    <Algorithm Name="CAPTURE">
+      <ST Text="ALLOW_CAPTURED := UPDATE_ALLOWED;&#10;IF ALLOW_CAPTURED THEN&#10;LATCHED_PROCESS_OUTPUT := PROCESS_OUTPUT;&#10;LATCHED_OUTPUT_PREVIOUS_1 := OUTPUT_PREVIOUS_1;&#10;LATCHED_OUTPUT_PREVIOUS_2 := OUTPUT_PREVIOUS_2;&#10;LATCHED_INPUT_PREVIOUS_1 := INPUT_PREVIOUS_1;&#10;LATCHED_INPUT_PREVIOUS_2 := INPUT_PREVIOUS_2;&#10;END_IF;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>
