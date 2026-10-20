@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PID_MODEL_TUNER" Comment="Experimental; offline checks only; native export/runtime pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-20" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="REQ" Type="Event">
+        <With Var="MODEL_OUTPUT_COEFFICIENT_1" />
+        <With Var="MODEL_OUTPUT_COEFFICIENT_2" />
+        <With Var="MODEL_INPUT_COEFFICIENT_1" />
+        <With Var="MODEL_INPUT_COEFFICIENT_2" />
+        <With Var="SAMPLE_TIME_S" />
+        <With Var="DESIRED_POLE" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="CNF" Type="Event">
+        <With Var="TARGET_PROPORTIONAL_GAIN" />
+        <With Var="TARGET_INTEGRAL_GAIN" />
+        <With Var="TARGET_DERIVATIVE_GAIN" />
+        <With Var="REMAINING_POLE" />
+        <With Var="POLYNOMIAL_RESIDUAL" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="MODEL_OUTPUT_COEFFICIENT_1" Type="LREAL" />
+      <VarDeclaration Name="MODEL_OUTPUT_COEFFICIENT_2" Type="LREAL" />
+      <VarDeclaration Name="MODEL_INPUT_COEFFICIENT_1" Type="LREAL" />
+      <VarDeclaration Name="MODEL_INPUT_COEFFICIENT_2" Type="LREAL" />
+      <VarDeclaration Name="SAMPLE_TIME_S" Type="LREAL" />
+      <VarDeclaration Name="DESIRED_POLE" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="TARGET_PROPORTIONAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="TARGET_INTEGRAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="TARGET_DERIVATIVE_GAIN" Type="LREAL" />
+      <VarDeclaration Name="REMAINING_POLE" Type="LREAL" />
+      <VarDeclaration Name="POLYNOMIAL_RESIDUAL" Type="LREAL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="A1" Type="LREAL" />
+      <VarDeclaration Name="A2" Type="LREAL" />
+      <VarDeclaration Name="B1" Type="LREAL" />
+      <VarDeclaration Name="B2" Type="LREAL" />
+      <VarDeclaration Name="P" Type="LREAL" />
+      <VarDeclaration Name="C1" Type="LREAL" />
+      <VarDeclaration Name="C2" Type="LREAL" />
+      <VarDeclaration Name="C3" Type="LREAL" />
+      <VarDeclaration Name="H0" Type="LREAL" />
+      <VarDeclaration Name="H1" Type="LREAL" />
+      <VarDeclaration Name="H2" Type="LREAL" />
+      <VarDeclaration Name="H3" Type="LREAL" />
+      <VarDeclaration Name="S0" Type="LREAL" />
+      <VarDeclaration Name="S1" Type="LREAL" />
+      <VarDeclaration Name="S2" Type="LREAL" />
+      <VarDeclaration Name="T0" Type="LREAL" />
+      <VarDeclaration Name="T1" Type="LREAL" />
+      <VarDeclaration Name="T2" Type="LREAL" />
+      <VarDeclaration Name="DEN" Type="LREAL" />
+      <VarDeclaration Name="SCALE" Type="LREAL" />
+      <VarDeclaration Name="Q0" Type="LREAL" />
+      <VarDeclaration Name="Q1" Type="LREAL" />
+      <VarDeclaration Name="Q2" Type="LREAL" />
+      <VarDeclaration Name="R" Type="LREAL" />
+      <VarDeclaration Name="KP" Type="LREAL" />
+      <VarDeclaration Name="KI" Type="LREAL" />
+      <VarDeclaration Name="KD" Type="LREAL" />
+      <VarDeclaration Name="RES" Type="LREAL" />
+      <VarDeclaration Name="MAG" Type="LREAL" />
+      <VarDeclaration Name="V1" Type="LREAL" />
+      <VarDeclaration Name="V2" Type="LREAL" />
+      <VarDeclaration Name="V3" Type="LREAL" />
+      <VarDeclaration Name="V4" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="CALCULATE" x="2200" y="300">
+        <ECAction Algorithm="CALCULATE" />
+      </ECState>
+      <ECState Name="DONE" x="4100" y="300">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="REJECTED" x="6000" y="300">
+        <ECAction Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="CALCULATE" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="CALCULATE" Destination="DONE" Condition="VALID" x="500" y="500" />
+      <ECTransition Source="CALCULATE" Destination="REJECTED" Condition="NOT VALID" x="500" y="500" />
+      <ECTransition Source="DONE" Destination="START" Condition="1" x="500" y="500" />
+      <ECTransition Source="REJECTED" Destination="START" Condition="1" x="500" y="500" />
+    </ECC>
+    <Algorithm Name="CALCULATE">
+      <ST Text="VALID := (MODEL_OUTPUT_COEFFICIENT_1 &gt;= -1.0E+100) AND (MODEL_OUTPUT_COEFFICIENT_1 &lt;= 1.0E+100) AND (MODEL_OUTPUT_COEFFICIENT_2 &gt;= -1.0E+100) AND (MODEL_OUTPUT_COEFFICIENT_2 &lt;= 1.0E+100) AND (MODEL_INPUT_COEFFICIENT_1 &gt;= -1.0E+100) AND (MODEL_INPUT_COEFFICIENT_1 &lt;= 1.0E+100) AND (MODEL_INPUT_COEFFICIENT_2 &gt;= -1.0E+100) AND (MODEL_INPUT_COEFFICIENT_2 &lt;= 1.0E+100) AND (SAMPLE_TIME_S &gt;= -1.0E+100) AND (SAMPLE_TIME_S &lt;= 1.0E+100) AND (DESIRED_POLE &gt;= -1.0E+100) AND (DESIRED_POLE &lt;= 1.0E+100) AND (SAMPLE_TIME_S &gt; 0.0) AND (DESIRED_POLE &gt; 0.0) AND (DESIRED_POLE &lt; 1.0);&#10;IF VALID THEN&#10;A1 := MODEL_OUTPUT_COEFFICIENT_1;&#10;A2 := MODEL_OUTPUT_COEFFICIENT_2;&#10;B1 := MODEL_INPUT_COEFFICIENT_1;&#10;B2 := MODEL_INPUT_COEFFICIENT_2;&#10;P := DESIRED_POLE;&#10;SCALE := B1;&#10;IF SCALE &lt; 0.0 THEN&#10;SCALE := -SCALE;&#10;END_IF;&#10;MAG := B2;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;IF MAG &gt; SCALE THEN&#10;SCALE := MAG;&#10;END_IF;&#10;MAG := B1;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;VALID := (SCALE &gt; 1.0E-12) AND (MAG &gt; 1.0E-10 * SCALE);&#10;IF VALID THEN&#10;C1 := -3.0 * P;&#10;C2 := 3.0 * P * P;&#10;C3 := -P * P * P;&#10;H0 := C1 + 1.0 + A1;&#10;H1 := C2 - A1 + A2;&#10;H2 := C3 - A2;&#10;H3 := 0.0;&#10;S0 := H0 / B1;&#10;T0 := -1.0 / B1;&#10;S1 := (H1 - B2 * S0) / B1;&#10;T1 := (-C1 - B2 * T0) / B1;&#10;S2 := (H2 - B2 * S1) / B1;&#10;T2 := (-C2 - B2 * T1) / B1;&#10;DEN := B2 * T2 + C3;&#10;SCALE := B2 * T2;&#10;IF SCALE &lt; 0.0 THEN&#10;SCALE := -SCALE;&#10;END_IF;&#10;MAG := C3;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;SCALE := SCALE + MAG;&#10;MAG := DEN;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;VALID := (S0 &gt;= -1.0E+100) AND (S0 &lt;= 1.0E+100) AND (S1 &gt;= -1.0E+100) AND (S1 &lt;= 1.0E+100) AND (S2 &gt;= -1.0E+100) AND (S2 &lt;= 1.0E+100) AND (T0 &gt;= -1.0E+100) AND (T0 &lt;= 1.0E+100) AND (T1 &gt;= -1.0E+100) AND (T1 &lt;= 1.0E+100) AND (T2 &gt;= -1.0E+100) AND (T2 &lt;= 1.0E+100) AND (DEN &gt;= -1.0E+100) AND (DEN &lt;= 1.0E+100) AND (SCALE &gt;= -1.0E+100) AND (SCALE &lt;= 1.0E+100) AND (MAG &gt; 1.0E-10 * SCALE) AND (MAG &gt; 1.0E-12);&#10;IF VALID THEN&#10;R := (H3 - B2 * S2) / DEN;&#10;Q0 := S0 + T0 * R;&#10;Q1 := S1 + T1 * R;&#10;Q2 := S2 + T2 * R;&#10;KP := (Q0 - Q1 - 3.0 * Q2) / 2.0;&#10;KI := (Q0 + Q1 + Q2) / SAMPLE_TIME_S;&#10;KD := SAMPLE_TIME_S * Q2;&#10;V1 := -1.0 - A1 + B1 * Q0 - (C1 - R);&#10;V2 := A1 - A2 + B1 * Q1 + B2 * Q0 - (C2 - C1 * R);&#10;V3 := A2 + B1 * Q2 + B2 * Q1 - (C3 - C2 * R);&#10;V4 := B2 * Q2 + C3 * R;&#10;RES := 0.0;&#10;MAG := V1;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;IF MAG &gt; RES THEN&#10;RES := MAG;&#10;END_IF;&#10;MAG := V2;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;IF MAG &gt; RES THEN&#10;RES := MAG;&#10;END_IF;&#10;MAG := V3;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;IF MAG &gt; RES THEN&#10;RES := MAG;&#10;END_IF;&#10;MAG := V4;&#10;IF MAG &lt; 0.0 THEN&#10;MAG := -MAG;&#10;END_IF;&#10;IF MAG &gt; RES THEN&#10;RES := MAG;&#10;END_IF;&#10;VALID := (R &gt;= -1.0E+100) AND (R &lt;= 1.0E+100) AND (Q0 &gt;= -1.0E+100) AND (Q0 &lt;= 1.0E+100) AND (Q1 &gt;= -1.0E+100) AND (Q1 &lt;= 1.0E+100) AND (Q2 &gt;= -1.0E+100) AND (Q2 &lt;= 1.0E+100) AND (KP &gt;= -1.0E+100) AND (KP &lt;= 1.0E+100) AND (KI &gt;= -1.0E+100) AND (KI &lt;= 1.0E+100) AND (KD &gt;= -1.0E+100) AND (KD &lt;= 1.0E+100) AND (V1 &gt;= -1.0E+100) AND (V1 &lt;= 1.0E+100) AND (V2 &gt;= -1.0E+100) AND (V2 &lt;= 1.0E+100) AND (V3 &gt;= -1.0E+100) AND (V3 &lt;= 1.0E+100) AND (V4 &gt;= -1.0E+100) AND (V4 &lt;= 1.0E+100) AND (RES &gt;= -1.0E+100) AND (RES &lt;= 1.0E+100) AND (R &gt; -1.0) AND (R &lt; 1.0) AND (KP &gt;= 0.0) AND (KI &gt;= 0.0) AND (KD &gt;= 0.0) AND (RES &lt;= 1.0E-9);&#10;IF VALID THEN&#10;TARGET_PROPORTIONAL_GAIN := KP;&#10;TARGET_INTEGRAL_GAIN := KI;&#10;TARGET_DERIVATIVE_GAIN := KD;&#10;REMAINING_POLE := R;&#10;POLYNOMIAL_RESIDUAL := RES;&#10;END_IF;&#10;END_IF;&#10;END_IF;&#10;END_IF;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>
