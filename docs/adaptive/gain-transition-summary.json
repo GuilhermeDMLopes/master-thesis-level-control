@@ -1,0 +1,277 @@
+{
+  "scope": "Offline Python only; RLS runs on closed-loop applied input/output. No sensor noise, no physical test.",
+  "design": {
+    "sample_s": 0.1,
+    "samples": 400,
+    "rls_forgetting": 0.8,
+    "tuning_every_samples": 10,
+    "warmup_samples": 50,
+    "process_change_sample": 151,
+    "gain_induced_raw_limit": 0.02,
+    "gain_fraction_per_sample": 0.02,
+    "excitation_window_samples": 50,
+    "normalized_regressor_condition_limit": 1000000.0
+  },
+  "cases": {
+    "constant_fixed": {
+      "iae_seconds": 1.014203522205899,
+      "post_change_iae_seconds": 0.4037731368317847,
+      "final_error": 1.1102230246251565e-16,
+      "peak_output": 1.7069180466846716,
+      "max_gain_induced_raw_change": 0.0,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 0,
+      "rejected_tuning_requests": 0,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_estimated_coefficients": [
+        0.26407010134402154,
+        0.3654944876577023,
+        0.17003260995238986,
+        0.894969196667657
+      ]
+    },
+    "constant_prescribed_abrupt": {
+      "iae_seconds": 1.3989275162354113,
+      "post_change_iae_seconds": 0.7884971308612969,
+      "final_error": 0.0,
+      "peak_output": 1.7069180466846716,
+      "max_gain_induced_raw_change": 0.2241302021075554,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 0,
+      "rejected_tuning_requests": 0,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.15516028902910722,
+        0.5822613474455592,
+        0.004572867901485872
+      ],
+      "final_estimated_coefficients": [
+        1.1734178796905548,
+        -0.3400101895683725,
+        0.3999373219166598,
+        0.0790155689820654
+      ]
+    },
+    "constant_prescribed_limited": {
+      "iae_seconds": 1.3989275162354098,
+      "post_change_iae_seconds": 0.7884971308612957,
+      "final_error": -2.220446049250313e-16,
+      "peak_output": 1.7069180466846716,
+      "max_gain_induced_raw_change": 0.006172188983459281,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 0,
+      "rejected_tuning_requests": 0,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.15516028902910722,
+        0.5822613474455592,
+        0.004572867901485872
+      ],
+      "final_estimated_coefficients": [
+        1.1999811616634666,
+        -0.35998648633626734,
+        0.39999052686912756,
+        0.06002478156517607
+      ]
+    },
+    "constant_rls_abrupt": {
+      "iae_seconds": 1.0193325681474752,
+      "post_change_iae_seconds": 0.40383637006524176,
+      "final_error": 1.1102230246251565e-16,
+      "peak_output": 1.7070857589073258,
+      "max_gain_induced_raw_change": 0.005413721808476657,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 8,
+      "rejected_tuning_requests": 28,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.45866576964509187,
+        1.638000307178938,
+        0.016660680034259478
+      ],
+      "final_estimated_coefficients": [
+        1.7476018125480088,
+        -0.7844864020538788,
+        0.5391576034854583,
+        -0.4331144086560823
+      ]
+    },
+    "constant_rls_limited": {
+      "iae_seconds": 1.0189975534180553,
+      "post_change_iae_seconds": 0.4037905716402705,
+      "final_error": 0.0,
+      "peak_output": 1.7069620966797265,
+      "max_gain_induced_raw_change": 0.0008634194020759045,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 10,
+      "rejected_tuning_requests": 26,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.45878106886643083,
+        1.6381382548360068,
+        0.016693663937136283
+      ],
+      "final_estimated_coefficients": [
+        1.7128000531798224,
+        -0.7575674523307013,
+        0.5275005537528654,
+        -0.3987942811940886
+      ]
+    },
+    "steps_fixed": {
+      "iae_seconds": 1.5114068160999832,
+      "post_change_iae_seconds": 0.6568049822868929,
+      "final_error": -8.429802411669129e-10,
+      "peak_output": 1.5901438549545428,
+      "max_gain_induced_raw_change": 0.0,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 0,
+      "rejected_tuning_requests": 0,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_estimated_coefficients": [
+        1.1999999999999786,
+        -0.3599999999999812,
+        0.399999999999998,
+        0.06000000000000982
+      ]
+    },
+    "steps_prescribed_abrupt": {
+      "iae_seconds": 2.086346042626532,
+      "post_change_iae_seconds": 1.2317442088134416,
+      "final_error": -2.0264089595212198e-07,
+      "peak_output": 1.5901438549545428,
+      "max_gain_induced_raw_change": 0.17928525480508162,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 0,
+      "rejected_tuning_requests": 0,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.15516028902910722,
+        0.5822613474455592,
+        0.004572867901485872
+      ],
+      "final_estimated_coefficients": [
+        1.1999999999998567,
+        -0.35999999999988297,
+        0.4000000000000062,
+        0.060000000000069165
+      ]
+    },
+    "steps_prescribed_limited": {
+      "iae_seconds": 2.0822556151175085,
+      "post_change_iae_seconds": 1.227653781304418,
+      "final_error": -2.0264089595212198e-07,
+      "peak_output": 1.5901438549545428,
+      "max_gain_induced_raw_change": 0.005784046884705074,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 0,
+      "rejected_tuning_requests": 0,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.15516028902910722,
+        0.5822613474455592,
+        0.004572867901485872
+      ],
+      "final_estimated_coefficients": [
+        1.1999999999999107,
+        -0.3599999999999258,
+        0.39999999999999525,
+        0.060000000000048126
+      ]
+    },
+    "steps_rls_abrupt": {
+      "iae_seconds": 2.0832400096184656,
+      "post_change_iae_seconds": 1.228640485530125,
+      "final_error": -2.0264089750643421e-07,
+      "peak_output": 1.5901438551415108,
+      "max_gain_induced_raw_change": 0.175767908366673,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 32,
+      "rejected_tuning_requests": 4,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.15516028902911932,
+        0.5822613474455738,
+        0.004572867901491393
+      ],
+      "final_estimated_coefficients": [
+        1.2000000000000348,
+        -0.36000000000002924,
+        0.3999999999999989,
+        0.059999999999985
+      ]
+    },
+    "steps_rls_limited": {
+      "iae_seconds": 1.9373211181687695,
+      "post_change_iae_seconds": 1.082722145080017,
+      "final_error": -2.0264091382671268e-07,
+      "peak_output": 1.590143855135203,
+      "max_gain_induced_raw_change": 0.005735897102426557,
+      "saturated_samples": 0,
+      "accepted_tuning_requests": 32,
+      "rejected_tuning_requests": 4,
+      "initial_gains": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "final_gains": [
+        0.15516028902909976,
+        0.5822613474455464,
+        0.004572867901485665
+      ],
+      "final_estimated_coefficients": [
+        1.1999999999999975,
+        -0.35999999999999976,
+        0.4000000000000092,
+        0.059999999999997305
+      ]
+    }
+  }
+}
