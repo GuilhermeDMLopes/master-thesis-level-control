@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PID_SAMPLE_COORDINATOR" Comment="Experimental; offline checks only; native export/runtime pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-20" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event" />
+      <Event Name="SAMPLE" Type="Event">
+        <With Var="SETPOINT" />
+        <With Var="PROCESS_VARIABLE" />
+      </Event>
+      <Event Name="STATE_READY" Type="Event" />
+      <Event Name="TRANSITION_READY" Type="Event" />
+      <Event Name="GAINS_READY" Type="Event" />
+      <Event Name="CONTROL_READY" Type="Event" />
+      <Event Name="OUTPUT_APPLIED" Type="Event" />
+      <Event Name="FAULT" Type="Event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event" />
+      <Event Name="READ_PID_STATE" Type="Event">
+        <With Var="LATCHED_SETPOINT" />
+        <With Var="LATCHED_PROCESS_VARIABLE" />
+      </Event>
+      <Event Name="CALCULATE_TRANSITION" Type="Event">
+        <With Var="LATCHED_SETPOINT" />
+        <With Var="LATCHED_PROCESS_VARIABLE" />
+      </Event>
+      <Event Name="APPLY_GAINS" Type="Event" />
+      <Event Name="EXECUTE_PID" Type="Event">
+        <With Var="LATCHED_SETPOINT" />
+        <With Var="LATCHED_PROCESS_VARIABLE" />
+      </Event>
+      <Event Name="APPLY_OUTPUT" Type="Event" />
+      <Event Name="CNF" Type="Event" />
+      <Event Name="ERR" Type="Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="SETPOINT" Type="LREAL" />
+      <VarDeclaration Name="PROCESS_VARIABLE" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="LATCHED_SETPOINT" Type="LREAL" />
+      <VarDeclaration Name="LATCHED_PROCESS_VARIABLE" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars />
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZED" x="2200" y="300">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="4100" y="300" />
+      <ECState Name="CAPTURE" x="6000" y="300">
+        <ECAction Algorithm="CAPTURE" Output="READ_PID_STATE" />
+      </ECState>
+      <ECState Name="WAIT_STATE" x="7900" y="300" />
+      <ECState Name="REQUEST_TRANSITION" x="300" y="2100">
+        <ECAction Output="CALCULATE_TRANSITION" />
+      </ECState>
+      <ECState Name="WAIT_TRANSITION" x="2200" y="2100" />
+      <ECState Name="REQUEST_GAINS" x="4100" y="2100">
+        <ECAction Output="APPLY_GAINS" />
+      </ECState>
+      <ECState Name="WAIT_GAINS" x="6000" y="2100" />
+      <ECState Name="REQUEST_CONTROL" x="7900" y="2100">
+        <ECAction Output="EXECUTE_PID" />
+      </ECState>
+      <ECState Name="WAIT_CONTROL" x="300" y="3900" />
+      <ECState Name="REQUEST_OUTPUT" x="2200" y="3900">
+        <ECAction Output="APPLY_OUTPUT" />
+      </ECState>
+      <ECState Name="WAIT_OUTPUT" x="4100" y="3900" />
+      <ECState Name="COMPLETE" x="6000" y="3900">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="FAILED" x="7900" y="3900">
+        <ECAction Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="INITIALIZED" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="FAILED" Destination="INITIALIZED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="READY" Destination="INITIALIZED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="START" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="READY" Destination="CAPTURE" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="CAPTURE" Destination="WAIT_STATE" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="REQUEST_TRANSITION" Condition="STATE_READY" x="500" y="500" />
+      <ECTransition Source="REQUEST_TRANSITION" Destination="WAIT_TRANSITION" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="REQUEST_GAINS" Condition="TRANSITION_READY" x="500" y="500" />
+      <ECTransition Source="REQUEST_GAINS" Destination="WAIT_GAINS" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="REQUEST_CONTROL" Condition="GAINS_READY" x="500" y="500" />
+      <ECTransition Source="REQUEST_CONTROL" Destination="WAIT_CONTROL" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_CONTROL" Destination="REQUEST_OUTPUT" Condition="CONTROL_READY" x="500" y="500" />
+      <ECTransition Source="REQUEST_OUTPUT" Destination="WAIT_OUTPUT" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_CONTROL" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_CONTROL" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_CONTROL" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="COMPLETE" Condition="OUTPUT_APPLIED" x="500" y="500" />
+      <ECTransition Source="COMPLETE" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="READY" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+    </ECC>
+    <Algorithm Name="CAPTURE">
+      <ST Text="LATCHED_SETPOINT := SETPOINT;&#10;LATCHED_PROCESS_VARIABLE := PROCESS_VARIABLE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>
