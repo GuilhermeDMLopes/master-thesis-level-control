@@ -11,7 +11,7 @@ Status: XML gerado, rede e algoritmos exercitados por replay offline. Importaç�
 | Identifier | RLS_PARAMETER_ESTIMATOR | MMQE: estima os quatro coeficientes |
 | FixedPID | PID_FLAG | Controla com ganhos fixos e a flag original |
 
-PID_FLAG e RLS_PARAMETER_ESTIMATOR são cópias byte a byte dos tipos existentes. Os nomes legados SP/PV/MV significam referência, medição e comando; KP/KI/KD são os ganhos. Não foram renomeados para preservar o tipo validado.
+PID_FLAG e RLS_PARAMETER_ESTIMATOR são cópias com estrutura XML e algoritmos equivalentes aos tipos existentes. Os nomes legados SP/PV/MV significam referência, medição e comando; KP/KI/KD são os ganhos. Não foram renomeados para preservar o tipo validado.
 Não há sintonia, gate, transição de ganhos ou ligação SET_GAINS nesta aplicação. Os protótipos anteriores permanecem fora dela.
 
 ## Execução
@@ -59,3 +59,6 @@ Reprodução offline opcional antes de importar:
 & "$env:USERPROFILE\venvs\pid-adaptativo\Scripts\python.exe" scripts/verify_pid_identification_observer.py --output "$env:TEMP\pid-minimal-observer"
 ```
 Gerador: scripts/generate_pid_identification_observer.py. Regerá-lo substitui os arquivos desse projeto: não executar sobre alterações locais feitas no IDE.
+
+## Correção do teste de comparação — 21/10/2026
+No Windows, três testes passaram e a comparação byte a byte falhou: a saída enviada mostra uma quebra de linha final presente em uma cópia e ausente na outra. A comparação agora analisa a estrutura XML, ignorando apenas espaços entre elementos e formatação externa. Todos os atributos, incluindo Text dos algoritmos ST, portas, WITH e transições ECC continuam comparados. Não houve alteração nos blocos ou nas equações. Um teste adicional confirma que a quebra de linha final é tolerada e uma mudança real no algoritmo é detectada. Cinco testes passaram no ambiente de desenvolvimento após a correção; nova execução Windows pendente.

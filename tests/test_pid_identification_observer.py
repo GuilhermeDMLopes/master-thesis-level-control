@@ -4,6 +4,14 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'scripts'))
 from verify_pid_identification_observer import ObserverNetwork,run,PROJECT
 from verify_pid_observer import run as baseline
 
+def xml_signature(element):
+ # Ignore only whitespace between XML elements; preserve all attributes,
+ # including ST Text, port names, types, WITH associations and ECC conditions.
+ text=element.text if element.text and element.text.strip() else None
+ tail=element.tail if element.tail and element.tail.strip() else None
+ return (element.tag,tuple(sorted(element.attrib.items())),text,tail,
+         tuple(xml_signature(child) for child in element))
+
 class MinimalObserverTests(unittest.TestCase):
  def test_full_network_matches_existing_fixed_pid_observer(self):
   rows,n=run();expected=baseline()
@@ -23,9 +31,20 @@ class MinimalObserverTests(unittest.TestCase):
   for fault in ['REQ','INIT','APPLY']:
    n=ObserverNetwork();b=n.blocks['SimulatedProcess'];b.trigger('INIT');b.trigger('REQ');b.values['COMMAND']=float('nan')
    self.assertEqual(b.trigger(fault),['ERR']);self.assertEqual(b.values['U1'],0)
+ def test_xml_comparison_ignores_final_newline_but_detects_algorithm_changes(self):
+  source=(PROJECT/'Type Library/observer/PID_FLAG.fbt').read_text()
+  original=E.fromstring(source.rstrip())
+  formatted=E.fromstring(source.rstrip()+'\r\n')
+  self.assertEqual(xml_signature(original),xml_signature(formatted))
+  st=formatted.find('BasicFB/Algorithm/ST')
+  st.set('Text',st.get('Text')+'\nFLAG := FALSE;')
+  self.assertNotEqual(xml_signature(original),xml_signature(formatted))
  def test_original_algorithms_preserved_and_mapping_matches(self):
   pairs=[('PID_FLAG','4diac/application/PID_Whiteboard/Type Library/pid'),('RLS_PARAMETER_ESTIMATOR','4diac/application/Adaptive_Identification/Type Library/adaptive')]
-  for name,path in pairs:self.assertEqual((PROJECT/'Type Library/observer'/f'{name}.fbt').read_bytes(),(ROOT/path/f'{name}.fbt').read_bytes())
+  for name,path in pairs:
+   copied=E.parse(PROJECT/'Type Library/observer'/f'{name}.fbt').getroot()
+   original=E.parse(ROOT/path/f'{name}.fbt').getroot()
+   self.assertEqual(xml_signature(copied),xml_signature(original),name)
   x=E.parse(PROJECT/'PID_Identification_Observer.sys');a=x.find('Application/SubAppNetwork');b=x.find('Device/Resource/FBNetwork')
   self.assertEqual(len(a.findall('FB')),4);self.assertEqual(len(x.findall('Mapping')),4)
   for tag in ['EventConnections','DataConnections']:
