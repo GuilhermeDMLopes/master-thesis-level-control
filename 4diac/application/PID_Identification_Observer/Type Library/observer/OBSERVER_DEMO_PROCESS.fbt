@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="OBSERVER_DEMO_PROCESS" Comment="Experimental; offline checks only; native export/runtime pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-20" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event" />
+      <Event Name="REQ" Type="Event" />
+      <Event Name="APPLY" Type="Event">
+        <With Var="COMMAND" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="PROCESS_OUTPUT" />
+        <With Var="REFERENCE" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+        <With Var="APPLIED_COMMAND" />
+        <With Var="TRUE_INPUT_COEFFICIENT" />
+        <With Var="SAMPLE_COUNT" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="PROCESS_OUTPUT" />
+        <With Var="REFERENCE" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+        <With Var="APPLIED_COMMAND" />
+        <With Var="TRUE_INPUT_COEFFICIENT" />
+        <With Var="SAMPLE_COUNT" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="APPLIED" Type="Event">
+        <With Var="APPLIED_COMMAND" />
+        <With Var="SAMPLE_COUNT" />
+      </Event>
+      <Event Name="DONE" Type="Event">
+        <With Var="APPLIED_COMMAND" />
+        <With Var="SAMPLE_COUNT" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="COMMAND" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="REFERENCE" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="APPLIED_COMMAND" Type="LREAL" />
+      <VarDeclaration Name="TRUE_INPUT_COEFFICIENT" Type="LREAL" />
+      <VarDeclaration Name="SAMPLE_COUNT" Type="UINT" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="Y1" Type="LREAL" />
+      <VarDeclaration Name="Y2" Type="LREAL" />
+      <VarDeclaration Name="U1" Type="LREAL" />
+      <VarDeclaration Name="U2" Type="LREAL" />
+      <VarDeclaration Name="REFERENCE_COUNT" Type="UINT" />
+      <VarDeclaration Name="REFERENCE_HIGH" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZE" x="2200" y="300">
+        <ECAction Algorithm="INITIALIZE" Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="4100" y="300" />
+      <ECState Name="CALCULATE" x="6000" y="300">
+        <ECAction Algorithm="CALCULATE" />
+      </ECState>
+      <ECState Name="PUBLISH" x="7900" y="300">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="WAIT_COMMAND" x="300" y="2100" />
+      <ECState Name="APPLY_COMMAND" x="2200" y="2100">
+        <ECAction Algorithm="APPLY_COMMAND" />
+      </ECState>
+      <ECState Name="ACK" x="4100" y="2100">
+        <ECAction Output="APPLIED" />
+      </ECState>
+      <ECState Name="FINISH" x="6000" y="2100">
+        <ECAction Output="DONE" />
+      </ECState>
+      <ECState Name="STOPPED" x="7900" y="2100" />
+      <ECState Name="FAIL" x="300" y="3900">
+        <ECAction Algorithm="INVALIDATE" Output="ERR" />
+      </ECState>
+      <ECState Name="FAILED" x="2200" y="3900" />
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="START" Destination="FAIL" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="START" Destination="FAIL" Condition="APPLY" x="500" y="500" />
+      <ECTransition Source="INITIALIZE" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="READY" Destination="CALCULATE" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="READY" Destination="FAIL" Condition="APPLY" x="500" y="500" />
+      <ECTransition Source="CALCULATE" Destination="PUBLISH" Condition="VALID" x="500" y="500" />
+      <ECTransition Source="CALCULATE" Destination="FAIL" Condition="NOT VALID" x="500" y="500" />
+      <ECTransition Source="PUBLISH" Destination="WAIT_COMMAND" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_COMMAND" Destination="APPLY_COMMAND" Condition="APPLY" x="500" y="500" />
+      <ECTransition Source="WAIT_COMMAND" Destination="FAIL" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="WAIT_COMMAND" Destination="FAIL" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="APPLY_COMMAND" Destination="FAIL" Condition="NOT VALID" x="500" y="500" />
+      <ECTransition Source="APPLY_COMMAND" Destination="ACK" Condition="VALID AND (SAMPLE_COUNT &lt; 400)" x="500" y="500" />
+      <ECTransition Source="APPLY_COMMAND" Destination="FINISH" Condition="VALID AND (SAMPLE_COUNT &gt;= 400)" x="500" y="500" />
+      <ECTransition Source="ACK" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="FINISH" Destination="STOPPED" Condition="1" x="500" y="500" />
+      <ECTransition Source="STOPPED" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="FAIL" Destination="FAILED" Condition="1" x="500" y="500" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="Y1 := 0.0;&#10;Y2 := 0.0;&#10;U1 := 0.0;&#10;U2 := 0.0;&#10;PROCESS_OUTPUT := 0.0;&#10;OUTPUT_PREVIOUS_1 := 0.0;&#10;OUTPUT_PREVIOUS_2 := 0.0;&#10;INPUT_PREVIOUS_1 := 0.0;&#10;INPUT_PREVIOUS_2 := 0.0;&#10;APPLIED_COMMAND := 0.0;&#10;SAMPLE_COUNT := 0;&#10;REFERENCE_COUNT := 0;&#10;REFERENCE_HIGH := TRUE;&#10;REFERENCE := 1.0;&#10;TRUE_INPUT_COEFFICIENT := 0.1;&#10;VALID := TRUE;" />
+    </Algorithm>
+    <Algorithm Name="CALCULATE">
+      <ST Text="SAMPLE_COUNT := SAMPLE_COUNT + 1;&#10;IF REFERENCE_COUNT &gt;= 50 THEN&#10;REFERENCE_HIGH := NOT REFERENCE_HIGH;&#10;REFERENCE_COUNT := 0;&#10;END_IF;&#10;REFERENCE_COUNT := REFERENCE_COUNT + 1;&#10;REFERENCE := 0.8;&#10;IF REFERENCE_HIGH THEN&#10;REFERENCE := 1.0;&#10;END_IF;&#10;TRUE_INPUT_COEFFICIENT := 0.1;&#10;IF SAMPLE_COUNT &gt;= 151 THEN&#10;TRUE_INPUT_COEFFICIENT := 0.4;&#10;END_IF;&#10;OUTPUT_PREVIOUS_1 := Y1;&#10;OUTPUT_PREVIOUS_2 := Y2;&#10;INPUT_PREVIOUS_1 := U1;&#10;INPUT_PREVIOUS_2 := U2;&#10;PROCESS_OUTPUT := 1.2 * Y1 - 0.36 * Y2 + TRUE_INPUT_COEFFICIENT * U1 + 0.06 * U2;&#10;VALID := (PROCESS_OUTPUT &gt;= -1.0E+100) AND (PROCESS_OUTPUT &lt;= 1.0E+100);" />
+    </Algorithm>
+    <Algorithm Name="APPLY_COMMAND">
+      <ST Text="VALID := (COMMAND &gt;= 0.0) AND (COMMAND &lt;= 10.0);&#10;IF VALID THEN&#10;Y2 := Y1;&#10;Y1 := PROCESS_OUTPUT;&#10;U2 := U1;&#10;U1 := COMMAND;&#10;APPLIED_COMMAND := COMMAND;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="INVALIDATE">
+      <ST Text="VALID := FALSE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

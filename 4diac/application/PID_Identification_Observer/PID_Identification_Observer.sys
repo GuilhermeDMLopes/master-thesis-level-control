@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<System Name="PID_Identification_Observer" Comment="Synthetic observation only; native export and execution pending">
+  <Application Name="Observer_Test" Comment="Fixed PID; no gain-update connections">
+    <SubAppNetwork>
+      <FB Name="SamplingClock" Type="E_CYCLE" x="400" y="600" Comment="">
+        <Parameter Name="DT" Value="T#100ms" />
+      </FB>
+      <FB Name="SimulatedProcess" Type="OBSERVER_DEMO_PROCESS" x="3000" y="600" Comment="" />
+      <FB Name="Identifier" Type="RLS_PARAMETER_ESTIMATOR" x="5600" y="600" Comment="">
+        <Parameter Name="FORGETTING_FACTOR" Value="0.8" />
+        <Parameter Name="INITIAL_COVARIANCE" Value="10000.0" />
+      </FB>
+      <FB Name="FixedPID" Type="PID_FLAG" x="8200" y="600" Comment="">
+        <Parameter Name="KP" Value=".45882339553937435" />
+        <Parameter Name="KI" Value="1.6381884387801722" />
+        <Parameter Name="KD" Value=".016705052344105673" />
+        <Parameter Name="TS_S" Value="0.1" />
+        <Parameter Name="U_MIN" Value="0.0" />
+        <Parameter Name="U_MAX" Value="10.0" />
+      </FB>
+      <EventConnections>
+        <Connection Source="SimulatedProcess.INITO" Destination="Identifier.INIT" />
+        <Connection Source="Identifier.INITO" Destination="FixedPID.INIT" />
+        <Connection Source="FixedPID.INITO" Destination="SamplingClock.START" />
+        <Connection Source="SamplingClock.EO" Destination="SimulatedProcess.REQ" />
+        <Connection Source="SimulatedProcess.CNF" Destination="Identifier.REQ" />
+        <Connection Source="Identifier.CNF" Destination="FixedPID.REQ" />
+        <Connection Source="FixedPID.CNF" Destination="SimulatedProcess.APPLY" />
+        <Connection Source="SimulatedProcess.DONE" Destination="SamplingClock.STOP" />
+        <Connection Source="SimulatedProcess.ERR" Destination="SamplingClock.STOP" />
+        <Connection Source="Identifier.ERR" Destination="SamplingClock.STOP" />
+        <Connection Source="FixedPID.ERR" Destination="SamplingClock.STOP" />
+      </EventConnections>
+      <DataConnections>
+        <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="Identifier.PROCESS_OUTPUT" />
+        <Connection Source="SimulatedProcess.OUTPUT_PREVIOUS_1" Destination="Identifier.OUTPUT_PREVIOUS_1" />
+        <Connection Source="SimulatedProcess.OUTPUT_PREVIOUS_2" Destination="Identifier.OUTPUT_PREVIOUS_2" />
+        <Connection Source="SimulatedProcess.INPUT_PREVIOUS_1" Destination="Identifier.INPUT_PREVIOUS_1" />
+        <Connection Source="SimulatedProcess.INPUT_PREVIOUS_2" Destination="Identifier.INPUT_PREVIOUS_2" />
+        <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="FixedPID.PV" />
+        <Connection Source="SimulatedProcess.REFERENCE" Destination="FixedPID.SP" />
+        <Connection Source="FixedPID.MV" Destination="SimulatedProcess.COMMAND" />
+      </DataConnections>
+    </SubAppNetwork>
+  </Application>
+  <Device Name="LocalObserver" Type="FORTE_PC" x="2000" y="3000" Comment="Local synthetic test only">
+    <Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;" />
+    <Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" />
+    <Resource Name="EMB_RES" Type="EMB_RES" x="0" y="0">
+      <FBNetwork>
+        <FB Name="SamplingClock" Type="E_CYCLE" x="400" y="600" Comment="">
+          <Parameter Name="DT" Value="T#100ms" />
+        </FB>
+        <FB Name="SimulatedProcess" Type="OBSERVER_DEMO_PROCESS" x="3000" y="600" Comment="" />
+        <FB Name="Identifier" Type="RLS_PARAMETER_ESTIMATOR" x="5600" y="600" Comment="">
+          <Parameter Name="FORGETTING_FACTOR" Value="0.8" />
+          <Parameter Name="INITIAL_COVARIANCE" Value="10000.0" />
+        </FB>
+        <FB Name="FixedPID" Type="PID_FLAG" x="8200" y="600" Comment="">
+          <Parameter Name="KP" Value=".45882339553937435" />
+          <Parameter Name="KI" Value="1.6381884387801722" />
+          <Parameter Name="KD" Value=".016705052344105673" />
+          <Parameter Name="TS_S" Value="0.1" />
+          <Parameter Name="U_MIN" Value="0.0" />
+          <Parameter Name="U_MAX" Value="10.0" />
+        </FB>
+        <EventConnections>
+          <Connection Source="SimulatedProcess.INITO" Destination="Identifier.INIT" />
+          <Connection Source="Identifier.INITO" Destination="FixedPID.INIT" />
+          <Connection Source="FixedPID.INITO" Destination="SamplingClock.START" />
+          <Connection Source="SamplingClock.EO" Destination="SimulatedProcess.REQ" />
+          <Connection Source="SimulatedProcess.CNF" Destination="Identifier.REQ" />
+          <Connection Source="Identifier.CNF" Destination="FixedPID.REQ" />
+          <Connection Source="FixedPID.CNF" Destination="SimulatedProcess.APPLY" />
+          <Connection Source="SimulatedProcess.DONE" Destination="SamplingClock.STOP" />
+          <Connection Source="SimulatedProcess.ERR" Destination="SamplingClock.STOP" />
+          <Connection Source="Identifier.ERR" Destination="SamplingClock.STOP" />
+          <Connection Source="FixedPID.ERR" Destination="SamplingClock.STOP" />
+        </EventConnections>
+        <DataConnections>
+          <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="Identifier.PROCESS_OUTPUT" />
+          <Connection Source="SimulatedProcess.OUTPUT_PREVIOUS_1" Destination="Identifier.OUTPUT_PREVIOUS_1" />
+          <Connection Source="SimulatedProcess.OUTPUT_PREVIOUS_2" Destination="Identifier.OUTPUT_PREVIOUS_2" />
+          <Connection Source="SimulatedProcess.INPUT_PREVIOUS_1" Destination="Identifier.INPUT_PREVIOUS_1" />
+          <Connection Source="SimulatedProcess.INPUT_PREVIOUS_2" Destination="Identifier.INPUT_PREVIOUS_2" />
+          <Connection Source="SimulatedProcess.PROCESS_OUTPUT" Destination="FixedPID.PV" />
+          <Connection Source="SimulatedProcess.REFERENCE" Destination="FixedPID.SP" />
+          <Connection Source="FixedPID.MV" Destination="SimulatedProcess.COMMAND" />
+        </DataConnections>
+      </FBNetwork>
+    </Resource>
+  </Device>
+  <Mapping From="Observer_Test.SamplingClock" To="LocalObserver.EMB_RES.SamplingClock" />
+  <Mapping From="Observer_Test.SimulatedProcess" To="LocalObserver.EMB_RES.SimulatedProcess" />
+  <Mapping From="Observer_Test.Identifier" To="LocalObserver.EMB_RES.Identifier" />
+  <Mapping From="Observer_Test.FixedPID" To="LocalObserver.EMB_RES.FixedPID" />
+</System>

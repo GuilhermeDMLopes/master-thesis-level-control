@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<projectDescription>
+  <name>PID_Identification_Observer</name>
+  <comment>Advisor whiteboard PID, synthetic process only</comment>
+  <projects />
+  <buildSpec />
+  <natures>
+    <nature>org.eclipse.fordiac.ide.systemmanagement.FordiacNature</nature>
+  </natures>
+</projectDescription>

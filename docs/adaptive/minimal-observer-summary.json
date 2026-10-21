@@ -1,0 +1,19 @@
+{
+  "scope": "Application XML connections + actual ST/ECC subset replay; no native FORTE or wall-clock validation",
+  "samples": 400,
+  "clock_stopped": true,
+  "final": {
+    "sample": 400,
+    "reference": 0.8,
+    "measurement": 0.8000000008429803,
+    "applied_command": 0.27826086930085353,
+    "estimated_a1": 1.2000000000000195,
+    "estimated_a2": -0.3600000000000176,
+    "estimated_b1": 0.4000000000000039,
+    "estimated_b2": 0.059999999999990075,
+    "estimation_valid": true,
+    "active_kp": 0.45882339553937435,
+    "active_ki": 1.6381884387801722,
+    "active_kd": 0.016705052344105673
+  }
+}
