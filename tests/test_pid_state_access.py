@@ -25,6 +25,17 @@ def initialize(b):
 
 
 class StateAccessTests(unittest.TestCase):
+    def test_initial_state_is_first_declared_state(self):
+        b=block('PID_FLAG_STATE_ACCESS',EXPERIMENTAL)
+        self.assertEqual(b.xml.find('BasicFB/ECC/ECState').get('Name'),'START')
+        self.assertEqual(b.state,'START')
+        initialize(b)
+        b.values.update(SP=1.,PV=0.)
+        self.assertEqual(b.trigger('REQ'),['CNF'])
+        self.assertEqual(b.trigger('READ_STATE'),['STATE_CNF'])
+        self.assertAlmostEqual(b.values['MV'],2.025)
+        self.assertAlmostEqual(b.values['INTEGRAL_MEMORY'],.05)
+
     def test_original_algorithms_unchanged(self):
         original=E.parse(BASE/'PID_FLAG.fbt').getroot()
         candidate=E.parse(EXPERIMENTAL/'PID_FLAG_STATE_ACCESS.fbt').getroot()

@@ -30,7 +30,7 @@ class OfflineBlock:
         self.values = {v.get('Name'): (False if v.get('Type') == 'BOOL' else 0.0)
                        for v in self.xml.findall('.//VarDeclaration')}
         self.events = {e.get('Name') for e in self.xml.findall('InterfaceList/EventInputs/Event')}
-        self.state = 'START'
+        self.state = self.xml.find('BasicFB/ECC/ECState').get('Name')
         self.algorithms = {}
         for alg in self.xml.findall('BasicFB/Algorithm'):
             lines, indent = [], 0

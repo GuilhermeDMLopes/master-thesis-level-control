@@ -115,6 +115,7 @@
       <VarDeclaration Name="RAW_NEXT" Type="LREAL" />
     </InternalVars>
     <ECC>
+      <ECState Name="START" x="300" y="300" />
       <ECState Name="FAILED_READ_REJECTED" x="8500" y="6200">
         <ECAction Output="STATE_ERR" />
       </ECState>
@@ -124,7 +125,6 @@
       <ECState Name="PUBLISH_STATE" x="8500" y="2500">
         <ECAction Algorithm="COPY_STATE" Output="STATE_CNF" />
       </ECState>
-      <ECState Name="START" x="300" y="300" />
       <ECState Name="INITIALIZE" x="2200" y="300">
         <ECAction Algorithm="INITIALIZE" />
       </ECState>
