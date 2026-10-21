@@ -3,7 +3,8 @@ param(
     [string]$ForteSource = "$env:USERPROFILE\4diac\4diac-forte",
     [string]$ExportDirectory = "C:\Projetos\forte-pid-identification-observer\external-modules\PID_IDENTIFICATION_OBSERVER",
     [switch]$IncludeTuner,
-    [switch]$IncludeStateAccess
+    [switch]$IncludeStateAccess,
+    [switch]$IncludeTransition
 )
 $ErrorActionPreference = "Stop"
 $revision = "7c8b6296227fa292c13d71d2958a404c6db03e53"
@@ -16,6 +17,7 @@ if ($LASTEXITCODE -ne 0) { throw "Expected FORTE commit unavailable." }
 $types = @("OBSERVER_DEMO_PROCESS", "PID_FLAG", "RLS_PARAMETER_ESTIMATOR")
 if ($IncludeTuner) { $types += "PID_MODEL_TUNER" }
 if ($IncludeStateAccess) { $types += "PID_FLAG_STATE_ACCESS" }
+if ($IncludeTransition) { $types += "PID_GAIN_TRANSITION" }
 $exportNames = @($types | ForEach-Object { "$_.cpp"; "$_.h" })
 $files = @{}
 foreach ($name in $exportNames) {
