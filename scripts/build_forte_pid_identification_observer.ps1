@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$ForteSource = "$env:USERPROFILE\4diac\4diac-forte",
-    [string]$ExportDirectory = "C:\Projetos\forte-pid-identification-observer\external-modules\PID_IDENTIFICATION_OBSERVER"
+    [string]$ExportDirectory = "C:\Projetos\forte-pid-identification-observer\external-modules\PID_IDENTIFICATION_OBSERVER",
+    [switch]$IncludeTuner
 )
 $ErrorActionPreference = "Stop"
 $revision = "7c8b6296227fa292c13d71d2958a404c6db03e53"
@@ -11,8 +12,11 @@ foreach ($tool in @("git", "cmake")) {
 if (-not (Test-Path -LiteralPath (Join-Path $ForteSource "CMakeLists.txt"))) { throw "FORTE source missing." }
 & git -C $ForteSource cat-file -e "$revision^{commit}"
 if ($LASTEXITCODE -ne 0) { throw "Expected FORTE commit unavailable." }
+$types = @("OBSERVER_DEMO_PROCESS", "PID_FLAG", "RLS_PARAMETER_ESTIMATOR")
+if ($IncludeTuner) { $types += "PID_MODEL_TUNER" }
+$exportNames = @($types | ForEach-Object { "$_.cpp"; "$_.h" })
 $files = @{}
-foreach ($name in @("OBSERVER_DEMO_PROCESS.cpp", "OBSERVER_DEMO_PROCESS.h", "PID_FLAG.cpp", "PID_FLAG.h", "RLS_PARAMETER_ESTIMATOR.cpp", "RLS_PARAMETER_ESTIMATOR.h")) {
+foreach ($name in $exportNames) {
     $exportMatches = @(Get-ChildItem -LiteralPath $ExportDirectory -Recurse -File -Filter $name)
     if ($exportMatches.Count -ne 1) { throw "Expected exactly one exported $name; found $($exportMatches.Count)." }
     if ($exportMatches[0].Length -eq 0) { throw "Empty export: $name" }
@@ -29,6 +33,7 @@ $log = Join-Path $root "build-transcript.txt"
 Start-Transcript -Path $log | Out-Null
 try {
     Write-Host "Isolated build: $root"
+    Write-Host "Included types: $($types -join ', ')"
     & git -C $ForteSource worktree add --detach $source $revision
     if ($LASTEXITCODE -ne 0) { throw "Cannot create isolated source worktree." }
     # Compatibility change in the isolated copy only, matching the preserved build patch.
@@ -60,7 +65,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "CMake configuration failed. See $log" }
     & cmake --build $build --config Debug --parallel 4
     if ($LASTEXITCODE -ne 0) { throw "Compilation failed. See $log" }
-    foreach ($name in @("OBSERVER_DEMO_PROCESS", "PID_FLAG", "RLS_PARAMETER_ESTIMATOR")) {
+    foreach ($name in $types) {
         $objects = @(Get-ChildItem -LiteralPath $build -Recurse -File -Filter "$name.obj")
         if ($objects.Count -eq 0) { throw "No compiled object found for $name." }
     }
