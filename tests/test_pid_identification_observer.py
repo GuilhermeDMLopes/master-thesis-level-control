@@ -39,6 +39,11 @@ class MinimalObserverTests(unittest.TestCase):
   st=formatted.find('BasicFB/Algorithm/ST')
   st.set('Text',st.get('Text')+'\nFLAG := FALSE;')
   self.assertNotEqual(xml_signature(original),xml_signature(formatted))
+ def test_decimal_parameters_have_leading_digit(self):
+  x=E.parse(PROJECT/'PID_Identification_Observer.sys')
+  gains=[p for p in x.findall('.//Parameter') if p.get('Name') in ('KP','KD')]
+  self.assertEqual(len(gains),4)
+  for p in gains:self.assertRegex(p.get('Value'),r'^0\.[0-9]+$')
  def test_original_algorithms_preserved_and_mapping_matches(self):
   pairs=[('PID_FLAG','4diac/application/PID_Whiteboard/Type Library/pid'),('RLS_PARAMETER_ESTIMATOR','4diac/application/Adaptive_Identification/Type Library/adaptive')]
   for name,path in pairs:

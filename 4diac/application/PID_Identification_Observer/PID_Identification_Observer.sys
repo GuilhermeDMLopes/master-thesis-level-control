@@ -11,9 +11,9 @@
         <Parameter Name="INITIAL_COVARIANCE" Value="10000.0" />
       </FB>
       <FB Name="FixedPID" Type="PID_FLAG" x="8200" y="600" Comment="">
-        <Parameter Name="KP" Value=".45882339553937435" />
+        <Parameter Name="KP" Value="0.45882339553937435" />
         <Parameter Name="KI" Value="1.6381884387801722" />
-        <Parameter Name="KD" Value=".016705052344105673" />
+        <Parameter Name="KD" Value="0.016705052344105673" />
         <Parameter Name="TS_S" Value="0.1" />
         <Parameter Name="U_MIN" Value="0.0" />
         <Parameter Name="U_MAX" Value="10.0" />
@@ -57,9 +57,9 @@
           <Parameter Name="INITIAL_COVARIANCE" Value="10000.0" />
         </FB>
         <FB Name="FixedPID" Type="PID_FLAG" x="8200" y="600" Comment="">
-          <Parameter Name="KP" Value=".45882339553937435" />
+          <Parameter Name="KP" Value="0.45882339553937435" />
           <Parameter Name="KI" Value="1.6381884387801722" />
-          <Parameter Name="KD" Value=".016705052344105673" />
+          <Parameter Name="KD" Value="0.016705052344105673" />
           <Parameter Name="TS_S" Value="0.1" />
           <Parameter Name="U_MIN" Value="0.0" />
           <Parameter Name="U_MAX" Value="10.0" />

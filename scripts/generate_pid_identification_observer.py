@@ -28,7 +28,7 @@ def generate():
  system=E.Element('System',Name='PID_Identification_Observer',Comment='Synthetic observation only; native export and execution pending')
  app=E.SubElement(system,'Application',Name='Observer_Test',Comment='Fixed PID; no gain-update connections')
  net=E.SubElement(app,'SubAppNetwork')
- params={'SamplingClock':{'DT':'T#100ms'},'SimulatedProcess':{},'Identifier':{'FORGETTING_FACTOR':'0.8','INITIAL_COVARIANCE':'10000.0'},'FixedPID':{'KP':'.45882339553937435','KI':'1.6381884387801722','KD':'.016705052344105673','TS_S':'0.1','U_MIN':'0.0','U_MAX':'10.0'}}
+ params={'SamplingClock':{'DT':'T#100ms'},'SimulatedProcess':{},'Identifier':{'FORGETTING_FACTOR':'0.8','INITIAL_COVARIANCE':'10000.0'},'FixedPID':{'KP':'0.45882339553937435','KI':'1.6381884387801722','KD':'0.016705052344105673','TS_S':'0.1','U_MIN':'0.0','U_MAX':'10.0'}}
  types={'SamplingClock':'E_CYCLE','SimulatedProcess':'OBSERVER_DEMO_PROCESS','Identifier':'RLS_PARAMETER_ESTIMATOR','FixedPID':'PID_FLAG'}
  for i,(name,typ) in enumerate(types.items()):
   b=E.SubElement(net,'FB',Name=name,Type=typ,x=str(400+i*2600),y='600',Comment='')
