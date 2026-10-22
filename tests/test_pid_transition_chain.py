@@ -78,7 +78,7 @@ class CoordinatorTests(unittest.TestCase):
   for n in ['ACTIVE_PROPORTIONAL_GAIN','ACTIVE_INTEGRAL_GAIN','ACTIVE_DERIVATIVE_GAIN','ACTIVE_SAMPLE_TIME_S','ACTIVE_OUTPUT_MIN','ACTIVE_OUTPUT_MAX','INTEGRAL_MEMORY','PREVIOUS_ERROR','INTEGRATION_ENABLED']:t.values[n]=pid.values[n]
   t.values.update(SETPOINT=c.values['LATCHED_SETPOINT'],PROCESS_VARIABLE=c.values['LATCHED_PROCESS_VARIABLE'])
   c.trigger('STATE_READY');self.assertEqual(t.trigger('REQ'),['CNF']);c.trigger('TRANSITION_READY')
-  pid.values.update(KP=t.values['NEXT_PROPORTIONAL_GAIN'],KI=t.values['NEXT_INTEGRAL_GAIN'],KD=t.values['NEXT_DERIVATIVE_GAIN'])
+  pid.values.update(UPDATED_PROPORTIONAL_GAIN=t.values['NEXT_PROPORTIONAL_GAIN'],UPDATED_INTEGRAL_GAIN=t.values['NEXT_INTEGRAL_GAIN'],UPDATED_DERIVATIVE_GAIN=t.values['NEXT_DERIVATIVE_GAIN'])
   memory=pid.values['I_MEMORY'];self.assertEqual(pid.trigger('SET_GAINS'),['GAINS_CNF']);self.assertEqual(pid.values['I_MEMORY'],memory)
   self.assertEqual(c.trigger('GAINS_READY'),['EXECUTE_PID'])
   pid.values.update(SP=c.values['LATCHED_SETPOINT'],PV=c.values['LATCHED_PROCESS_VARIABLE'])

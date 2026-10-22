@@ -40,7 +40,11 @@ class StateAccessTests(unittest.TestCase):
         original=E.parse(BASE/'PID_FLAG.fbt').getroot()
         candidate=E.parse(EXPERIMENTAL/'PID_FLAG_STATE_ACCESS.fbt').getroot()
         for a in original.findall('BasicFB/Algorithm'):
-            self.assertEqual(a.find('ST').get('Text'),candidate.find("BasicFB/Algorithm[@Name='%s']/ST"%a.get('Name')).get('Text'))
+            expected=a.find('ST').get('Text')
+            actual=candidate.find("BasicFB/Algorithm[@Name='%s']/ST"%a.get('Name')).get('Text')
+            for short,long in [('KP','PROPORTIONAL'),('KI','INTEGRAL'),('KD','DERIVATIVE')]:
+                actual=actual.replace('UPDATED_'+long+'_GAIN',short)
+            self.assertEqual(expected,actual)
 
     def test_read_before_init_and_after_error(self):
         b=block('PID_FLAG_STATE_ACCESS',EXPERIMENTAL)
@@ -62,6 +66,8 @@ class StateAccessTests(unittest.TestCase):
             if k==40:
                 for b in (old,new):
                     b.values.update(KP=.7,KI=.3,KD=.05)
+                    if b is new:
+                        b.values.update(UPDATED_PROPORTIONAL_GAIN=.7,UPDATED_INTEGRAL_GAIN=.3,UPDATED_DERIVATIVE_GAIN=.05)
                     self.assertEqual(b.trigger('SET_GAINS'),['GAINS_CNF'])
             frozen={key:new.values[key] for key in old.values}
             self.assertEqual(new.trigger('READ_STATE'),['STATE_CNF'])
@@ -74,6 +80,42 @@ class StateAccessTests(unittest.TestCase):
                 b.values.update(SP=20. if k<20 else 1.,PV=.02*k)
                 self.assertEqual(b.trigger('REQ'),['CNF'])
             self.assertEqual(old.values,{key:new.values[key] for key in old.values})
+
+    def test_separate_update_ports_and_complete_sequence(self):
+        from test_pid_transition_chain import setup
+        pid=block('PID_FLAG_STATE_ACCESS',EXPERIMENTAL)
+        initialize(pid)  # Update ports remain zero, as before transition's first CNF.
+        pid.values.update(SP=1.,PV=0.)
+        self.assertEqual(pid.trigger('REQ'),['CNF'])
+        self.assertAlmostEqual(pid.values['MV'],2.025)
+        self.assertEqual(pid.trigger('READ_STATE'),['STATE_CNF'])
+        transition=setup()
+        transition.values.update(SETPOINT=1.,PROCESS_VARIABLE=0.,
+            TARGET_PROPORTIONAL_GAIN=.9,TARGET_INTEGRAL_GAIN=.45,
+            TARGET_DERIVATIVE_GAIN=.09,MODEL_INPUT_COEFFICIENT_1=.1)
+        names=[w.get('Var') for w in pid.xml.findall("InterfaceList/EventOutputs/Event[@Name='STATE_CNF']/With")]
+        for name in names: transition.values[name]=pid.values[name]
+        self.assertEqual(transition.trigger('REQ'),['CNF'])
+        for name in ('PROPORTIONAL','INTEGRAL','DERIVATIVE'):
+            pid.values['UPDATED_'+name+'_GAIN']=transition.values['NEXT_'+name+'_GAIN']
+        self.assertEqual(pid.trigger('SET_GAINS'),['GAINS_CNF'])
+        self.assertAlmostEqual(pid.values['I_MEMORY'],.05)
+        self.assertAlmostEqual(pid.values['MV'],2.025)
+        self.assertEqual(pid.trigger('REQ'),['CNF'])
+        self.assertAlmostEqual(pid.values['MV'],1.055)
+        self.assertAlmostEqual(pid.values['I_MEMORY'],.15)
+        # Reinitialization takes the original gains even with nonzero update inputs.
+        self.assertEqual(pid.trigger('INIT'),['INITO'])
+        self.assertEqual(pid.values['KP_ACTIVE'],1.)
+        self.assertEqual(pid.values['KI_ACTIVE'],.5)
+        self.assertEqual(pid.values['KD_ACTIVE'],.1)
+        self.assertEqual(pid.values['I_MEMORY'],0.)
+        events=pid.xml.find('InterfaceList/EventInputs')
+        init={w.get('Var') for w in events.find("Event[@Name='INIT']").findall('With')}
+        update={w.get('Var') for w in events.find("Event[@Name='SET_GAINS']").findall('With')}
+        self.assertTrue({'KP','KI','KD'} <= init)
+        self.assertEqual(update,{'UPDATED_PROPORTIONAL_GAIN','UPDATED_INTEGRAL_GAIN','UPDATED_DERIVATIVE_GAIN'})
+        self.assertTrue(init.isdisjoint(update))
 
     def test_snapshot_event_associations(self):
         r=E.parse(EXPERIMENTAL/'PID_FLAG_STATE_ACCESS.fbt').getroot()
