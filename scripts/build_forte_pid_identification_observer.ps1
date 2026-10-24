@@ -4,7 +4,8 @@ param(
     [string]$ExportDirectory = "C:\Projetos\forte-pid-identification-observer\external-modules\PID_IDENTIFICATION_OBSERVER",
     [switch]$IncludeTuner,
     [switch]$IncludeStateAccess,
-    [switch]$IncludeTransition
+    [switch]$IncludeTransition,
+    [switch]$IncludeSingleUpdate
 )
 $ErrorActionPreference = "Stop"
 $revision = "7c8b6296227fa292c13d71d2958a404c6db03e53"
@@ -18,6 +19,12 @@ $types = @("OBSERVER_DEMO_PROCESS", "PID_FLAG", "RLS_PARAMETER_ESTIMATOR")
 if ($IncludeTuner) { $types += "PID_MODEL_TUNER" }
 if ($IncludeStateAccess) { $types += "PID_FLAG_STATE_ACCESS" }
 if ($IncludeTransition) { $types += "PID_GAIN_TRANSITION" }
+if ($IncludeSingleUpdate) {
+    if (-not ($IncludeTuner -and $IncludeStateAccess -and $IncludeTransition)) {
+        throw "IncludeSingleUpdate requires IncludeTuner, IncludeStateAccess and IncludeTransition."
+    }
+    $types += "PID_SINGLE_UPDATE_SEQUENCE"
+}
 $exportNames = @($types | ForEach-Object { "$_.cpp"; "$_.h" })
 $files = @{}
 foreach ($name in $exportNames) {
@@ -82,4 +89,5 @@ try {
 finally {
     Stop-Transcript | Out-Null
 }
+
 

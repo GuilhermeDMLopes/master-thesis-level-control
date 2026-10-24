@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PID_SINGLE_UPDATE_SEQUENCE" Comment="One tuning attempt between samples; native validation pending">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-24" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="ENABLE_UPDATE" />
+        <With Var="UPDATE_AT_SAMPLE" />
+      </Event>
+      <Event Name="SAMPLE" Type="Event">
+        <With Var="SAMPLE_NUMBER" />
+      </Event>
+      <Event Name="TUNING_READY" Type="Event" />
+      <Event Name="STATE_READY" Type="Event" />
+      <Event Name="TRANSITION_READY" Type="Event" />
+      <Event Name="GAINS_READY" Type="Event" />
+      <Event Name="OUTPUT_APPLIED" Type="Event" />
+      <Event Name="UPDATE_REJECTED" Type="Event" />
+      <Event Name="FAULT" Type="Event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="REQUEST_TUNING" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="READ_PID_STATE" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="CALCULATE_TRANSITION" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="APPLY_GAINS" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="EXECUTE_PID" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+        <With Var="UPDATE_REJECTED_BY_ERROR" />
+        <With Var="COMPLETED_SAMPLES" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="ENABLE_UPDATE" Type="BOOL" />
+      <VarDeclaration Name="UPDATE_AT_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="SAMPLE_NUMBER" Type="UINT" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="UPDATE_ATTEMPTED" Type="BOOL" />
+      <VarDeclaration Name="UPDATE_REJECTED_BY_ERROR" Type="BOOL" />
+      <VarDeclaration Name="COMPLETED_SAMPLES" Type="UINT" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="RUN_UPDATE_ENABLED" Type="BOOL" />
+      <VarDeclaration Name="TARGET_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="CURRENT_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="INPUT_VALID" Type="BOOL" />
+      <VarDeclaration Name="UPDATE_DUE" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZE" x="2500" y="300">
+        <ECAction Algorithm="INITIALIZE" />
+      </ECState>
+      <ECState Name="INITIALIZED" x="4700" y="300">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="6900" y="300" />
+      <ECState Name="SELECT_SAMPLE" x="300" y="2100">
+        <ECAction Algorithm="SELECT_SAMPLE" />
+      </ECState>
+      <ECState Name="WAIT_TUNING" x="2500" y="2100">
+        <ECAction Algorithm="MARK_ATTEMPT" Output="REQUEST_TUNING" />
+      </ECState>
+      <ECState Name="WAIT_STATE" x="4700" y="2100">
+        <ECAction Output="READ_PID_STATE" />
+      </ECState>
+      <ECState Name="WAIT_TRANSITION" x="6900" y="2100">
+        <ECAction Output="CALCULATE_TRANSITION" />
+      </ECState>
+      <ECState Name="WAIT_GAINS" x="300" y="3900">
+        <ECAction Output="APPLY_GAINS" />
+      </ECState>
+      <ECState Name="REJECTED" x="2500" y="3900">
+        <ECAction Algorithm="MARK_REJECTION" />
+      </ECState>
+      <ECState Name="WAIT_OUTPUT" x="4700" y="3900">
+        <ECAction Output="EXECUTE_PID" />
+      </ECState>
+      <ECState Name="COMPLETE" x="6900" y="3900">
+        <ECAction Algorithm="COMPLETE" Output="CNF" />
+      </ECState>
+      <ECState Name="FAILED" x="300" y="5700">
+        <ECAction Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="START" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="INITIALIZE" Destination="INITIALIZED" Condition="INPUT_VALID" x="500" y="500" />
+      <ECTransition Source="INITIALIZE" Destination="FAILED" Condition="NOT INPUT_VALID" x="500" y="500" />
+      <ECTransition Source="INITIALIZED" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="READY" Destination="SELECT_SAMPLE" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="SELECT_SAMPLE" Destination="FAILED" Condition="NOT INPUT_VALID" x="500" y="500" />
+      <ECTransition Source="SELECT_SAMPLE" Destination="WAIT_TUNING" Condition="INPUT_VALID AND UPDATE_DUE" x="500" y="500" />
+      <ECTransition Source="SELECT_SAMPLE" Destination="WAIT_OUTPUT" Condition="INPUT_VALID AND NOT UPDATE_DUE" x="500" y="500" />
+      <ECTransition Source="WAIT_TUNING" Destination="WAIT_STATE" Condition="TUNING_READY" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="WAIT_TRANSITION" Condition="STATE_READY" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="WAIT_GAINS" Condition="TRANSITION_READY" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="WAIT_OUTPUT" Condition="GAINS_READY" x="500" y="500" />
+      <ECTransition Source="WAIT_TUNING" Destination="REJECTED" Condition="UPDATE_REJECTED" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="REJECTED" Condition="UPDATE_REJECTED" x="500" y="500" />
+      <ECTransition Source="REJECTED" Destination="WAIT_OUTPUT" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="COMPLETE" Condition="OUTPUT_APPLIED" x="500" y="500" />
+      <ECTransition Source="COMPLETE" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="WAIT_TUNING" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_TUNING" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_TUNING" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_STATE" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_TRANSITION" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_GAINS" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="FAILED" Condition="SAMPLE" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="FAILED" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="WAIT_OUTPUT" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+      <ECTransition Source="READY" Destination="FAILED" Condition="FAULT" x="500" y="500" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="RUN_UPDATE_ENABLED := ENABLE_UPDATE;&#10;TARGET_SAMPLE := UPDATE_AT_SAMPLE;&#10;CURRENT_SAMPLE := 0;&#10;COMPLETED_SAMPLES := 0;&#10;UPDATE_ATTEMPTED := FALSE;&#10;UPDATE_REJECTED_BY_ERROR := FALSE;&#10;UPDATE_DUE := FALSE;&#10;INPUT_VALID := (NOT RUN_UPDATE_ENABLED) OR (TARGET_SAMPLE &gt; 0);" />
+    </Algorithm>
+    <Algorithm Name="SELECT_SAMPLE">
+      <ST Text="CURRENT_SAMPLE := SAMPLE_NUMBER;&#10;INPUT_VALID := (CURRENT_SAMPLE &gt; 0) AND (CURRENT_SAMPLE = COMPLETED_SAMPLES + 1);&#10;UPDATE_DUE := RUN_UPDATE_ENABLED AND (NOT UPDATE_ATTEMPTED) AND (CURRENT_SAMPLE = TARGET_SAMPLE);" />
+    </Algorithm>
+    <Algorithm Name="MARK_ATTEMPT">
+      <ST Text="UPDATE_ATTEMPTED := TRUE;" />
+    </Algorithm>
+    <Algorithm Name="MARK_REJECTION">
+      <ST Text="UPDATE_REJECTED_BY_ERROR := TRUE;" />
+    </Algorithm>
+    <Algorithm Name="COMPLETE">
+      <ST Text="COMPLETED_SAMPLES := CURRENT_SAMPLE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

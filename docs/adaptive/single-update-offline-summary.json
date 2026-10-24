@@ -1,0 +1,34 @@
+{
+  "scope": "ST/ECC subset replay of transformed uploaded XML; no native FORTE validation",
+  "samples": 400,
+  "row_fields": [
+    "sample",
+    "process_output",
+    "command",
+    "kp",
+    "ki",
+    "kd"
+  ],
+  "final": [
+    400,
+    0.8000000012113838,
+    0.2782608692606103,
+    0.4504609945115689,
+    1.6091098779067279,
+    0.01637095129722356
+  ],
+  "sample_275": [
+    275,
+    0.799980399585953,
+    0.2733255553481108,
+    0.4504609945115689,
+    1.6091098779067279,
+    0.01637095129722356
+  ],
+  "sequence": {
+    "COMPLETED_SAMPLES": 400,
+    "UPDATE_ATTEMPTED": true,
+    "UPDATE_REJECTED_BY_ERROR": false
+  },
+  "gain_effect": -0.004939324531009037
+}
