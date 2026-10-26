@@ -1,0 +1,25 @@
+{
+  "scope": "Offline FBT ST/ECC subset replay; synthetic process; NOT native FORTE measurements",
+  "sample_time_s": 0.1,
+  "update_sample": 275,
+  "runs": {
+    "fixed": {
+      "samples": 400,
+      "iae_all_s": 1.511406816099983,
+      "iae_from_275_s": 0.1053521792769796,
+      "total_command_variation": 3.230188388929334,
+      "command_change_at_275": -3.7627223004044197e-07,
+      "final_process_output": 0.8000000008429803,
+      "gain_updates": 0
+    },
+    "single_update": {
+      "samples": 400,
+      "iae_all_s": 1.5156241529442906,
+      "iae_from_275_s": 0.10956951612128739,
+      "total_command_variation": 3.229661296799306,
+      "command_change_at_275": -0.004939700803239078,
+      "final_process_output": 0.8000000012113838,
+      "gain_updates": 1
+    }
+  }
+}
