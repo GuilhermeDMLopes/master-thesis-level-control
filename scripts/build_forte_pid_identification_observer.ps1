@@ -56,6 +56,12 @@ try {
     foreach ($name in $files.Keys) {
         Copy-Item -LiteralPath $files[$name] -Destination (Join-Path $module $name)
     }
+    if ($IncludeStateAccess -and
+        ([IO.File]::ReadAllText($files["PID_FLAG_STATE_ACCESS.cpp"])).Contains('#include "pid_csv_trace.h"')) {
+        $traceHeader = Join-Path (Split-Path -Parent $files["PID_FLAG_STATE_ACCESS.cpp"]) "pid_csv_trace.h"
+        if (-not (Test-Path -LiteralPath $traceHeader)) { throw "Trace header missing." }
+        Copy-Item -LiteralPath $traceHeader -Destination (Join-Path $module "pid_csv_trace.h")
+    }
     [IO.File]::WriteAllText((Join-Path $module "CMakeLists.txt"), "forte_add_directory_module()`nforte_add_all_sourcefiles()`n", [Text.UTF8Encoding]::new($false))
     Get-ChildItem -LiteralPath $module -File | Get-FileHash -Algorithm SHA256 | Format-List
     $argsCmake = @(
