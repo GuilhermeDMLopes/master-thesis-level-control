@@ -1,11 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<FBType Name="TUNING_TRIGGER" Comment="Select normal control or one model tuning at a specified sample">
+<FBType Name="TUNING_TRIGGER" Comment="Select normal control or periodic model tuning; zero interval selects one update">
   <Identification Standard="61499-2" />
   <InterfaceList>
     <EventInputs>
       <Event Name="INIT" Type="Event">
         <With Var="ENABLE_UPDATE" />
         <With Var="UPDATE_AT_SAMPLE" />
+        <With Var="UPDATE_INTERVAL_SAMPLES" />
       </Event>
       <Event Name="REQ" Type="Event">
         <With Var="SAMPLE_NUMBER" />
@@ -22,6 +23,7 @@
     <InputVars>
       <VarDeclaration Name="ENABLE_UPDATE" Type="BOOL" />
       <VarDeclaration Name="UPDATE_AT_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="UPDATE_INTERVAL_SAMPLES" Type="UINT" />
       <VarDeclaration Name="SAMPLE_NUMBER" Type="UINT" />
     </InputVars>
     <OutputVars>
@@ -32,6 +34,8 @@
     <InternalVars>
       <VarDeclaration Name="ENABLED" Type="BOOL" />
       <VarDeclaration Name="TARGET_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="INTERVAL_SAMPLES" Type="UINT" />
+      <VarDeclaration Name="LAST_UPDATE_SAMPLE" Type="UINT" />
       <VarDeclaration Name="DUE" Type="BOOL" />
       <VarDeclaration Name="VALID" Type="BOOL" />
     </InternalVars>
@@ -70,13 +74,13 @@
       <ECTransition Source="PASS" Destination="READY" Condition="1" x="500" y="500" />
     </ECC>
     <Algorithm Name="INITIALIZE">
-      <ST Text="ENABLED := ENABLE_UPDATE;&#10;TARGET_SAMPLE := UPDATE_AT_SAMPLE;&#10;UPDATE_ATTEMPTED := FALSE;&#10;VALID := (NOT ENABLED) OR (TARGET_SAMPLE &gt; 0);" />
+      <ST Text="ENABLED := ENABLE_UPDATE;&#10;TARGET_SAMPLE := UPDATE_AT_SAMPLE;&#10;INTERVAL_SAMPLES := UPDATE_INTERVAL_SAMPLES;&#10;LAST_UPDATE_SAMPLE := 0;&#10;UPDATE_ATTEMPTED := FALSE;&#10;VALID := (NOT ENABLED) OR (TARGET_SAMPLE &gt; 0);" />
     </Algorithm>
     <Algorithm Name="SELECT">
-      <ST Text="DUE := ENABLED AND (NOT UPDATE_ATTEMPTED) AND (SAMPLE_NUMBER = TARGET_SAMPLE);" />
+      <ST Text="DUE := ENABLED AND (NOT UPDATE_ATTEMPTED) AND (SAMPLE_NUMBER = TARGET_SAMPLE);&#10;IF ENABLED AND UPDATE_ATTEMPTED AND (INTERVAL_SAMPLES &gt; 0) AND (SAMPLE_NUMBER &gt;= LAST_UPDATE_SAMPLE) THEN&#10;    DUE := (SAMPLE_NUMBER - LAST_UPDATE_SAMPLE) &gt;= INTERVAL_SAMPLES;&#10;END_IF;" />
     </Algorithm>
     <Algorithm Name="MARK">
-      <ST Text="UPDATE_ATTEMPTED := TRUE;" />
+      <ST Text="UPDATE_ATTEMPTED := TRUE;&#10;LAST_UPDATE_SAMPLE := SAMPLE_NUMBER;" />
     </Algorithm>
   </BasicFB>
 </FBType>

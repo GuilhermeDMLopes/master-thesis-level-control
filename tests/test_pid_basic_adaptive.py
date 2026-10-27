@@ -9,7 +9,7 @@ from generate_pid_basic_adaptive import PROJECT,TYPES
 
 def pairs(net,tag):return [(c.get('Source'),c.get('Destination')) for c in net.findall(tag+'/Connection')]
 class Network:
-    def __init__(self,enabled=False,bad_tuner=False):
+    def __init__(self,enabled=False,bad_tuner=False,interval=0,first_update=275):
         self.root=E.parse(PROJECT/'PID_Basic_Adaptive.sys').getroot();self.net=self.root.find('Application/SubAppNetwork')
         self.composite=E.parse(TYPES/'PROCESS_IDENTIFIER.fbt').getroot();self.blocks={};self.trace=[];self.rows=[];self.running=False
         self.events=pairs(self.net,'EventConnections');self.data=pairs(self.net,'DataConnections');self.params={}
@@ -29,6 +29,8 @@ class Network:
         self.events += [('Identifier.'+s,'Identifier.'+d) for s,d in pairs(internal,'EventConnections')]
         self.data += [('Identifier.'+s,'Identifier.'+d) for s,d in pairs(internal,'DataConnections')]
         self.params['Identifier.ENABLE_UPDATE']=enabled
+        self.params['Identifier.UPDATE_INTERVAL_SAMPLES']=interval
+        self.params['Identifier.UPDATE_AT_SAMPLE']=first_update
         if bad_tuner:self.params['Identifier.DESIRED_POLE']=1.5
     def value(self,endpoint,seen=None):
         seen=set() if seen is None else seen
@@ -79,6 +81,37 @@ class MinimalTests(unittest.TestCase):
         self.assertTrue(all(math.isfinite(v) for row in n.rows for v in row));self.assertAlmostEqual(n.rows[-1][2],.8,places=5)
         for i,gain in enumerate(['PROPORTIONAL_GAIN','INTEGRAL_GAIN','DERIVATIVE_GAIN']):self.assertEqual(n.rows[274][4+i],n.blocks['Identifier.Tuner'].values['TARGET_'+gain])
         self.assertFalse(any(e.endswith('.ERR') for e in n.trace))
+    def test_periodic_updates_before_control_without_extra_calculations(self):
+        n=Network(True,interval=25).run()
+        self.assertEqual(len(n.rows),400)
+        samples=[];calculations=0
+        for i,event in enumerate(n.trace):
+            if event=='Controller.REQ':calculations+=1
+            if event=='Controller.SET_GAINS':
+                samples.append(calculations+1)
+                self.assertEqual(n.trace[i:i+3],['Controller.SET_GAINS','Controller.GAINS_CNF','Controller.REQ'])
+        self.assertEqual(samples,[275,300,325,350,375,400])
+        self.assertEqual(calculations,400)
+        self.assertEqual(n.trace.count('Process.APPLY'),400)
+        self.assertFalse(any(e.endswith('.ERR') for e in n.trace))
+        self.assertTrue(all(math.isfinite(v) for row in n.rows for v in row))
+    def test_disabled_periodic_does_not_update(self):
+        n=Network(False,interval=25).run()
+        self.assertEqual(len(n.rows),400)
+        self.assertNotIn('Controller.SET_GAINS',n.trace)
+    def test_trigger_interval_latched_reset_and_uint_limit(self):
+        n=Network(True,interval=25);b=n.blocks['Identifier.Trigger']
+        b.values.update(ENABLE_UPDATE=True,UPDATE_AT_SAMPLE=275,UPDATE_INTERVAL_SAMPLES=25)
+        self.assertEqual(b.trigger('INIT'),['INITO'])
+        b.values['UPDATE_INTERVAL_SAMPLES']=1
+        for sample,expected in [(274,'CONTROL_READY'),(275,'TUNE'),(275,'CONTROL_READY'),(299,'CONTROL_READY'),(300,'TUNE')]:
+            b.values['SAMPLE_NUMBER']=sample;self.assertEqual(b.trigger('REQ'),[expected])
+        b.values.update(UPDATE_AT_SAMPLE=65530,UPDATE_INTERVAL_SAMPLES=5)
+        b.trigger('INIT')
+        for sample,expected in [(65530,'TUNE'),(65534,'CONTROL_READY'),(65535,'TUNE'),(0,'CONTROL_READY')]:
+            b.values['SAMPLE_NUMBER']=sample;self.assertEqual(b.trigger('REQ'),[expected])
+        b.values.update(UPDATE_AT_SAMPLE=0,UPDATE_INTERVAL_SAMPLES=25)
+        self.assertEqual(b.trigger('INIT'),['ERR'])
     def test_invalid_tuning_stops_before_applying_gains(self):
         n=Network(True,True).run();self.assertFalse(n.running);self.assertIn('Identifier.Tuner.ERR',n.trace);self.assertNotIn('Controller.SET_GAINS',n.trace);self.assertEqual(n.trace.count('Controller.REQ'),274)
     def test_mapping_and_three_blocks_plus_clock(self):

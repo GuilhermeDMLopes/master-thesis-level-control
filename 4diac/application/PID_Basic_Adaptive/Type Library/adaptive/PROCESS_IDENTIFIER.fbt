@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<FBType Name="PROCESS_IDENTIFIER" Comment="RLS identification and one model-based PID tuning">
+<FBType Name="PROCESS_IDENTIFIER" Comment="RLS identification and periodic model-based PID tuning">
   <Identification Standard="61499-2" />
   <InterfaceList>
     <EventInputs>
@@ -10,6 +10,7 @@
         <With Var="DESIRED_POLE" />
         <With Var="ENABLE_UPDATE" />
         <With Var="UPDATE_AT_SAMPLE" />
+        <With Var="UPDATE_INTERVAL_SAMPLES" />
       </Event>
       <Event Name="REQ" Type="Event">
         <With Var="PROCESS_OUTPUT" />
@@ -37,6 +38,7 @@
       <VarDeclaration Name="DESIRED_POLE" Type="LREAL" />
       <VarDeclaration Name="ENABLE_UPDATE" Type="BOOL" />
       <VarDeclaration Name="UPDATE_AT_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="UPDATE_INTERVAL_SAMPLES" Type="UINT" />
       <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
       <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
       <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
@@ -77,6 +79,7 @@
       <Connection Source="INITIAL_COVARIANCE" Destination="Estimator.INITIAL_COVARIANCE" />
       <Connection Source="ENABLE_UPDATE" Destination="Trigger.ENABLE_UPDATE" />
       <Connection Source="UPDATE_AT_SAMPLE" Destination="Trigger.UPDATE_AT_SAMPLE" />
+      <Connection Source="UPDATE_INTERVAL_SAMPLES" Destination="Trigger.UPDATE_INTERVAL_SAMPLES" />
       <Connection Source="SAMPLE_NUMBER" Destination="Trigger.SAMPLE_NUMBER" />
       <Connection Source="SAMPLE_TIME_S" Destination="Tuner.SAMPLE_TIME_S" />
       <Connection Source="DESIRED_POLE" Destination="Tuner.DESIRED_POLE" />
