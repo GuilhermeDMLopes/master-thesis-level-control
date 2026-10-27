@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PROCESS_IDENTIFIER" Comment="RLS identification and one model-based PID tuning">
+  <Identification Standard="61499-2" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="FORGETTING_FACTOR" />
+        <With Var="INITIAL_COVARIANCE" />
+        <With Var="SAMPLE_TIME_S" />
+        <With Var="DESIRED_POLE" />
+        <With Var="ENABLE_UPDATE" />
+        <With Var="UPDATE_AT_SAMPLE" />
+      </Event>
+      <Event Name="REQ" Type="Event">
+        <With Var="PROCESS_OUTPUT" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+        <With Var="SAMPLE_NUMBER" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event" />
+      <Event Name="CONTROL_READY" Type="Event" />
+      <Event Name="GAINS_READY" Type="Event">
+        <With Var="PROPORTIONAL_GAIN" />
+        <With Var="INTEGRAL_GAIN" />
+        <With Var="DERIVATIVE_GAIN" />
+      </Event>
+      <Event Name="ERR" Type="Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="FORGETTING_FACTOR" Type="LREAL" />
+      <VarDeclaration Name="INITIAL_COVARIANCE" Type="LREAL" />
+      <VarDeclaration Name="SAMPLE_TIME_S" Type="LREAL" />
+      <VarDeclaration Name="DESIRED_POLE" Type="LREAL" />
+      <VarDeclaration Name="ENABLE_UPDATE" Type="BOOL" />
+      <VarDeclaration Name="UPDATE_AT_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="SAMPLE_NUMBER" Type="UINT" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="PROPORTIONAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="INTEGRAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="DERIVATIVE_GAIN" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB Name="Estimator" Type="RLS_PARAMETER_ESTIMATOR" x="400" y="400" />
+    <FB Name="Trigger" Type="TUNING_TRIGGER" x="4000" y="400" />
+    <FB Name="Tuner" Type="PID_MODEL_TUNER" x="7500" y="400" />
+    <EventConnections>
+      <Connection Source="INIT" Destination="Estimator.INIT" />
+      <Connection Source="Estimator.INITO" Destination="Trigger.INIT" />
+      <Connection Source="Trigger.INITO" Destination="INITO" />
+      <Connection Source="REQ" Destination="Estimator.REQ" />
+      <Connection Source="Estimator.CNF" Destination="Trigger.REQ" />
+      <Connection Source="Trigger.CONTROL_READY" Destination="CONTROL_READY" />
+      <Connection Source="Trigger.TUNE" Destination="Tuner.REQ" />
+      <Connection Source="Tuner.CNF" Destination="GAINS_READY" />
+      <Connection Source="Estimator.ERR" Destination="ERR" />
+      <Connection Source="Trigger.ERR" Destination="ERR" />
+      <Connection Source="Tuner.ERR" Destination="ERR" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="PROCESS_OUTPUT" Destination="Estimator.PROCESS_OUTPUT" />
+      <Connection Source="OUTPUT_PREVIOUS_1" Destination="Estimator.OUTPUT_PREVIOUS_1" />
+      <Connection Source="OUTPUT_PREVIOUS_2" Destination="Estimator.OUTPUT_PREVIOUS_2" />
+      <Connection Source="INPUT_PREVIOUS_1" Destination="Estimator.INPUT_PREVIOUS_1" />
+      <Connection Source="INPUT_PREVIOUS_2" Destination="Estimator.INPUT_PREVIOUS_2" />
+      <Connection Source="FORGETTING_FACTOR" Destination="Estimator.FORGETTING_FACTOR" />
+      <Connection Source="INITIAL_COVARIANCE" Destination="Estimator.INITIAL_COVARIANCE" />
+      <Connection Source="ENABLE_UPDATE" Destination="Trigger.ENABLE_UPDATE" />
+      <Connection Source="UPDATE_AT_SAMPLE" Destination="Trigger.UPDATE_AT_SAMPLE" />
+      <Connection Source="SAMPLE_NUMBER" Destination="Trigger.SAMPLE_NUMBER" />
+      <Connection Source="SAMPLE_TIME_S" Destination="Tuner.SAMPLE_TIME_S" />
+      <Connection Source="DESIRED_POLE" Destination="Tuner.DESIRED_POLE" />
+      <Connection Source="Estimator.EST_OUTPUT_COEFFICIENT_1" Destination="Tuner.MODEL_OUTPUT_COEFFICIENT_1" />
+      <Connection Source="Estimator.EST_OUTPUT_COEFFICIENT_2" Destination="Tuner.MODEL_OUTPUT_COEFFICIENT_2" />
+      <Connection Source="Estimator.EST_INPUT_COEFFICIENT_1" Destination="Tuner.MODEL_INPUT_COEFFICIENT_1" />
+      <Connection Source="Estimator.EST_INPUT_COEFFICIENT_2" Destination="Tuner.MODEL_INPUT_COEFFICIENT_2" />
+      <Connection Source="Tuner.TARGET_PROPORTIONAL_GAIN" Destination="PROPORTIONAL_GAIN" />
+      <Connection Source="Tuner.TARGET_INTEGRAL_GAIN" Destination="INTEGRAL_GAIN" />
+      <Connection Source="Tuner.TARGET_DERIVATIVE_GAIN" Destination="DERIVATIVE_GAIN" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

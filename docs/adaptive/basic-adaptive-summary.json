@@ -1,0 +1,31 @@
+{
+  "scope": "Offline FBT ST/ECC and composite wiring replay only; no native FORTE or PLC validation",
+  "runs": {
+    "fixed": {
+      "samples": 400,
+      "iae_seconds": 1.511406816099983,
+      "final_measurement": 0.8000000008429803,
+      "command_sample274": 0.2782652561513499,
+      "command_sample275": 0.27826487987911985,
+      "gains_sample275": [
+        0.45882339553937435,
+        1.6381884387801722,
+        0.016705052344105673
+      ],
+      "gain_update_count": 0
+    },
+    "direct_update": {
+      "samples": 400,
+      "iae_seconds": 1.9530440587176356,
+      "final_measurement": 0.8000002026403635,
+      "command_sample274": 0.2782652561513499,
+      "command_sample275": 0.09890364893837095,
+      "gains_sample275": [
+        0.15516030708444842,
+        0.5822613703109485,
+        0.004572872194540291
+      ],
+      "gain_update_count": 1
+    }
+  }
+}

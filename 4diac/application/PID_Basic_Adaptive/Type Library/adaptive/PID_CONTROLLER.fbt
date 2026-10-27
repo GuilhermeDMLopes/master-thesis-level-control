@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="PID_CONTROLLER" Comment="Whiteboard flag PID; direct atomic gain update; synthetic validation">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-10-18" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="INITIAL_PROPORTIONAL_GAIN" />
+        <With Var="INITIAL_INTEGRAL_GAIN" />
+        <With Var="INITIAL_DERIVATIVE_GAIN" />
+        <With Var="SAMPLE_TIME_S" />
+        <With Var="OUTPUT_MIN" />
+        <With Var="OUTPUT_MAX" />
+      </Event>
+      <Event Name="REQ" Type="Event">
+        <With Var="SETPOINT" />
+        <With Var="PROCESS_VARIABLE" />
+      </Event>
+      <Event Name="SET_GAINS" Type="Event">
+        <With Var="UPDATED_PROPORTIONAL_GAIN" />
+        <With Var="UPDATED_INTEGRAL_GAIN" />
+        <With Var="UPDATED_DERIVATIVE_GAIN" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="CONTROL_OUTPUT" />
+        <With Var="ERROR" />
+        <With Var="P_TERM" />
+        <With Var="I_TERM" />
+        <With Var="D_TERM" />
+        <With Var="UNLIMITED_OUTPUT" />
+        <With Var="INTEGRATION_ENABLED" />
+        <With Var="SATURATED" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="CONTROL_OUTPUT" />
+        <With Var="ERROR" />
+        <With Var="P_TERM" />
+        <With Var="I_TERM" />
+        <With Var="D_TERM" />
+        <With Var="UNLIMITED_OUTPUT" />
+        <With Var="INTEGRATION_ENABLED" />
+        <With Var="SATURATED" />
+        <With Var="VALID" />
+      </Event>
+      <Event Name="GAINS_CNF" Type="Event">
+        <With Var="VALID" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="INITIAL_PROPORTIONAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="INITIAL_INTEGRAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="INITIAL_DERIVATIVE_GAIN" Type="LREAL" />
+      <VarDeclaration Name="SAMPLE_TIME_S" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_MIN" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_MAX" Type="LREAL" />
+      <VarDeclaration Name="SETPOINT" Type="LREAL" />
+      <VarDeclaration Name="PROCESS_VARIABLE" Type="LREAL" />
+      <VarDeclaration Name="UPDATED_PROPORTIONAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="UPDATED_INTEGRAL_GAIN" Type="LREAL" />
+      <VarDeclaration Name="UPDATED_DERIVATIVE_GAIN" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="CONTROL_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="ERROR" Type="LREAL" />
+      <VarDeclaration Name="P_TERM" Type="LREAL" />
+      <VarDeclaration Name="I_TERM" Type="LREAL" />
+      <VarDeclaration Name="D_TERM" Type="LREAL" />
+      <VarDeclaration Name="UNLIMITED_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="INTEGRATION_ENABLED" Type="BOOL" />
+      <VarDeclaration Name="SATURATED" Type="BOOL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="KP_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="KI_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="KD_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="TS_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="LOW" Type="LREAL" />
+      <VarDeclaration Name="HIGH" Type="LREAL" />
+      <VarDeclaration Name="I_MEMORY" Type="LREAL" />
+      <VarDeclaration Name="E_PREV" Type="LREAL" />
+      <VarDeclaration Name="E_NEXT" Type="LREAL" />
+      <VarDeclaration Name="I_NEXT" Type="LREAL" />
+      <VarDeclaration Name="D_NEXT" Type="LREAL" />
+      <VarDeclaration Name="P_NEXT" Type="LREAL" />
+      <VarDeclaration Name="IT_NEXT" Type="LREAL" />
+      <VarDeclaration Name="DT_NEXT" Type="LREAL" />
+      <VarDeclaration Name="RAW_NEXT" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZE" x="2200" y="300">
+        <ECAction Algorithm="INITIALIZE" />
+      </ECState>
+      <ECState Name="INIT_OK" x="4400" y="300">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="4400" y="2500" />
+      <ECState Name="CALCULATE" x="2200" y="2500">
+        <ECAction Algorithm="CALCULATE" />
+      </ECState>
+      <ECState Name="SAMPLE_OK" x="2200" y="4400">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="GAINS" x="6600" y="2500">
+        <ECAction Algorithm="UPDATE_GAINS" />
+      </ECState>
+      <ECState Name="GAINS_OK" x="6600" y="4400">
+        <ECAction Output="GAINS_CNF" />
+      </ECState>
+      <ECState Name="FAILED" x="300" y="2500">
+        <ECAction Algorithm="FAIL" Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" x="700" y="300" />
+      <ECTransition Source="START" Destination="FAILED" Condition="REQ" x="1900" y="300" />
+      <ECTransition Source="START" Destination="FAILED" Condition="SET_GAINS" x="3100" y="300" />
+      <ECTransition Source="INITIALIZE" Destination="INIT_OK" Condition="VALID" x="4300" y="300" />
+      <ECTransition Source="INITIALIZE" Destination="FAILED" Condition="NOT VALID" x="700" y="1400" />
+      <ECTransition Source="INIT_OK" Destination="READY" Condition="1" x="1900" y="1400" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" x="3100" y="1400" />
+      <ECTransition Source="READY" Destination="GAINS" Condition="SET_GAINS" x="4300" y="1400" />
+      <ECTransition Source="READY" Destination="CALCULATE" Condition="REQ" x="700" y="2500" />
+      <ECTransition Source="CALCULATE" Destination="SAMPLE_OK" Condition="VALID" x="1900" y="2500" />
+      <ECTransition Source="CALCULATE" Destination="FAILED" Condition="NOT VALID" x="3100" y="2500" />
+      <ECTransition Source="SAMPLE_OK" Destination="READY" Condition="1" x="4300" y="2500" />
+      <ECTransition Source="GAINS" Destination="GAINS_OK" Condition="VALID" x="700" y="3600" />
+      <ECTransition Source="GAINS" Destination="FAILED" Condition="NOT VALID" x="1900" y="3600" />
+      <ECTransition Source="GAINS_OK" Destination="READY" Condition="1" x="3100" y="3600" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" x="4300" y="3600" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="VALID := (INITIAL_PROPORTIONAL_GAIN &gt;= -1.0E+100) AND (INITIAL_PROPORTIONAL_GAIN &lt;= 1.0E+100) AND (INITIAL_INTEGRAL_GAIN &gt;= -1.0E+100) AND (INITIAL_INTEGRAL_GAIN &lt;= 1.0E+100) AND (INITIAL_DERIVATIVE_GAIN &gt;= -1.0E+100) AND (INITIAL_DERIVATIVE_GAIN &lt;= 1.0E+100) AND (SAMPLE_TIME_S &gt;= -1.0E+100) AND (SAMPLE_TIME_S &lt;= 1.0E+100) AND (OUTPUT_MIN &gt;= -1.0E+100) AND (OUTPUT_MIN &lt;= 1.0E+100) AND (OUTPUT_MAX &gt;= -1.0E+100) AND (OUTPUT_MAX &lt;= 1.0E+100) AND (SAMPLE_TIME_S &gt; 0.0) AND (OUTPUT_MIN &lt; OUTPUT_MAX);&#10;IF VALID THEN&#10;    KP_ACTIVE := INITIAL_PROPORTIONAL_GAIN;&#10;    KI_ACTIVE := INITIAL_INTEGRAL_GAIN;&#10;    KD_ACTIVE := INITIAL_DERIVATIVE_GAIN;&#10;    TS_ACTIVE := SAMPLE_TIME_S;&#10;    LOW := OUTPUT_MIN;&#10;    HIGH := OUTPUT_MAX;&#10;    I_MEMORY := 0.0;&#10;    E_PREV := 0.0;&#10;    INTEGRATION_ENABLED := TRUE;&#10;    CONTROL_OUTPUT := 0.0;&#10;    UNLIMITED_OUTPUT := 0.0;&#10;    ERROR := 0.0;&#10;    P_TERM := 0.0;&#10;    I_TERM := 0.0;&#10;    D_TERM := 0.0;&#10;    SATURATED := FALSE;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="CALCULATE">
+      <ST Text="VALID := (SETPOINT &gt;= -1.0E+100) AND (SETPOINT &lt;= 1.0E+100) AND (PROCESS_VARIABLE &gt;= -1.0E+100) AND (PROCESS_VARIABLE &lt;= 1.0E+100);&#10;IF VALID THEN&#10;    E_NEXT := SETPOINT - PROCESS_VARIABLE;&#10;    I_NEXT := I_MEMORY;&#10;    IF INTEGRATION_ENABLED THEN&#10;        I_NEXT := I_MEMORY + (TS_ACTIVE / 2.0) * (E_NEXT + E_PREV);&#10;    END_IF;&#10;    D_NEXT := (E_NEXT - E_PREV) / TS_ACTIVE;&#10;    P_NEXT := KP_ACTIVE * E_NEXT;&#10;    IT_NEXT := KI_ACTIVE * I_NEXT;&#10;    DT_NEXT := KD_ACTIVE * D_NEXT;&#10;    RAW_NEXT := P_NEXT + IT_NEXT + DT_NEXT;&#10;    VALID := (E_NEXT &gt;= -1.0E+100) AND (E_NEXT &lt;= 1.0E+100) AND (I_NEXT &gt;= -1.0E+100) AND (I_NEXT &lt;= 1.0E+100) AND (D_NEXT &gt;= -1.0E+100) AND (D_NEXT &lt;= 1.0E+100) AND (P_NEXT &gt;= -1.0E+100) AND (P_NEXT &lt;= 1.0E+100) AND (IT_NEXT &gt;= -1.0E+100) AND (IT_NEXT &lt;= 1.0E+100) AND (DT_NEXT &gt;= -1.0E+100) AND (DT_NEXT &lt;= 1.0E+100) AND (RAW_NEXT &gt;= -1.0E+100) AND (RAW_NEXT &lt;= 1.0E+100);&#10;    IF VALID THEN&#10;        CONTROL_OUTPUT := RAW_NEXT;&#10;        INTEGRATION_ENABLED := TRUE;&#10;        SATURATED := FALSE;&#10;        IF RAW_NEXT &gt; HIGH THEN&#10;            CONTROL_OUTPUT := HIGH;&#10;            INTEGRATION_ENABLED := FALSE;&#10;            SATURATED := TRUE;&#10;        END_IF;&#10;        IF RAW_NEXT &lt; LOW THEN&#10;            CONTROL_OUTPUT := LOW;&#10;            INTEGRATION_ENABLED := FALSE;&#10;            SATURATED := TRUE;&#10;        END_IF;&#10;        I_MEMORY := I_NEXT;&#10;        E_PREV := E_NEXT;&#10;        ERROR := E_NEXT;&#10;        P_TERM := P_NEXT;&#10;        I_TERM := IT_NEXT;&#10;        D_TERM := DT_NEXT;&#10;        UNLIMITED_OUTPUT := RAW_NEXT;&#10;    END_IF;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="UPDATE_GAINS">
+      <ST Text="VALID := (UPDATED_PROPORTIONAL_GAIN &gt;= -1.0E+100) AND (UPDATED_PROPORTIONAL_GAIN &lt;= 1.0E+100) AND (UPDATED_INTEGRAL_GAIN &gt;= -1.0E+100) AND (UPDATED_INTEGRAL_GAIN &lt;= 1.0E+100) AND (UPDATED_DERIVATIVE_GAIN &gt;= -1.0E+100) AND (UPDATED_DERIVATIVE_GAIN &lt;= 1.0E+100);&#10;IF VALID THEN&#10;    KP_ACTIVE := UPDATED_PROPORTIONAL_GAIN;&#10;    KI_ACTIVE := UPDATED_INTEGRAL_GAIN;&#10;    KD_ACTIVE := UPDATED_DERIVATIVE_GAIN;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="FAIL">
+      <ST Text="VALID := FALSE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

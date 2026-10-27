@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="RLS_PARAMETER_ESTIMATOR" Comment="Offline identification prototype; see docs/adaptive/4diac-design.md">
+  <Identification Standard="61499-2" />
+  <VersionInfo Version="0.1" Author="Guilherme" Date="2026-09-26" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="FORGETTING_FACTOR" />
+        <With Var="INITIAL_COVARIANCE" />
+      </Event>
+      <Event Name="REQ" Type="Event">
+        <With Var="PROCESS_OUTPUT" />
+        <With Var="OUTPUT_PREVIOUS_1" />
+        <With Var="OUTPUT_PREVIOUS_2" />
+        <With Var="INPUT_PREVIOUS_1" />
+        <With Var="INPUT_PREVIOUS_2" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event">
+        <With Var="EST_OUTPUT_COEFFICIENT_1" />
+        <With Var="EST_OUTPUT_COEFFICIENT_2" />
+        <With Var="EST_INPUT_COEFFICIENT_1" />
+        <With Var="EST_INPUT_COEFFICIENT_2" />
+        <With Var="PREDICTED_OUTPUT" />
+        <With Var="PREDICTION_ERROR" />
+        <With Var="ESTIMATION_VALID" />
+      </Event>
+      <Event Name="CNF" Type="Event">
+        <With Var="EST_OUTPUT_COEFFICIENT_1" />
+        <With Var="EST_OUTPUT_COEFFICIENT_2" />
+        <With Var="EST_INPUT_COEFFICIENT_1" />
+        <With Var="EST_INPUT_COEFFICIENT_2" />
+        <With Var="PREDICTED_OUTPUT" />
+        <With Var="PREDICTION_ERROR" />
+        <With Var="ESTIMATION_VALID" />
+      </Event>
+      <Event Name="ERR" Type="Event">
+        <With Var="ESTIMATION_VALID" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="FORGETTING_FACTOR" Type="LREAL" InitialValue="1.0" />
+      <VarDeclaration Name="INITIAL_COVARIANCE" Type="LREAL" InitialValue="10000.0" />
+      <VarDeclaration Name="PROCESS_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="OUTPUT_PREVIOUS_2" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_1" Type="LREAL" />
+      <VarDeclaration Name="INPUT_PREVIOUS_2" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="EST_OUTPUT_COEFFICIENT_1" Type="LREAL" />
+      <VarDeclaration Name="EST_OUTPUT_COEFFICIENT_2" Type="LREAL" />
+      <VarDeclaration Name="EST_INPUT_COEFFICIENT_1" Type="LREAL" />
+      <VarDeclaration Name="EST_INPUT_COEFFICIENT_2" Type="LREAL" />
+      <VarDeclaration Name="PREDICTED_OUTPUT" Type="LREAL" />
+      <VarDeclaration Name="PREDICTION_ERROR" Type="LREAL" />
+      <VarDeclaration Name="ESTIMATION_VALID" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="LAMBDA_ACTIVE" Type="LREAL" />
+      <VarDeclaration Name="DEN" Type="LREAL" />
+      <VarDeclaration Name="V1" Type="LREAL" />
+      <VarDeclaration Name="V2" Type="LREAL" />
+      <VarDeclaration Name="V3" Type="LREAL" />
+      <VarDeclaration Name="V4" Type="LREAL" />
+      <VarDeclaration Name="R1" Type="LREAL" />
+      <VarDeclaration Name="R2" Type="LREAL" />
+      <VarDeclaration Name="R3" Type="LREAL" />
+      <VarDeclaration Name="R4" Type="LREAL" />
+      <VarDeclaration Name="G1" Type="LREAL" />
+      <VarDeclaration Name="G2" Type="LREAL" />
+      <VarDeclaration Name="G3" Type="LREAL" />
+      <VarDeclaration Name="G4" Type="LREAL" />
+      <VarDeclaration Name="N1" Type="LREAL" />
+      <VarDeclaration Name="N2" Type="LREAL" />
+      <VarDeclaration Name="N3" Type="LREAL" />
+      <VarDeclaration Name="N4" Type="LREAL" />
+      <VarDeclaration Name="P11" Type="LREAL" />
+      <VarDeclaration Name="P12" Type="LREAL" />
+      <VarDeclaration Name="P13" Type="LREAL" />
+      <VarDeclaration Name="P14" Type="LREAL" />
+      <VarDeclaration Name="P21" Type="LREAL" />
+      <VarDeclaration Name="P22" Type="LREAL" />
+      <VarDeclaration Name="P23" Type="LREAL" />
+      <VarDeclaration Name="P24" Type="LREAL" />
+      <VarDeclaration Name="P31" Type="LREAL" />
+      <VarDeclaration Name="P32" Type="LREAL" />
+      <VarDeclaration Name="P33" Type="LREAL" />
+      <VarDeclaration Name="P34" Type="LREAL" />
+      <VarDeclaration Name="P41" Type="LREAL" />
+      <VarDeclaration Name="P42" Type="LREAL" />
+      <VarDeclaration Name="P43" Type="LREAL" />
+      <VarDeclaration Name="P44" Type="LREAL" />
+      <VarDeclaration Name="C11" Type="LREAL" />
+      <VarDeclaration Name="C12" Type="LREAL" />
+      <VarDeclaration Name="C13" Type="LREAL" />
+      <VarDeclaration Name="C14" Type="LREAL" />
+      <VarDeclaration Name="C21" Type="LREAL" />
+      <VarDeclaration Name="C22" Type="LREAL" />
+      <VarDeclaration Name="C23" Type="LREAL" />
+      <VarDeclaration Name="C24" Type="LREAL" />
+      <VarDeclaration Name="C31" Type="LREAL" />
+      <VarDeclaration Name="C32" Type="LREAL" />
+      <VarDeclaration Name="C33" Type="LREAL" />
+      <VarDeclaration Name="C34" Type="LREAL" />
+      <VarDeclaration Name="C41" Type="LREAL" />
+      <VarDeclaration Name="C42" Type="LREAL" />
+      <VarDeclaration Name="C43" Type="LREAL" />
+      <VarDeclaration Name="C44" Type="LREAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="150" y="150" />
+      <ECState Name="INITIALIZE" x="600" y="150">
+        <ECAction Algorithm="INITIALIZE" />
+      </ECState>
+      <ECState Name="READY" x="1050" y="150" />
+      <ECState Name="EXECUTE" x="150" y="450">
+        <ECAction Algorithm="UPDATE" />
+      </ECState>
+      <ECState Name="INIT_OK" x="600" y="450">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="UPDATE_OK" x="1050" y="450">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="FAILED" x="150" y="750">
+        <ECAction Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="INITIALIZE" Destination="INIT_OK" Condition="ESTIMATION_VALID" />
+      <ECTransition Source="INITIALIZE" Destination="FAILED" Condition="NOT ESTIMATION_VALID" />
+      <ECTransition Source="INIT_OK" Destination="READY" Condition="1" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" />
+      <ECTransition Source="READY" Destination="EXECUTE" Condition="REQ" />
+      <ECTransition Source="EXECUTE" Destination="UPDATE_OK" Condition="ESTIMATION_VALID" />
+      <ECTransition Source="EXECUTE" Destination="FAILED" Condition="NOT ESTIMATION_VALID" />
+      <ECTransition Source="UPDATE_OK" Destination="READY" Condition="1" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="ESTIMATION_VALID := FALSE;&#10;PREDICTED_OUTPUT := 0.0;&#10;PREDICTION_ERROR := 0.0;&#10;LAMBDA_ACTIVE := FORGETTING_FACTOR;&#10;EST_OUTPUT_COEFFICIENT_1 := 0.0;&#10;EST_OUTPUT_COEFFICIENT_2 := 0.0;&#10;EST_INPUT_COEFFICIENT_1 := 0.0;&#10;EST_INPUT_COEFFICIENT_2 := 0.0;&#10;P11 := 0.0;&#10;P12 := 0.0;&#10;P13 := 0.0;&#10;P14 := 0.0;&#10;P21 := 0.0;&#10;P22 := 0.0;&#10;P23 := 0.0;&#10;P24 := 0.0;&#10;P31 := 0.0;&#10;P32 := 0.0;&#10;P33 := 0.0;&#10;P34 := 0.0;&#10;P41 := 0.0;&#10;P42 := 0.0;&#10;P43 := 0.0;&#10;P44 := 0.0;&#10;IF (FORGETTING_FACTOR &gt; 0.0) AND (FORGETTING_FACTOR &lt;= 1.0) AND (INITIAL_COVARIANCE &gt; 0.0) AND (INITIAL_COVARIANCE &lt;= 1.0E+100) THEN&#10;P11 := INITIAL_COVARIANCE;&#10;P22 := INITIAL_COVARIANCE;&#10;P33 := INITIAL_COVARIANCE;&#10;P44 := INITIAL_COVARIANCE;&#10;ESTIMATION_VALID := TRUE;&#10;END_IF;" />
+    </Algorithm>
+    <Algorithm Name="UPDATE">
+      <ST Text="ESTIMATION_VALID := FALSE;&#10;IF (PROCESS_OUTPUT &gt;= -1.0E+100) AND (PROCESS_OUTPUT &lt;= 1.0E+100) AND (OUTPUT_PREVIOUS_1 &gt;= -1.0E+100) AND (OUTPUT_PREVIOUS_1 &lt;= 1.0E+100) AND (OUTPUT_PREVIOUS_2 &gt;= -1.0E+100) AND (OUTPUT_PREVIOUS_2 &lt;= 1.0E+100) AND (INPUT_PREVIOUS_1 &gt;= -1.0E+100) AND (INPUT_PREVIOUS_1 &lt;= 1.0E+100) AND (INPUT_PREVIOUS_2 &gt;= -1.0E+100) AND (INPUT_PREVIOUS_2 &lt;= 1.0E+100) THEN&#10;PREDICTED_OUTPUT := OUTPUT_PREVIOUS_1 * EST_OUTPUT_COEFFICIENT_1 + OUTPUT_PREVIOUS_2 * EST_OUTPUT_COEFFICIENT_2 + INPUT_PREVIOUS_1 * EST_INPUT_COEFFICIENT_1 + INPUT_PREVIOUS_2 * EST_INPUT_COEFFICIENT_2;&#10;PREDICTION_ERROR := PROCESS_OUTPUT - PREDICTED_OUTPUT;&#10;V1 := P11 * OUTPUT_PREVIOUS_1 + P12 * OUTPUT_PREVIOUS_2 + P13 * INPUT_PREVIOUS_1 + P14 * INPUT_PREVIOUS_2;&#10;V2 := P21 * OUTPUT_PREVIOUS_1 + P22 * OUTPUT_PREVIOUS_2 + P23 * INPUT_PREVIOUS_1 + P24 * INPUT_PREVIOUS_2;&#10;V3 := P31 * OUTPUT_PREVIOUS_1 + P32 * OUTPUT_PREVIOUS_2 + P33 * INPUT_PREVIOUS_1 + P34 * INPUT_PREVIOUS_2;&#10;V4 := P41 * OUTPUT_PREVIOUS_1 + P42 * OUTPUT_PREVIOUS_2 + P43 * INPUT_PREVIOUS_1 + P44 * INPUT_PREVIOUS_2;&#10;R1 := OUTPUT_PREVIOUS_1 * P11 + OUTPUT_PREVIOUS_2 * P21 + INPUT_PREVIOUS_1 * P31 + INPUT_PREVIOUS_2 * P41;&#10;R2 := OUTPUT_PREVIOUS_1 * P12 + OUTPUT_PREVIOUS_2 * P22 + INPUT_PREVIOUS_1 * P32 + INPUT_PREVIOUS_2 * P42;&#10;R3 := OUTPUT_PREVIOUS_1 * P13 + OUTPUT_PREVIOUS_2 * P23 + INPUT_PREVIOUS_1 * P33 + INPUT_PREVIOUS_2 * P43;&#10;R4 := OUTPUT_PREVIOUS_1 * P14 + OUTPUT_PREVIOUS_2 * P24 + INPUT_PREVIOUS_1 * P34 + INPUT_PREVIOUS_2 * P44;&#10;DEN := LAMBDA_ACTIVE + OUTPUT_PREVIOUS_1 * V1 + OUTPUT_PREVIOUS_2 * V2 + INPUT_PREVIOUS_1 * V3 + INPUT_PREVIOUS_2 * V4;&#10;IF (DEN &gt; 1.0E-100) AND (DEN &lt;= 1.0E+100) THEN&#10;G1 := V1 / DEN;&#10;G2 := V2 / DEN;&#10;G3 := V3 / DEN;&#10;G4 := V4 / DEN;&#10;N1 := EST_OUTPUT_COEFFICIENT_1 + G1 * PREDICTION_ERROR;&#10;N2 := EST_OUTPUT_COEFFICIENT_2 + G2 * PREDICTION_ERROR;&#10;N3 := EST_INPUT_COEFFICIENT_1 + G3 * PREDICTION_ERROR;&#10;N4 := EST_INPUT_COEFFICIENT_2 + G4 * PREDICTION_ERROR;&#10;C11 := (P11 - G1 * R1) / LAMBDA_ACTIVE;&#10;C12 := (P12 - G1 * R2) / LAMBDA_ACTIVE;&#10;C13 := (P13 - G1 * R3) / LAMBDA_ACTIVE;&#10;C14 := (P14 - G1 * R4) / LAMBDA_ACTIVE;&#10;C21 := (P21 - G2 * R1) / LAMBDA_ACTIVE;&#10;C22 := (P22 - G2 * R2) / LAMBDA_ACTIVE;&#10;C23 := (P23 - G2 * R3) / LAMBDA_ACTIVE;&#10;C24 := (P24 - G2 * R4) / LAMBDA_ACTIVE;&#10;C31 := (P31 - G3 * R1) / LAMBDA_ACTIVE;&#10;C32 := (P32 - G3 * R2) / LAMBDA_ACTIVE;&#10;C33 := (P33 - G3 * R3) / LAMBDA_ACTIVE;&#10;C34 := (P34 - G3 * R4) / LAMBDA_ACTIVE;&#10;C41 := (P41 - G4 * R1) / LAMBDA_ACTIVE;&#10;C42 := (P42 - G4 * R2) / LAMBDA_ACTIVE;&#10;C43 := (P43 - G4 * R3) / LAMBDA_ACTIVE;&#10;C44 := (P44 - G4 * R4) / LAMBDA_ACTIVE;&#10;C12 := (C12 + C21) / 2.0;&#10;C21 := C12;&#10;C13 := (C13 + C31) / 2.0;&#10;C31 := C13;&#10;C14 := (C14 + C41) / 2.0;&#10;C41 := C14;&#10;C23 := (C23 + C32) / 2.0;&#10;C32 := C23;&#10;C24 := (C24 + C42) / 2.0;&#10;C42 := C24;&#10;C34 := (C34 + C43) / 2.0;&#10;C43 := C34;&#10;IF (N1 &gt;= -1.0E+100) AND (N1 &lt;= 1.0E+100) AND (N2 &gt;= -1.0E+100) AND (N2 &lt;= 1.0E+100) AND (N3 &gt;= -1.0E+100) AND (N3 &lt;= 1.0E+100) AND (N4 &gt;= -1.0E+100) AND (N4 &lt;= 1.0E+100) AND (C11 &gt;= -1.0E+100) AND (C11 &lt;= 1.0E+100) AND (C12 &gt;= -1.0E+100) AND (C12 &lt;= 1.0E+100) AND (C13 &gt;= -1.0E+100) AND (C13 &lt;= 1.0E+100) AND (C14 &gt;= -1.0E+100) AND (C14 &lt;= 1.0E+100) AND (C21 &gt;= -1.0E+100) AND (C21 &lt;= 1.0E+100) AND (C22 &gt;= -1.0E+100) AND (C22 &lt;= 1.0E+100) AND (C23 &gt;= -1.0E+100) AND (C23 &lt;= 1.0E+100) AND (C24 &gt;= -1.0E+100) AND (C24 &lt;= 1.0E+100) AND (C31 &gt;= -1.0E+100) AND (C31 &lt;= 1.0E+100) AND (C32 &gt;= -1.0E+100) AND (C32 &lt;= 1.0E+100) AND (C33 &gt;= -1.0E+100) AND (C33 &lt;= 1.0E+100) AND (C34 &gt;= -1.0E+100) AND (C34 &lt;= 1.0E+100) AND (C41 &gt;= -1.0E+100) AND (C41 &lt;= 1.0E+100) AND (C42 &gt;= -1.0E+100) AND (C42 &lt;= 1.0E+100) AND (C43 &gt;= -1.0E+100) AND (C43 &lt;= 1.0E+100) AND (C44 &gt;= -1.0E+100) AND (C44 &lt;= 1.0E+100) THEN&#10;EST_OUTPUT_COEFFICIENT_1 := N1;&#10;EST_OUTPUT_COEFFICIENT_2 := N2;&#10;EST_INPUT_COEFFICIENT_1 := N3;&#10;EST_INPUT_COEFFICIENT_2 := N4;&#10;P11 := C11;&#10;P12 := C12;&#10;P13 := C13;&#10;P14 := C14;&#10;P21 := C21;&#10;P22 := C22;&#10;P23 := C23;&#10;P24 := C24;&#10;P31 := C31;&#10;P32 := C32;&#10;P33 := C33;&#10;P34 := C34;&#10;P41 := C41;&#10;P42 := C42;&#10;P43 := C43;&#10;P44 := C44;&#10;ESTIMATION_VALID := TRUE;&#10;END_IF;&#10;END_IF;&#10;END_IF;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

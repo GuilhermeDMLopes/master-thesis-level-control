@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FBType Name="TUNING_TRIGGER" Comment="Select normal control or one model tuning at a specified sample">
+  <Identification Standard="61499-2" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Type="Event">
+        <With Var="ENABLE_UPDATE" />
+        <With Var="UPDATE_AT_SAMPLE" />
+      </Event>
+      <Event Name="REQ" Type="Event">
+        <With Var="SAMPLE_NUMBER" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Type="Event" />
+      <Event Name="CONTROL_READY" Type="Event" />
+      <Event Name="TUNE" Type="Event">
+        <With Var="UPDATE_ATTEMPTED" />
+      </Event>
+      <Event Name="ERR" Type="Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="ENABLE_UPDATE" Type="BOOL" />
+      <VarDeclaration Name="UPDATE_AT_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="SAMPLE_NUMBER" Type="UINT" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="UPDATE_ATTEMPTED" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="ENABLED" Type="BOOL" />
+      <VarDeclaration Name="TARGET_SAMPLE" Type="UINT" />
+      <VarDeclaration Name="DUE" Type="BOOL" />
+      <VarDeclaration Name="VALID" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" x="300" y="300" />
+      <ECState Name="INITIALIZE" x="2300" y="300">
+        <ECAction Algorithm="INITIALIZE" />
+      </ECState>
+      <ECState Name="INITIALIZED" x="4300" y="300">
+        <ECAction Output="INITO" />
+      </ECState>
+      <ECState Name="READY" x="6300" y="300" />
+      <ECState Name="SELECT" x="300" y="2300">
+        <ECAction Algorithm="SELECT" />
+      </ECState>
+      <ECState Name="TUNE" x="2300" y="2300">
+        <ECAction Algorithm="MARK" Output="TUNE" />
+      </ECState>
+      <ECState Name="PASS" x="4300" y="2300">
+        <ECAction Output="CONTROL_READY" />
+      </ECState>
+      <ECState Name="FAILED" x="6300" y="2300">
+        <ECAction Output="ERR" />
+      </ECState>
+      <ECTransition Source="START" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="READY" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="FAILED" Destination="INITIALIZE" Condition="INIT" x="500" y="500" />
+      <ECTransition Source="START" Destination="FAILED" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="INITIALIZE" Destination="INITIALIZED" Condition="VALID" x="500" y="500" />
+      <ECTransition Source="INITIALIZE" Destination="FAILED" Condition="NOT VALID" x="500" y="500" />
+      <ECTransition Source="INITIALIZED" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="READY" Destination="SELECT" Condition="REQ" x="500" y="500" />
+      <ECTransition Source="SELECT" Destination="TUNE" Condition="DUE" x="500" y="500" />
+      <ECTransition Source="SELECT" Destination="PASS" Condition="NOT DUE" x="500" y="500" />
+      <ECTransition Source="TUNE" Destination="READY" Condition="1" x="500" y="500" />
+      <ECTransition Source="PASS" Destination="READY" Condition="1" x="500" y="500" />
+    </ECC>
+    <Algorithm Name="INITIALIZE">
+      <ST Text="ENABLED := ENABLE_UPDATE;&#10;TARGET_SAMPLE := UPDATE_AT_SAMPLE;&#10;UPDATE_ATTEMPTED := FALSE;&#10;VALID := (NOT ENABLED) OR (TARGET_SAMPLE &gt; 0);" />
+    </Algorithm>
+    <Algorithm Name="SELECT">
+      <ST Text="DUE := ENABLED AND (NOT UPDATE_ATTEMPTED) AND (SAMPLE_NUMBER = TARGET_SAMPLE);" />
+    </Algorithm>
+    <Algorithm Name="MARK">
+      <ST Text="UPDATE_ATTEMPTED := TRUE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

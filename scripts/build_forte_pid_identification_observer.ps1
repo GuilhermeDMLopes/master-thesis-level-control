@@ -5,7 +5,8 @@ param(
     [switch]$IncludeTuner,
     [switch]$IncludeStateAccess,
     [switch]$IncludeTransition,
-    [switch]$IncludeSingleUpdate
+    [switch]$IncludeSingleUpdate,
+    [switch]$BasicAdaptive
 )
 $ErrorActionPreference = "Stop"
 $revision = "7c8b6296227fa292c13d71d2958a404c6db03e53"
@@ -24,6 +25,13 @@ if ($IncludeSingleUpdate) {
         throw "IncludeSingleUpdate requires IncludeTuner, IncludeStateAccess and IncludeTransition."
     }
     $types += "PID_SINGLE_UPDATE_SEQUENCE"
+}
+if ($BasicAdaptive) {
+    if ($IncludeTuner -or $IncludeStateAccess -or $IncludeTransition -or $IncludeSingleUpdate) {
+        throw "BasicAdaptive cannot be combined with legacy Include switches."
+    }
+    $types = @("OBSERVER_DEMO_PROCESS", "RLS_PARAMETER_ESTIMATOR", "PID_MODEL_TUNER",
+               "TUNING_TRIGGER", "PROCESS_IDENTIFIER", "PID_CONTROLLER")
 }
 $exportNames = @($types | ForEach-Object { "$_.cpp"; "$_.h" })
 $files = @{}

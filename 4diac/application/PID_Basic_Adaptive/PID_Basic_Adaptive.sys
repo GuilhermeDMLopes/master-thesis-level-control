@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='utf-8'?>
+<System Name="PID_Basic_Adaptive" Comment="Minimal synthetic PID with one direct gain update; native validation pending">
+  <Application Name="Basic_Control" Comment="Process, identifier/tuner and flag PID">
+    <SubAppNetwork>
+      <FB Name="SamplingClock" Type="E_CYCLE" x="400" y="400">
+        <Parameter Name="DT" Value="T#100ms" />
+      </FB>
+      <FB Name="Process" Type="OBSERVER_DEMO_PROCESS" x="2400" y="400" />
+      <FB Name="Identifier" Type="PROCESS_IDENTIFIER" x="6200" y="400">
+        <Parameter Name="FORGETTING_FACTOR" Value="0.8" />
+        <Parameter Name="INITIAL_COVARIANCE" Value="10000.0" />
+        <Parameter Name="SAMPLE_TIME_S" Value="0.1" />
+        <Parameter Name="DESIRED_POLE" Value="0.7" />
+        <Parameter Name="ENABLE_UPDATE" Value="FALSE" />
+        <Parameter Name="UPDATE_AT_SAMPLE" Value="275" />
+      </FB>
+      <FB Name="Controller" Type="PID_CONTROLLER" x="10200" y="400">
+        <Parameter Name="INITIAL_PROPORTIONAL_GAIN" Value="0.45882339553937435" />
+        <Parameter Name="INITIAL_INTEGRAL_GAIN" Value="1.6381884387801722" />
+        <Parameter Name="INITIAL_DERIVATIVE_GAIN" Value="0.016705052344105673" />
+        <Parameter Name="SAMPLE_TIME_S" Value="0.1" />
+        <Parameter Name="OUTPUT_MIN" Value="0.0" />
+        <Parameter Name="OUTPUT_MAX" Value="10.0" />
+      </FB>
+      <EventConnections>
+        <Connection Source="Process.INITO" Destination="Identifier.INIT" />
+        <Connection Source="Identifier.INITO" Destination="Controller.INIT" />
+        <Connection Source="Controller.INITO" Destination="SamplingClock.START" />
+        <Connection Source="SamplingClock.EO" Destination="Process.REQ" />
+        <Connection Source="Process.CNF" Destination="Identifier.REQ" />
+        <Connection Source="Identifier.CONTROL_READY" Destination="Controller.REQ" />
+        <Connection Source="Identifier.GAINS_READY" Destination="Controller.SET_GAINS" />
+        <Connection Source="Controller.GAINS_CNF" Destination="Controller.REQ" />
+        <Connection Source="Controller.CNF" Destination="Process.APPLY" />
+        <Connection Source="Process.DONE" Destination="SamplingClock.STOP" />
+        <Connection Source="Process.ERR" Destination="SamplingClock.STOP" />
+        <Connection Source="Identifier.ERR" Destination="SamplingClock.STOP" />
+        <Connection Source="Controller.ERR" Destination="SamplingClock.STOP" />
+      </EventConnections>
+      <DataConnections>
+        <Connection Source="Process.PROCESS_OUTPUT" Destination="Identifier.PROCESS_OUTPUT" />
+        <Connection Source="Process.OUTPUT_PREVIOUS_1" Destination="Identifier.OUTPUT_PREVIOUS_1" />
+        <Connection Source="Process.OUTPUT_PREVIOUS_2" Destination="Identifier.OUTPUT_PREVIOUS_2" />
+        <Connection Source="Process.INPUT_PREVIOUS_1" Destination="Identifier.INPUT_PREVIOUS_1" />
+        <Connection Source="Process.INPUT_PREVIOUS_2" Destination="Identifier.INPUT_PREVIOUS_2" />
+        <Connection Source="Process.SAMPLE_COUNT" Destination="Identifier.SAMPLE_NUMBER" />
+        <Connection Source="Process.REFERENCE" Destination="Controller.SETPOINT" />
+        <Connection Source="Process.PROCESS_OUTPUT" Destination="Controller.PROCESS_VARIABLE" />
+        <Connection Source="Controller.CONTROL_OUTPUT" Destination="Process.COMMAND" />
+        <Connection Source="Identifier.PROPORTIONAL_GAIN" Destination="Controller.UPDATED_PROPORTIONAL_GAIN" />
+        <Connection Source="Identifier.INTEGRAL_GAIN" Destination="Controller.UPDATED_INTEGRAL_GAIN" />
+        <Connection Source="Identifier.DERIVATIVE_GAIN" Destination="Controller.UPDATED_DERIVATIVE_GAIN" />
+      </DataConnections>
+    </SubAppNetwork>
+  </Application>
+  <Device Name="LocalObserver" Type="FORTE_PC" x="2000" y="3000" Comment="Local synthetic test only">
+    <Parameter Name="MGR_ID" Value="&quot;localhost:61499&quot;" />
+    <Attribute Name="Profile" Type="STRING" Value="HOLOBLOC" />
+    <Resource Name="EMB_RES" Type="EMB_RES" x="0" y="0">
+      <FBNetwork>
+        <FB Name="SamplingClock" Type="E_CYCLE" x="400" y="400">
+          <Parameter Name="DT" Value="T#100ms" />
+        </FB>
+        <FB Name="Process" Type="OBSERVER_DEMO_PROCESS" x="2400" y="400" />
+        <FB Name="Identifier" Type="PROCESS_IDENTIFIER" x="6200" y="400">
+          <Parameter Name="FORGETTING_FACTOR" Value="0.8" />
+          <Parameter Name="INITIAL_COVARIANCE" Value="10000.0" />
+          <Parameter Name="SAMPLE_TIME_S" Value="0.1" />
+          <Parameter Name="DESIRED_POLE" Value="0.7" />
+          <Parameter Name="ENABLE_UPDATE" Value="FALSE" />
+          <Parameter Name="UPDATE_AT_SAMPLE" Value="275" />
+        </FB>
+        <FB Name="Controller" Type="PID_CONTROLLER" x="10200" y="400">
+          <Parameter Name="INITIAL_PROPORTIONAL_GAIN" Value="0.45882339553937435" />
+          <Parameter Name="INITIAL_INTEGRAL_GAIN" Value="1.6381884387801722" />
+          <Parameter Name="INITIAL_DERIVATIVE_GAIN" Value="0.016705052344105673" />
+          <Parameter Name="SAMPLE_TIME_S" Value="0.1" />
+          <Parameter Name="OUTPUT_MIN" Value="0.0" />
+          <Parameter Name="OUTPUT_MAX" Value="10.0" />
+        </FB>
+        <EventConnections>
+          <Connection Source="Process.INITO" Destination="Identifier.INIT" />
+          <Connection Source="Identifier.INITO" Destination="Controller.INIT" />
+          <Connection Source="Controller.INITO" Destination="SamplingClock.START" />
+          <Connection Source="SamplingClock.EO" Destination="Process.REQ" />
+          <Connection Source="Process.CNF" Destination="Identifier.REQ" />
+          <Connection Source="Identifier.CONTROL_READY" Destination="Controller.REQ" />
+          <Connection Source="Identifier.GAINS_READY" Destination="Controller.SET_GAINS" />
+          <Connection Source="Controller.GAINS_CNF" Destination="Controller.REQ" />
+          <Connection Source="Controller.CNF" Destination="Process.APPLY" />
+          <Connection Source="Process.DONE" Destination="SamplingClock.STOP" />
+          <Connection Source="Process.ERR" Destination="SamplingClock.STOP" />
+          <Connection Source="Identifier.ERR" Destination="SamplingClock.STOP" />
+          <Connection Source="Controller.ERR" Destination="SamplingClock.STOP" />
+        </EventConnections>
+        <DataConnections>
+          <Connection Source="Process.PROCESS_OUTPUT" Destination="Identifier.PROCESS_OUTPUT" />
+          <Connection Source="Process.OUTPUT_PREVIOUS_1" Destination="Identifier.OUTPUT_PREVIOUS_1" />
+          <Connection Source="Process.OUTPUT_PREVIOUS_2" Destination="Identifier.OUTPUT_PREVIOUS_2" />
+          <Connection Source="Process.INPUT_PREVIOUS_1" Destination="Identifier.INPUT_PREVIOUS_1" />
+          <Connection Source="Process.INPUT_PREVIOUS_2" Destination="Identifier.INPUT_PREVIOUS_2" />
+          <Connection Source="Process.SAMPLE_COUNT" Destination="Identifier.SAMPLE_NUMBER" />
+          <Connection Source="Process.REFERENCE" Destination="Controller.SETPOINT" />
+          <Connection Source="Process.PROCESS_OUTPUT" Destination="Controller.PROCESS_VARIABLE" />
+          <Connection Source="Controller.CONTROL_OUTPUT" Destination="Process.COMMAND" />
+          <Connection Source="Identifier.PROPORTIONAL_GAIN" Destination="Controller.UPDATED_PROPORTIONAL_GAIN" />
+          <Connection Source="Identifier.INTEGRAL_GAIN" Destination="Controller.UPDATED_INTEGRAL_GAIN" />
+          <Connection Source="Identifier.DERIVATIVE_GAIN" Destination="Controller.UPDATED_DERIVATIVE_GAIN" />
+        </DataConnections>
+      </FBNetwork>
+    </Resource>
+  </Device>
+  <Mapping From="Basic_Control.SamplingClock" To="LocalObserver.EMB_RES.SamplingClock" />
+  <Mapping From="Basic_Control.Process" To="LocalObserver.EMB_RES.Process" />
+  <Mapping From="Basic_Control.Identifier" To="LocalObserver.EMB_RES.Identifier" />
+  <Mapping From="Basic_Control.Controller" To="LocalObserver.EMB_RES.Controller" />
+</System>
