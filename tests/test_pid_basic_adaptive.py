@@ -91,6 +91,16 @@ class MinimalTests(unittest.TestCase):
             xml=n.composite if name=='Identifier' else n.blocks[name].xml
             direction='OutputVars' if name=='Identifier' and any(v.get('Name')==port for v in n.composite.findall('InterfaceList/OutputVars/VarDeclaration')) else 'InputVars'
             self.assertIsNotNone(xml.find(f"InterfaceList/{direction}/VarDeclaration[@Name='{port}']"),d)
+    def test_mapped_device_has_ide_color(self):
+        root=E.parse(PROJECT/'PID_Basic_Adaptive.sys').getroot()
+        for mapping in root.findall('Mapping'):
+            name=mapping.get('To').split('.')[0]
+            color=root.find(f"Device[@Name='{name}']/Attribute[@Name='Color']")
+            self.assertIsNotNone(color)
+            self.assertEqual(color.get('Type'),'STRING')
+            rgb=[int(component) for component in color.get('Value').split(',')]
+            self.assertEqual(len(rgb),3)
+            self.assertTrue(all(0 <= component <= 255 for component in rgb))
     def test_event_endpoints_and_data_types(self):
         n=Network()
         clock=E.parse(PROJECT/'Type Library/events/E_CYCLE.fbt').getroot()

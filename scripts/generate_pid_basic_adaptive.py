@@ -97,6 +97,9 @@ def generate():
     data=[('Process.'+v,'Identifier.'+v) for v in measurements]+[('Process.SAMPLE_COUNT','Identifier.SAMPLE_NUMBER'),('Process.REFERENCE','Controller.SETPOINT'),('Process.PROCESS_OUTPUT','Controller.PROCESS_VARIABLE'),('Controller.CONTROL_OUTPUT','Process.COMMAND')]+[('Identifier.'+v,'Controller.UPDATED_'+v) for v in gains]
     connections(net,'DataConnections',data)
     app.remove(app.find('SubAppNetwork'));app.append(net)
+    device=system.find('Device')
+    if device.find("Attribute[@Name='Color']") is None:
+        device.insert(list(device).index(device.find('Resource')), E.Element('Attribute',Name='Color',Type='STRING',Value='217,173,117',Comment='color'))
     resource=system.find('Device/Resource');resource.remove(resource.find('FBNetwork'));mapped=copy.deepcopy(net);mapped.tag='FBNetwork';resource.append(mapped)
     for mapping in list(system.findall('Mapping')):system.remove(mapping)
     for node in net.findall('FB'):E.SubElement(system,'Mapping',From='Basic_Control.'+node.get('Name'),To='LocalObserver.EMB_RES.'+node.get('Name'))

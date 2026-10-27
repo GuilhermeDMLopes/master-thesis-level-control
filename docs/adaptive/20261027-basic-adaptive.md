@@ -72,3 +72,15 @@ Exemplo de compilação após exportação:
 ```
 
 A exportação, compilação C++ e execução no 4diac/FORTE desta versão continuam pendentes. O coletor CSV anterior instrumenta outro tipo de PID; não reutilizar sua instrumentação automaticamente neste projeto.
+
+## Correção de abertura no IDE 2.0.1
+
+O usuário reportou `Device.getColor() is null` em
+`AbstractFBNElementEditPart.backgroundColorChanged`, ao abrir Basic_Control.
+O sistema gerado não tinha o atributo Color do dispositivo LocalObserver.
+Foi acrescentado `<Attribute Name="Color" Type="STRING" Value="217,173,117" Comment="color" />`,
+no mesmo formato do projeto validado enviado pelo usuário. O gerador também
+passa a incluir esse atributo. Nenhuma equação, conexão ou parâmetro de controle
+foi alterado. Um teste verifica a presença e os componentes RGB da cor do
+dispositivo usado nos mapeamentos. Sete testes offline aprovados; reabertura
+no IDE do usuário ainda pendente.
