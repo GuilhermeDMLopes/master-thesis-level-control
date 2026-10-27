@@ -8,6 +8,24 @@ import verify_pid_whiteboard as runtime
 from generate_pid_basic_adaptive import PROJECT,TYPES
 
 def pairs(net,tag):return [(c.get('Source'),c.get('Destination')) for c in net.findall(tag+'/Connection')]
+def logical_blocks(net):
+    # Coordinates, comments and XML order are editor presentation only.
+    return {f.get('Name'):(f.get('Type'),
+            {p.get('Name'):p.get('Value') for p in f.findall('Parameter')})
+            for f in net.findall('FB')}
+
+def check_mapping(app,resource):
+    expected=logical_blocks(app);actual=logical_blocks(resource)
+    assert {k:v for k,v in actual.items() if k in expected}==expected, 'Mapped types or parameters differ'
+    assert set(actual)-set(expected) <= {'START'}, 'Unexpected resource block'
+    if 'START' in actual:assert actual['START'][0]=='E_RESTART'
+    for tag in ['EventConnections','DataConnections']:
+        wanted=set(pairs(app,tag));found=set(pairs(resource,tag))
+        assert wanted <= found, 'Mapped connection missing'
+        allowed={('START.COLD','Process.INIT'),('START.WARM','Process.INIT'),
+                 ('START.STOP','SamplingClock.STOP')} if tag=='EventConnections' else set()
+        assert found-wanted <= allowed, 'Unexpected mapped connection'
+
 class Network:
     def __init__(self,enabled=False,bad_tuner=False,interval=0,first_update=275):
         self.root=E.parse(PROJECT/'PID_Basic_Adaptive.sys').getroot();self.net=self.root.find('Application/SubAppNetwork')
@@ -116,14 +134,29 @@ class MinimalTests(unittest.TestCase):
         n=Network(True,True).run();self.assertFalse(n.running);self.assertIn('Identifier.Tuner.ERR',n.trace);self.assertNotIn('Controller.SET_GAINS',n.trace);self.assertEqual(n.trace.count('Controller.REQ'),274)
     def test_mapping_and_three_blocks_plus_clock(self):
         n=Network();mapped=n.root.find('Device/Resource/FBNetwork')
-        self.assertEqual([(f.attrib, [p.attrib for p in f]) for f in n.net.findall('FB')],[(f.attrib, [p.attrib for p in f]) for f in mapped.findall('FB')])
-        for tag in ['EventConnections','DataConnections']:self.assertEqual(pairs(n.net,tag),pairs(mapped,tag))
+        check_mapping(n.net,mapped)
         self.assertEqual(len(n.net.findall('FB')),4)
         for s,d in n.data:
             name,port=d.rsplit('.',1)
             xml=n.composite if name=='Identifier' else n.blocks[name].xml
             direction='OutputVars' if name=='Identifier' and any(v.get('Name')==port for v in n.composite.findall('InterfaceList/OutputVars/VarDeclaration')) else 'InputVars'
             self.assertIsNotNone(xml.find(f"InterfaceList/{direction}/VarDeclaration[@Name='{port}']"),d)
+    def test_mapping_ignores_layout_but_detects_functional_changes(self):
+        import copy
+        n=Network();mapped=copy.deepcopy(n.root.find('Device/Resource/FBNetwork'))
+        for f in mapped.findall('FB'):
+            f.set('x','-1066.6666666666667');f.set('y','800');f.set('Comment','Moved in IDE')
+        for group in [mapped,mapped.find('EventConnections'),mapped.find('DataConnections')]:
+            group[:]=list(reversed(list(group)))
+        E.SubElement(mapped.find('EventConnections'),'Connection',Source='START.COLD',Destination='Process.INIT')
+        check_mapping(n.net,mapped)
+        for change in ['type','parameter','connection']:
+            modified=copy.deepcopy(mapped)
+            if change=='type':modified.find("FB[@Name='Controller']").set('Type','WrongType')
+            if change=='parameter':modified.find("FB[@Name='Controller']/Parameter").set('Value','999')
+            if change=='connection':
+                group=modified.find('DataConnections');group.remove(group.find('Connection'))
+            with self.assertRaises(AssertionError):check_mapping(n.net,modified)
     def test_mapped_device_has_ide_color(self):
         root=E.parse(PROJECT/'PID_Basic_Adaptive.sys').getroot()
         for mapping in root.findall('Mapping'):
